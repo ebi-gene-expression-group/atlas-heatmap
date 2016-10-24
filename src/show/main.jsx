@@ -69,7 +69,7 @@ const HeatmapOptions = React.createClass({
     filters() {
         const multipleFilters = () => {
             const FilterChoiceDropdown = DropdownFactory(`Filter by: `);
-            var FilteringDropdown = DropdownFactory(``);
+            const FilteringDropdown = DropdownFactory(``);
             const filterProps =
                 this.props.filters
                     .filter(e => e.name === this.state.selectedFilter)
@@ -78,12 +78,16 @@ const HeatmapOptions = React.createClass({
 
             return (
                 <div>
-                    <FilterChoiceDropdown
-                        available={this.props.filters.map(e => e.name)}
-                        current={this.state.selectedFilter}
-                        onSelect={e => this.setState({selectedFilter: e})}
-                        disabled={false}/>
-                    <FilteringDropdown {...filterProps}/>
+                    <div style={{display:`inline-block`}}>
+                        <FilterChoiceDropdown
+                            available={this.props.filters.map(e => e.name)}
+                            current={this.state.selectedFilter}
+                            onSelect={e => this.setState({selectedFilter: e})}
+                            disabled={false}/>
+                    </div>
+                    <div style={{display:`inline-block`, paddingLeft: `5px§ `}}>
+                        <FilteringDropdown {...filterProps}/>
+                    </div>
                 </div>
             )
         };
@@ -106,16 +110,17 @@ const HeatmapOptions = React.createClass({
     _settingsSheet() {
         return(
             <div>
-                {this.filters()}
-                {this.props.orderings.available.length > 1 ?
-                    <OrderingDropdown
-                        available={this.props.orderings.available}
-                        current={this.props.orderings.current}
-                        onSelect={this.props.orderings.onSelect}
-                        disabled={this.props.orderings.disabled}
-                    /> :
-                    null
-                }
+                    {this.filters()}
+                    {this.props.orderings.available.length > 1 ?
+                        <OrderingDropdown
+                            available={this.props.orderings.available}
+                            current={this.props.orderings.current}
+                            onSelect={this.props.orderings.onSelect}
+                            disabled={this.props.orderings.disabled}
+                        /> :
+                        null
+                    }
+                <p>Some explanation down below here</p>
             </div>
         );
     },
@@ -132,7 +137,7 @@ const HeatmapOptions = React.createClass({
                         <SettingsModal content={this._settingsSheet()}/>
                     </div>
 
-                    <div style={{display: `inline-block`}}>
+                    <div style={{display: `inline-block`, paddingLeft: `10px`}}>
                         <DownloadProfilesButton
                             {...this.props.downloadOptions}
                             onDownloadCallbackForAnalytics={() => {
