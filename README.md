@@ -14,7 +14,7 @@ Visualizations include, where available, an anatomogram to the left of the table
 ### Atlas Widget
 
 Our data can be included as a widget as part of your website.
-[Demo](http://www.ebi.ac.uk/gxa/resources/test/widget/highcharts/production/mouse_multiexperiment.html)
+[Demo](https://gxa.github.io/atlas-heatmap/html/genePageZincFinger.html)
 
 ##### What you need
 You should add the following to your environment:
@@ -37,6 +37,9 @@ src="http://www.ebi.ac.uk/gxa/resources/js-bundles/expressionAtlasHeatmapHighcha
 ```
 
 You could also build us from source - we use webpack/npm.
+```
+npm install expression-atlas-heatmap-highcharts
+```
 
 Tell us about any problems by raising an issue in this repository.
 
@@ -51,7 +54,7 @@ expressionAtlasHeatmapHighcharts.render({
 });
 ```
 
-At the time of writing the docs are over the code: [here](https://github.com/gxa/atlas/blob/master/web/src/main/javascript/expression-atlas-heatmap-highcharts/src/highchartsHeatmapRenderer.js)
+At the time of writing the docs are over the code: [here](https://github.com/gxa/atlas-heatmap/blob/master/src/highchartsHeatmapRenderer.js)
 
 ##### License
 
