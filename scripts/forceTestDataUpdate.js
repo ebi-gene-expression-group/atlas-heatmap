@@ -9,7 +9,7 @@ var subject = require("../src/load/main.js");
 var dataDir="../test/data/"
 dataFiles = [
   { name: "experimentPageBaselineOneGeneWithCoexpressions.json",
-    url: "http://localhost:8080/gxa/json/experiments/E-MTAB-3028?geneQuery=%5B%7B%22value%22%3A%22TUBA3%22%7D%5D",
+    url: "https://www.ebi.ac.uk/gxa/json/experiments/E-MTAB-3028?geneQuery=%5B%7B%22value%22%3A%22TUBA3%22%7D%5D",
     config:{
       "isExperimentPage": true,
       "isMultiExperiment": false,
@@ -19,7 +19,7 @@ dataFiles = [
     }
   },
   { name: "experimentPageProteomicsBaseline.json",
-    url: "http://localhost:8080/gxa/json/experiments/E-PROT-1",
+    url: "https://www.ebi.ac.uk/gxa/json/experiments/E-PROT-1",
     config:{
       "isExperimentPage": true,
       "isMultiExperiment": false,
@@ -29,7 +29,7 @@ dataFiles = [
     }
   },
   { name: "experimentPageBaselineNonSpecific.json",
-    url: "http://localhost:8080/gxa/json/experiments/E-MTAB-3871?specific=false",
+    url: "https://www.ebi.ac.uk/gxa/json/experiments/E-MTAB-3871?specific=false",
     config:{
       "isExperimentPage": true,
       "isMultiExperiment": false,
@@ -40,7 +40,7 @@ dataFiles = [
   },
   {
     name: "genesetPageOneRow.json",
-    url:"http://localhost:8080/gxa/widgets/heatmap/baselineAnalytics?geneQuery=%5B%7B%22value%22%3A%22zinc+finger%22%7D%5D&conditionQuery=%5B%5D&species=bos%20taurus&source=ORGANISM_PART",
+    url:"https://www.ebi.ac.uk/gxa/widgets/heatmap/baselineAnalytics?geneQuery=%5B%7B%22value%22%3A%22zinc+finger%22%7D%5D&conditionQuery=%5B%5D&species=bos%20taurus&source=ORGANISM_PART",
     config:{
       "isExperimentPage": false,
       "isMultiExperiment": true,
@@ -51,7 +51,7 @@ dataFiles = [
   },
   {
     name: "experimentPageDifferentialSpecificShort.json",
-    url:"http://localhost:8080/gxa/json/experiments/E-GEOD-54705?heatmapMatrixSize=5",
+    url:"https://www.ebi.ac.uk/gxa/json/experiments/E-GEOD-54705?heatmapMatrixSize=5",
     config:{
       "isExperimentPage": true,
       "isMultiExperiment": false,
@@ -62,7 +62,7 @@ dataFiles = [
   },
   {
     name: "experimentPageDifferentialSpecific.json",
-    url:"http://localhost:8080/gxa/json/experiments/E-GEOD-54705",
+    url:"https://www.ebi.ac.uk/gxa/json/experiments/E-GEOD-54705",
     config:{
       "isExperimentPage": true,
       "isMultiExperiment": false,
