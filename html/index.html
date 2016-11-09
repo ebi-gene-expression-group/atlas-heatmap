@@ -7,29 +7,35 @@
 
     <script src="../dist/vendorCommons.bundle.js"></script>
     <script src="../dist/heatmapHighcharts.bundle.js"></script>
-    <!-- Latest compiled and minified CSS -->
-    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.css">-->
-    <link rel="stylesheet" href="http://localhost:8080/gxa/resources/css/customized-bootstrap-3.3.5.css">
+    <link rel="stylesheet" href="https://www.ebi.ac.uk/gxa/resources/css/customized-bootstrap-3.3.5.css">
+    <link rel="stylesheet" href="https://www.ebi.ac.uk/gxa/resources/css/atlas.css">
+
 </head>
 
 <body>
     <div>
-        <h2>Bundles loaded from <em>webpack-dev-server</em></h2>
+        <h2>Demo pages</h2>
     </div>
+    <div>
+      <h1><code>http://www.ebi.ac.uk/gxa</code></h1>
 
-    <div id="highchartsContainer"></div>
+      <h2><code>Widget you can include in your page</code></h2>
 
+      <li>
+          <a href="genePageZincFinger.html">Gene query example widget - zinc finger </a>
+      </li>
+      <h2><code>Version for experiment page of Expression Atlas</code></h2>
+        <ul>
+            <li>
+                <a href="experimentPageBaseline.html">Baseline experiment</a>
+            </li>
+            <li>
+                <a href="experimentPageDifferential.html">Differential RNASeq experiment </a>
+            </li>
+            <li>
+                <a href="experimentPageMicroarray.html">Microarray experiment </a>
+            </li>
+        </ul>
+    </div>
 </body>
-
-<script>
-    heatmapHighcharts.render({
-        atlasHost: 'http://localhost:8080',
-        params: 'geneQuery=zinc finger&species=mus%20musculus',
-        isMultiExperiment: true,
-        target: 'highchartsContainer',
-        pathToFolderWithBundledResources: 'http://localhost:8080/gxa/resources/js-bundles/'
-      });
-
-</script>
-
 </html>

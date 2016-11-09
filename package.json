@@ -4,17 +4,16 @@
   "description": "Expression Atlas Highcharts heatmap of baseline and differential expression experiments from the Expression Atlas project (https://www.ebi.ac.uk/gxa)",
   "main": "index.js",
   "author": "Wojciech Bażant<wbazant@ebi.ac.uk>, Elisabet Barrera <barrera@ebi.ac.uk> and Alfonso Muñoz-Pomer Fuentes <amunoz@ebi.ac.uk>",
-  "license": "MIT",
-  "private": true,
+  "license": "Apache 2.0",
   "scripts": {
     "test": "mocha test"
   },
   "dependencies": {
     "anatomogram": "latest",
     "color": "^0.11.3",
-    "expression-atlas-display-levels-button": "file:../../atlas_modules/display-levels-button",
-    "expression-atlas-download-profiles-button": "file:../../atlas_modules/download-profiles-button",
-    "expression-atlas-number-format": "file:../../atlas_modules/number-format",
+    "expression-atlas-display-levels-button": "file:lib/display-levels-button",
+    "expression-atlas-download-profiles-button": "file:lib/download-profiles-button",
+    "expression-atlas-number-format": "file:lib/number-format",
     "he": "^1.1.0",
     "highcharts-custom-events": "^2.0.1",
     "highcharts-heatmap": "^0.1.2",
