@@ -2,9 +2,11 @@
 
 var React = require("react");
 var Slider = require("rc-slider");
-var DisplayLevelsButton = require('expression-atlas-display-levels-button');
 require('./CoexpressionOption.less');
 require('rc-slider/assets/index.css');
+const Button = require(`react-bootstrap/lib/Button`);
+const Glyphicon = require(`react-bootstrap/lib/Glyphicon`);
+
 
 
 var CoexpressionOption = React.createClass({
@@ -27,12 +29,12 @@ var CoexpressionOption = React.createClass({
     },
 
     _showOfferToDisplay: function () {
-        return <DisplayLevelsButton hideText=""
-                                    showText="Add similarly expressed genes"
-                                    onClickCallback={this._turnOnWithDefaultValue}
-                                    displayLevels={false}
-                                    width="250px"
-                                    fontSize="14px"/>
+        return (
+          <Button bsSize="small" onClick={this._turnOnWithDefaultValue}>
+              <Glyphicon glyph="plus"/>
+              <span style={{verticalAlign: `middle`}}> Add similarly expressed genes</span>
+          </Button>
+        )
     },
 
     _showSlider: function () {

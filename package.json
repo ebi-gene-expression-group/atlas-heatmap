@@ -8,11 +8,10 @@
   "scripts": {
     "test": "mocha test"
   },
-  "repository": "github.com/gxa/anatomogram",
+  "repository": "github.com/gxa/atlas-heatmap",
   "dependencies": {
     "anatomogram": "^0.3.0",
     "color": "^0.11.3",
-    "expression-atlas-display-levels-button": "file:lib/display-levels-button",
     "expression-atlas-download-profiles-button": "file:lib/download-profiles-button",
     "expression-atlas-number-format": "file:lib/number-format",
     "he": "^1.1.0",
