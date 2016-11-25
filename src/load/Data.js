@@ -36,11 +36,6 @@ const _columnGroupings = function(columnGroupings, id){
   )
 }
 
-const ResolvePathToIcon = (pathToFolderWithBundledResources, type, selected) =>
-    Url.resolve(
-        pathToFolderWithBundledResources,
-        require(`../resources/icons/${type}_${selected ? `` : `un`}selected.png`)
-    );
 const getXAxisCategories = function (columnHeaders, columnGroupings, config) {
   return columnHeaders.map(
     config.isExperimentPage
