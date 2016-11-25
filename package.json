@@ -12,8 +12,7 @@
   "dependencies": {
     "anatomogram": "^0.3.0",
     "color": "^0.11.3",
-    "expression-atlas-download-profiles-button": "file:lib/download-profiles-button",
-    "expression-atlas-number-format": "file:lib/number-format",
+    "expression-atlas-number-format": "latest",
     "he": "^1.1.0",
     "highcharts-custom-events": "^2.0.1",
     "highcharts-heatmap": "^0.1.2",

@@ -1,7 +1,7 @@
 const React = require( `react`);
 const PropTypes = require(`../PropTypes.js`);
 const Button = require(`react-bootstrap/lib/Button`);
-const DownloadProfilesButton = require(`expression-atlas-download-profiles-button`);
+const DownloadProfilesButton = require(`./download-profiles-button/main.jsx`);
 const HeatmapCanvas = require(`./HeatmapCanvas.jsx`);
 const OrderingsDropdown = require(`./OrderingsDropdown.jsx`);
 const FiltersModal = require(`./settings/FiltersModal.jsx`);

@@ -1,11 +1,10 @@
 {
   "name": "expression-atlas-number-format",
   "version": "1.0.0",
-  "description": "Legend for differential expression experiments",
+  "description": "Formatting scientific values for Expression Atlas",
   "main": "index.js",
   "author": "Alfonso Muñoz-Pomer Fuentes <amunoz@ebi.ac.uk>",
-  "license": "MIT",
-  "private": true,
+  "license": "Apache-2.0",
   "dependencies": {
     "react": "^0.14.7",
     "react-dom": "^0.14.7"
