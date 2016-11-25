@@ -1,11 +1,13 @@
 "use strict";
 
 //*------------------------------------------------------------------*
-var _ = require('lodash');
+const _ = require('lodash');
+const Url = require(`url`);
+const Path = require(`path`);
 
 //*------------------------------------------------------------------*
 
-var _columnGroupings = function(columnGroupings, id){
+const _columnGroupings = function(columnGroupings, id){
   return (
     columnGroupings.map(function(grouping){
       const values =
@@ -34,7 +36,12 @@ var _columnGroupings = function(columnGroupings, id){
   )
 }
 
-var getXAxisCategories = function (columnHeaders, columnGroupings, config) {
+const ResolvePathToIcon = (pathToFolderWithBundledResources, type, selected) =>
+    Url.resolve(
+        pathToFolderWithBundledResources,
+        require(`../resources/icons/${type}_${selected ? `` : `un`}selected.png`)
+    );
+const getXAxisCategories = function (columnHeaders, columnGroupings, config) {
   return columnHeaders.map(
     config.isExperimentPage
     ? config.isDifferential
@@ -46,11 +53,14 @@ var getXAxisCategories = function (columnHeaders, columnGroupings, config) {
                     tooltip:
                       Object.assign(
                         {resources:
-                           columnHeader.resources.map(function(resource){
+                           (columnHeader.resources || []).map(function(resource){
                              return {
                                type: resource.type,
                                uri : config.atlasBaseURL+ resource.uri,
-                               icon: config.pathToFolderWithBundledResources+"/"+require('../../assets/'+resource.type+"-icon.png")
+                               icon: Url.resolve(
+                                   config.pathToFolderWithBundledResources,
+                                   Path.basename(require('../../assets/'+resource.type+"-icon.png"))
+                               )
                              }
                            })
                         },
@@ -79,7 +89,7 @@ var getXAxisCategories = function (columnHeaders, columnGroupings, config) {
       );
 };
 
-var getYAxisCategories = function (rows, config) {
+const getYAxisCategories = function (rows, config) {
   return rows.map(
     config.isExperimentPage
     ? function (profile) {
@@ -102,7 +112,7 @@ var getYAxisCategories = function (rows, config) {
     );
 };
 
-var __dataPointFromExpression = function(infoCommonForTheRow, columnNumber, expression, rowNumber){
+const __dataPointFromExpression = function(infoCommonForTheRow, columnNumber, expression, rowNumber){
   //TODO make this function more complicated and determine the info to pass about each point here.
   return (
         expression.hasOwnProperty("value")
@@ -125,7 +135,7 @@ var __dataPointFromExpression = function(infoCommonForTheRow, columnNumber, expr
   );
 };
 
-var _commonPropertiesForRow = function(row, config){
+const _commonPropertiesForRow = function(row, config){
   return (
     Object.assign({},
       {unit: unitForThisRowOfData(row,config)},
@@ -134,7 +144,7 @@ var _commonPropertiesForRow = function(row, config){
   )
 }
 
-var _dataPointsFromRow = _.curry(function(config,row, columnNumber){
+const _dataPointsFromRow = _.curry(function(config,row, columnNumber){
   return (
     row.expressions
     .map(_.curry(__dataPointFromExpression,4)(_commonPropertiesForRow(row,config), columnNumber))
@@ -144,7 +154,7 @@ var _dataPointsFromRow = _.curry(function(config,row, columnNumber){
   );
 },3);
 
-var unitForThisRowOfData = function(row,config){
+const unitForThisRowOfData = function(row,config){
     return (
       config.isDifferential
       ? "Log2Fold change" //this is what we use for point.value, but we don't actually use this unit for display. See Formatters.jsx.
@@ -160,7 +170,7 @@ var unitForThisRowOfData = function(row,config){
     );
 };
 
-var _groupByExperimentType = function(chain, config){
+const _groupByExperimentType = function(chain, config){
   return (
     chain
     .map(function(row, columnNumber) {
@@ -182,7 +192,7 @@ var _groupByExperimentType = function(chain, config){
   );
 };
 
-var _experimentsIntoDataSeriesByThresholds = function(thresholds){
+const _experimentsIntoDataSeriesByThresholds = function(thresholds){
   return function(experimentType, dataPoints) {
     return dataPoints.map(
       function(dataPoint) {
@@ -195,9 +205,9 @@ var _experimentsIntoDataSeriesByThresholds = function(thresholds){
   };
 };
 
-var getDataSeries = function(profilesRows, config) {
-  var _fns = [_.lt, _.eq,_.gt].map(function(f){return function(point){return f(point.value,0);};});
-  var _belowCutoff = _fns[1];
+const getDataSeries = function(profilesRows, config) {
+  const _fns = [_.lt, _.eq,_.gt].map(function(f){return function(point){return f(point.value,0);};});
+  const _belowCutoff = _fns[1];
   return (
     config.isMultiExperiment
     ? _dataSplitByThresholds(
@@ -221,10 +231,10 @@ var getDataSeries = function(profilesRows, config) {
 
   )
 };
-var _splitDataSetByProportion = function(data,names,colours){
-  var sortedValues = data.map(function(point){return point.value}).sort(function(l,r){return l-r;});
-  var howManyPointsInTotal = data.length;
-  var howManyDataSetsToSplitIn = names.length;
+const _splitDataSetByProportion = function(data,names,colours){
+  const sortedValues = data.map(function(point){return point.value}).sort(function(l,r){return l-r;});
+  const howManyPointsInTotal = data.length;
+  const howManyDataSetsToSplitIn = names.length;
   return (
     _bucketsIntoSeries(names,colours)(
       _.chain(data)
@@ -237,14 +247,14 @@ var _splitDataSetByProportion = function(data,names,colours){
   );
 }
 
-var _dataProportionallyInEachSeries = function(profilesRows, config, filters, names, colors){
-  var points = _.flatten(profilesRows.map(_dataPointsFromRow(config)));
+const _dataProportionallyInEachSeries = function(profilesRows, config, filters, names, colors){
+  const points = _.flatten(profilesRows.map(_dataPointsFromRow(config)));
   return _.flatten(_.range(filters.length).map(function(i){
     return _splitDataSetByProportion(points.filter(filters[i]), names[i], colors[i]);
   }));
 }
 
-var _bucketsIntoSeries = _.curry(function(names,colours,chain){
+const _bucketsIntoSeries = _.curry(function(names,colours,chain){
   return (
     chain
     .groupBy(_.spread(function(dataSeriesAssigned, point) {
@@ -271,7 +281,7 @@ var _bucketsIntoSeries = _.curry(function(names,colours,chain){
   );
 },3);
 
-var _dataSplitByThresholds = function (thresholds, names, colours, profilesRows, config) {
+const _dataSplitByThresholds = function (thresholds, names, colours, profilesRows, config) {
   return (
     _bucketsIntoSeries(names,colours)(
       _groupByExperimentType(_.chain(profilesRows),config)
@@ -281,7 +291,7 @@ var _dataSplitByThresholds = function (thresholds, names, colours, profilesRows,
   );
 };
 
-var getTheWholeDataObject = function(config, rows, columnHeaders, columnGroupings){
+const getTheWholeDataObject = function(config, rows, columnHeaders, columnGroupings){
   return {
     xAxisCategories: getXAxisCategories(columnHeaders, columnGroupings || [], config),
     yAxisCategories: getYAxisCategories(rows, config),
