@@ -243,7 +243,13 @@ exports.manipulate = function(args, data){
       args.allowEmptyColumns
       ? orderHeatmapData(args.ordering, data).xAxisCategories
       :[],
-      filterHeatmapDataByGroupingOfRows(args.groupsToShow, filterHeatmapDataByCoexpressionIndex(args.maxIndex, filterHeatmapDataByDataSeries(args.dataSeriesToKeep, orderHeatmapData(args.ordering, data))))
+      filterHeatmapDataByGroupingOfRows(args.groupsToShow,
+         filterHeatmapDataByCoexpressionIndex(args.maxIndex,
+           filterHeatmapDataByDataSeries(args.dataSeriesToKeep,
+             orderHeatmapData(args.ordering, data)
+           )
+         )
+       )
     )
   );
 };

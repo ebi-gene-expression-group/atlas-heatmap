@@ -104,7 +104,7 @@ module.exports = React.createClass({
                 return ({
                     name: groupingName,
                     values: valueLabels,
-                    elements: valueLabels.map(valueLabel =>
+                    elementsPerValue: valueLabels.map(valueLabel =>
                         _.sortedUniq(
                             groupingTriplets
                                 .filter(groupingTriplet =>

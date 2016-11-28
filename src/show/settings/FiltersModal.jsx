@@ -45,7 +45,7 @@ const FiltersModal = React.createClass({
                 values={filter.values.map((filterValue, i) =>
                     ({
                         name: filterValue,
-                        elements: filter.elements ? filter.elements[i] : null,
+                        elements: filter.elementsPerValue ? filter.elementsPerValue[i] : null,
                         selected: this.props.filtersSelection.find(filterSelection => filterSelection.name === filter.name).values.includes(filterValue)
                     })
                 )}

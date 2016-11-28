@@ -121,7 +121,7 @@ const OrderingsPropTypes = React.PropTypes.shape({
 const FilterPropTypes = React.PropTypes.arrayOf(React.PropTypes.shape({
         name: React.PropTypes.string.isRequired,
         values: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-        elements: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string))
+        elementsPerValue: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string))
     })
 ).isRequired;
 
