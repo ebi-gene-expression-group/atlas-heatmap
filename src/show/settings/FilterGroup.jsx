@@ -4,12 +4,7 @@ const PropTypes = require( `../../PropTypes.js`);
 
 const FilterGroup = React.createClass({
     propTypes: {
-        name: React.PropTypes.string.isRequired,
-        values: React.PropTypes.arrayOf(React.PropTypes.shape({
-            name: React.PropTypes.string.isRequired,
-            elements: React.PropTypes.arrayOf(React.PropTypes.string),
-            selected: React.PropTypes.bool.isRequired
-        })).isRequired,
+        filter: PropTypes.Filter,
         onChange: React.PropTypes.func.isRequired
     },
 

@@ -118,13 +118,27 @@ const OrderingsPropTypes = React.PropTypes.shape({
     onSelect: React.PropTypes.func.isRequired
 }).isRequired;
 
-
-const FilterPropTypes = React.PropTypes.arrayOf(React.PropTypes.shape({
+/*
+selected should be a subset of values
+valueGroupings should be two element arrays, one the name of the grouping and the second a subset of values
+*/
+const FilterProps = {
         name: React.PropTypes.string.isRequired,
         values: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-        elementsPerValue: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.string))
-    })
-).isRequired;
+        selected: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+        valueGroupings: React.PropTypes.arrayOf((props, propName)=> {
+          var prop = props[propName]
+          if (prop === undefined) {
+              return new Error(`${propName} missing in ${props}`)
+          } else if (!Array.isArray(prop) || prop.length !==2) {
+              return new Error(`${prop} invalid: expected array of length two`)
+          } else if (typeof prop[0]!=="string"){
+            return new Error(`${prop[0]} should be a string representing name of the grouping`)
+          } else if (!Array.isArray(prop[1])) {
+            return new Error(`${prop[1]} should be an array with members of the grouping `)
+          }
+        })
+    };
 
 
 module.exports = {
@@ -136,5 +150,6 @@ module.exports = {
     AxisCategories : AxisCategoriesPropType,
     Formatter : FormatterPropType,
     Orderings: OrderingsPropTypes,
-    Filter: FilterPropTypes
+    Filter: React.PropTypes.shape(FilterProps).isRequired,
+    FilterProps: FilterProps
 };

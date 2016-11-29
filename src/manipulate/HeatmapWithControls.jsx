@@ -117,8 +117,8 @@ module.exports = React.createClass({
         return {
             name: groupingName,
             values: columnLabels,
-            groupingsOfValuesToBeDisplayed:
-              _.sortedUniq(
+            valueGroupings:
+              _.uniq(
                 groupingTriplets
                 .map(groupingTriplet => groupingTriplet.groupingLabel)
               )
@@ -135,49 +135,6 @@ module.exports = React.createClass({
           };
         }
       );
-    },
-
-    _groupingFilters() {
-        const groupingTriplets = _.flattenDeep(this.props.loadResult.heatmapData.xAxisCategories.reduce((acc, columnHeader) => {
-                const groupingTriplets = columnHeader.info.groupings.map(grouping =>
-                    grouping.values.map(groupingValue =>
-                        ({
-                            name: grouping.name,
-                            valueLabel: groupingValue.label,
-                            columnLabel: columnHeader.label
-                        })
-                    )
-                );
-                acc.push(groupingTriplets);
-
-                return acc;
-            }
-        ,[]));
-
-        const groupingNames = _.uniq(groupingTriplets.map(groupingTriplet => groupingTriplet.name));
-
-        return groupingNames.map(groupingName => {
-
-                const valueLabels = _.uniq(groupingTriplets
-                    .filter(groupingTriplet => groupingTriplet.name === groupingName)
-                    .map(groupingTriplet => groupingTriplet.valueLabel));
-
-                return ({
-                    name: groupingName,
-                    values: valueLabels,
-                    elementsPerValue: valueLabels.map(valueLabel =>
-                        _.sortedUniq(
-                            groupingTriplets
-                                .filter(groupingTriplet =>
-                                    groupingTriplet.name === groupingName && groupingTriplet.valueLabel === valueLabel
-                                )
-                                .map(groupingTriplet => groupingTriplet.columnLabel)
-                                .sort()
-                        )
-                    )
-                })
-            }
-        );
     },
 
     _onFilterChange(newFiltersSelection) {
@@ -218,8 +175,12 @@ module.exports = React.createClass({
             Show(
                 heatmapDataToPresent,
                 this._orderings(),
-                this._filters(),
-                this.state.filtersSelection,
+                this._filters().map((_filter)=>(
+                  Object.assign({},
+                  _filter,
+                  {selected: this._getFilterSelection(_filter.name)}
+                )
+                )),
                 this._onFilterChange,
                 this.state.zoom,
                 this._onUserZoom,

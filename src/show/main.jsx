@@ -4,7 +4,7 @@ const Button = require(`react-bootstrap/lib/Button`);
 const DownloadProfilesButton = require(`./download-profiles-button/main.jsx`);
 const HeatmapCanvas = require(`./HeatmapCanvas.jsx`);
 const OrderingsDropdown = require(`./OrderingsDropdown.jsx`);
-const FiltersModal = require(`./settings/FiltersModal.jsx`);
+const SettingsModal = require(`./settings/SettingsModal.jsx`);
 const TooltipStateManager = require(`../util/TooltipStateManager.jsx`);
 const CoexpressionOption = require(`./CoexpressionOption.jsx`);
 
@@ -34,14 +34,9 @@ const HeatmapOptions = React.createClass({
         googleAnalyticsCallback: React.PropTypes.func.isRequired,
         showUsageMessage: React.PropTypes.bool.isRequired,
         orderings: React.PropTypes.shape(PropTypes.Orderings),
-        filters: PropTypes.Filter,
-        filtersSelection: PropTypes.Filter,
-        onFilterChange: React.PropTypes.func.isRequired,
+        filters: React.PropTypes.arrayOf(PropTypes.Filter).isRequired,
+        filtersSelect: React.PropTypes.func.isRequired,
         disableSettings: React.PropTypes.bool.isRequired
-    },
-
-    getInitialState() {
-        return { selectedFilter: this.props.filters[0].name }
     },
 
     render() {
@@ -60,12 +55,11 @@ const HeatmapOptions = React.createClass({
                     </div>
 
                     <div style={{display: `inline-block`, paddingLeft: `10px`}}>
-                        <FiltersModal
+                        <SettingsModal
                             filters={this.props.filters}
-                            disabled={this.props.disableSettings}
-                            filtersSelection={this.props.filtersSelection}
-                            onFilterChange={this.props.onFilterChange}
                             orderings={this.props.orderings}
+                            propagateChosenFilterSelection={this.props.filtersSelect}
+                            disabled={this.props.disableSettings}
                         />
                     </div>
 
@@ -160,7 +154,7 @@ const anatomogramCallbacks = (heatmapDataToPresent, highlightOntologyIds) =>
         }
     });
 
-const show = (heatmapDataToPresent, orderings, filters, filtersSelection, onFilterChange, zoom, zoomCallback, colorAxis, formatters, tooltips, legend, coexpressions, properties) => {
+const show = (heatmapDataToPresent, orderings, filters, filtersSelect, zoom, zoomCallback, colorAxis, formatters, tooltips, legend, coexpressions, properties) => {
     const marginRight = 60;
     const heatmapConfig = properties.loadResult.heatmapConfig;
 
@@ -175,8 +169,7 @@ const show = (heatmapDataToPresent, orderings, filters, filtersSelection, onFilt
                             }}
                             orderings={orderings}
                             filters={filters}
-                            filtersSelection={filtersSelection}
-                            onFilterChange={onFilterChange}
+                            filtersSelect={filtersSelect}
                             disableSettings={zoom}
                             googleAnalyticsCallback={properties.googleAnalyticsCallback}
                             showUsageMessage={heatmapDataToPresent.xAxisCategories.length > 100}
