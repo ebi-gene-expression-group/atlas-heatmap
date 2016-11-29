@@ -6,7 +6,7 @@ var subject = require("../src/load/main.js");
 
 
 describe('Experiment page baseline one gene with coexpressions', function() {
-  var data = require("json!./data/experimentPageBaselineOneGeneWithCoexpressions.json");
+  var data = require("./data/experimentPageBaselineOneGeneWithCoexpressions.json");
 
   var config = {
     "isExperimentPage": true,
@@ -44,7 +44,7 @@ describe('Experiment page baseline one gene with coexpressions', function() {
 });
 
 describe('Gene page baseline one row', function() {
-  var data = require("json!./data/genesetPageOneRow.json");
+  var data = require("./data/genesetPageOneRow.json");
 
   var config = {
     "isExperimentPage": false,
@@ -68,7 +68,7 @@ describe('Gene page baseline one row', function() {
   });
 });
 describe('Proteomics experiment page', function() {
-  var data = require("json!./data/experimentPageProteomicsBaseline.json");
+  var data = require("./data/experimentPageProteomicsBaseline.json");
 
   var config = {
     "isExperimentPage": true,
@@ -99,8 +99,8 @@ describe('Proteomics experiment page', function() {
 });
 
 describe('Differential experiment page', function() {
-  var dataShort = require("json!./data/experimentPageDifferentialSpecificShort.json");
-  var data = require("json!./data/experimentPageDifferentialSpecific.json");
+  var dataShort = require("./data/experimentPageDifferentialSpecificShort.json");
+  var data = require("./data/experimentPageDifferentialSpecific.json");
 
   var config = {
     "isExperimentPage": true,

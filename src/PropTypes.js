@@ -1,3 +1,4 @@
+"use strict";
 const React = require(`react`);
 const validate = require(`react-prop-types-check`);
 

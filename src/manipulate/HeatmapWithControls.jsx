@@ -19,10 +19,16 @@ module.exports = React.createClass({
     getInitialState() {
         return {
             ordering: `Default`,
-            filtersSelection: this._filters(),
+            filtersSelection: this._filters().map((filter) => ({
+              name: filter.name,
+              selected: filter.values
+            })),
             coexpressionsShown: 0,
             zoom: false
         };
+    },
+    _getFilterSelection(name) {
+      return (this.state.filtersSelection.find((f)=>f.name==name) || {selected: []}).selected
     },
 
     _onUserZoom(zoomedIn) {
@@ -32,16 +38,25 @@ module.exports = React.createClass({
     _heatmapDataToPresent() {
         return require(`./Manipulators.js`).manipulate(
             {
+                keepSeries: (series) => this._getFilterSelection(this._expressionLevelInSelectedBucketFilter().name).includes(series.info.name),
+                keepRow: (row) => row.info.index <= this.state.coexpressionsShown,
+                keepColumn: (columnHeader) => this._columnHeadersThatColumnGroupingFiltersSayWeCanInclude().includes(columnHeader.label),
                 ordering: this.props.loadResult.orderings[this.state.ordering],
-                dataSeriesToKeep: this._expressionLevelFilter().values.map(levelFilterValue => this.state.filtersSelection[0].values.includes(levelFilterValue)),
-                groupsToShow: this.state.filtersSelection.length > 1 ? this.state.filtersSelection.slice(1) : null,
                 allowEmptyColumns:
                     this.props.loadResult.heatmapConfig.isExperimentPage &&
                     (  this.state.grouping === this.getInitialState().grouping || !this.state.group),
-                maxIndex:this.state.coexpressionsShown
             },
             this.props.loadResult.heatmapData
         )
+    },
+
+    _columnHeadersThatColumnGroupingFiltersSayWeCanInclude() {
+      return (
+        this._columnBelongsToGroupingFilterPerGrouping()
+        .map((groupingFilter) => groupingFilter.name)
+        .map((name) => this._getFilterSelection(name))
+        .reduce((l,r) => l.concat(r), [])
+      )
     },
 
     _labels() {
@@ -64,16 +79,62 @@ module.exports = React.createClass({
     },
 
     _filters() {
-        return [this._expressionLevelFilter()].concat(this._groupingFilters())
+        return [this._expressionLevelInSelectedBucketFilter()].concat(this._columnBelongsToGroupingFilterPerGrouping())
     },
 
-    _expressionLevelFilter() {
+    _expressionLevelInSelectedBucketFilter() {
         return (
             {
                 name: `Expression Value${this.props.loadResult.heatmapConfig.isExperimentPage ? ` – relative` : ``}`,
                 values: this.props.loadResult.heatmapData.dataSeries.map(e => e.info.name),
             }
         )
+    },
+    _columnBelongsToGroupingFilterPerGrouping() {
+      const groupingTriplets = _.flattenDeep(this.props.loadResult.heatmapData.xAxisCategories.reduce((acc, columnHeader) => {
+              const groupingTriplets = columnHeader.info.groupings.map(grouping =>
+                  grouping.values.map(groupingValue =>
+                      ({
+                          name: grouping.name,
+                          groupingLabel: groupingValue.label,
+                          columnLabel: columnHeader.label
+                      })
+                  )
+              );
+              acc.push(groupingTriplets);
+
+              return acc;
+          }
+      ,[]));
+
+      const groupingNames = _.uniq(groupingTriplets.map(groupingTriplet => groupingTriplet.name));
+
+      return groupingNames.map(groupingName => {
+        const columnLabels = _.uniq(groupingTriplets
+            .filter(groupingTriplet => groupingTriplet.name === groupingName)
+            .map(groupingTriplet => groupingTriplet.columnLabel));
+
+        return {
+            name: groupingName,
+            values: columnLabels,
+            groupingsOfValuesToBeDisplayed:
+              _.sortedUniq(
+                groupingTriplets
+                .map(groupingTriplet => groupingTriplet.groupingLabel)
+              )
+              .map(groupingLabel => [
+                groupingLabel,
+                _.sortedUniq(
+                  groupingTriplets
+                  .filter(groupingTriplet =>
+                    groupingTriplet.name === groupingName && groupingTriplet.groupingLabel === groupingLabel
+                  )
+                  .map(groupingTriplet => groupingTriplet.columnLabel)
+                )
+              ])
+          };
+        }
+      );
     },
 
     _groupingFilters() {
