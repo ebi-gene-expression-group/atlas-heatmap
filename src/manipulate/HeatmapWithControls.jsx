@@ -163,7 +163,7 @@ module.exports = React.createClass({
                 key: e.info.name,
                 name: e.info.name,
                 colour: e.info.colour,
-                on: this.state.filtersSelection[0].values.includes(e.info.name)
+                on: this._getFilterSelection(this._expressionLevelInSelectedBucketFilter().name).includes(e.info.name)
               })
             )
       );
