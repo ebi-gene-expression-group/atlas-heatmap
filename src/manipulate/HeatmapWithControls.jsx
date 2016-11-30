@@ -19,10 +19,7 @@ module.exports = React.createClass({
     getInitialState() {
         return {
             ordering: `Default`,
-            filtersSelection: this._filters().map((filter) => ({
-              name: filter.name,
-              selected: filter.values
-            })),
+            filtersSelection: this._filtersInitially(),
             coexpressionsShown: 0,
             zoom: false
         };
@@ -39,12 +36,12 @@ module.exports = React.createClass({
         return require(`./Manipulators.js`).manipulate(
             {
                 keepSeries: (series) => this._getFilterSelection(this._expressionLevelInSelectedBucketFilter().name).includes(series.info.name),
-                keepRow: (row) => row.info.index <= this.state.coexpressionsShown,
+                keepRow: (row) => !row.info.index || row.info.index <= this.state.coexpressionsShown,
                 keepColumn: (columnHeader) => this._columnHeadersThatColumnGroupingFiltersSayWeCanInclude().includes(columnHeader.label),
                 ordering: this.props.loadResult.orderings[this.state.ordering],
                 allowEmptyColumns:
                     this.props.loadResult.heatmapConfig.isExperimentPage &&
-                    (  this.state.grouping === this.getInitialState().grouping || !this.state.group),
+                    (_.isEqual(this._filtersInitially(), this._filtersCurrently())),
             },
             this.props.loadResult.heatmapData
         )
@@ -78,8 +75,23 @@ module.exports = React.createClass({
       }
     },
 
-    _filters() {
+    __filters__() {
         return [this._expressionLevelInSelectedBucketFilter()].concat(this._columnBelongsToGroupingFilterPerGrouping())
+    },
+
+    _filtersInitially(){
+      return this.__filters__().map((filter) => ({
+        name: filter.name,
+        selected: filter.values
+      }))
+    },
+
+    _filtersCurrently(){
+      return this.__filters__().map((_filter)=>(
+        Object.assign({},
+        _filter,
+        {selected: this._getFilterSelection(_filter.name)}
+      )))
     },
 
     _expressionLevelInSelectedBucketFilter() {
@@ -175,12 +187,7 @@ module.exports = React.createClass({
             Show(
                 heatmapDataToPresent,
                 this._orderings(),
-                this._filters().map((_filter)=>(
-                  Object.assign({},
-                  _filter,
-                  {selected: this._getFilterSelection(_filter.name)}
-                )
-                )),
+                this._filtersCurrently(),
                 this._onFilterChange,
                 this.state.zoom,
                 this._onUserZoom,
