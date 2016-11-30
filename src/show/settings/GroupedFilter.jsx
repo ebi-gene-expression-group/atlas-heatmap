@@ -16,15 +16,23 @@ const FilterOption = React.createClass({
     onToggleOpen: React.PropTypes.func.isRequired,
     onNewSelected: React.PropTypes.func.isRequired
   },
+
   toggleAll(evt){
-    this.props.onNewSelected(xor(this.props.values,this.props.selected).length ? this.props.values : [])
+    this.props.onNewSelected(
+      xor(this.props.values,this.props.selected).length
+      ? this.props.values
+      : []
+    )
   },
+
   toggleOne(which, evt){
     this.props.onNewSelected(xor(this.props.selected,[which]))
   },
+
   toggleOpen(evt){
-    this.props.onToggleOpen();
+    this.props.onToggleOpen()
   },
+
   render(){
     return (
       <div className="filterBody">
@@ -37,7 +45,9 @@ const FilterOption = React.createClass({
            onClick={this.props.closeDisabled?()=>{}: this.toggleOpen}
            href="#">
            {this.props.name}
-           {!this.props.closeDisabled && <Glyphicon style={{fontSize: `x-small`, paddingLeft: `5px`}} glyph={this.props.isOpen? "menu-up" : "menu-down"}/>}
+           {!this.props.closeDisabled &&
+             <Glyphicon style={{fontSize: `x-small`, paddingLeft: `5px`}} glyph={this.props.isOpen? "menu-up" : "menu-down"}/>
+           }
         </div>
         {this.props.isOpen &&
           <div className="options">
@@ -56,7 +66,6 @@ const FilterOption = React.createClass({
       </div>
     )
   }
-
 })
 
 
@@ -71,7 +80,6 @@ const GroupedFilter = React.createClass({
       groupsUserAskedToKeepOpen: []
     }
   },
-
 
   renderValueGrouping(name, values){
     const userWantedOpen = this.state.groupsUserAskedToKeepOpen.indexOf(name)>-1

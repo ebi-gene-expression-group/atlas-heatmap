@@ -4,6 +4,7 @@ const xor = require(`lodash/xor`);
 
 require('./Components.less');
 
+
 const FlatFilter = React.createClass({
   propTypes: Object.assign({},PropTypes.FilterProps, {
       propagateFilterSelection: React.PropTypes.func.isRequired,

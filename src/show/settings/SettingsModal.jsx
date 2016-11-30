@@ -4,7 +4,6 @@ const Button = require(`react-bootstrap/lib/Button`);
 const Glyphicon = require(`react-bootstrap/lib/Glyphicon`);
 
 const PropTypes = require( `../../PropTypes.js`);
-const FilterGroup = require(`./FilterGroup.jsx`);
 const FlatFilter = require(`./FlatFilter.jsx`);
 const GroupedFilter = require(`./GroupedFilter.jsx`);
 const deepEquals = require(`lodash/isEqual`);
@@ -48,23 +47,6 @@ const SettingsModal = React.createClass({
         filtersSelection: this._filtersSelectionBeforeModalOpen() });
     },
 
-    // _renderFilter(filter) {
-    //     return (
-    //         <FilterGroup
-    //             key={filter.name}
-    //             name={filter.name}
-    //             values={filter.values.map((filterValue, i) =>
-    //                 ({
-    //                     name: filterValue,
-    //                     elements: filter.elementsPerValue ? filter.elementsPerValue[i] : null,
-    //                     selected: this.props.filtersSelection.find(filterSelection => filterSelection.name === filter.name).values.includes(filterValue)
-    //                 })
-    //             )}
-    //             onChange={this._onFilterChange}
-    //         />
-    //     )
-    // },
-
     _renderFilter(_filter) {
       const FilterComponent = _filter.valueGroupings ? GroupedFilter : FlatFilter;
 
@@ -89,17 +71,6 @@ const SettingsModal = React.createClass({
       )
     },
 
-    _onFilterChange(name, values) {
-        // TODO Hacky: newFiltersSelection *MUST* preserve the order because HeatmapWithControls.jsx does [0] and slices at specific values
-        const newFiltersSelection = this.state.filtersSelection.map(filterSelection =>
-            filterSelection.name === name ?
-                ({ name, values }) :
-                filterSelection
-        );
-
-        this.setState({ filtersSelection: newFiltersSelection });
-    },
-
     _filtersCorrespondingToCurrentSelection(){
       return (
         this.props.filters
@@ -116,8 +87,6 @@ const SettingsModal = React.createClass({
     },
 
     render() {
-      //TODO {this.props.filters.map(this._renderFilter)}
-      //is wrong because it has the wrong selected yo yo yo
         return (
             <div>
                 <Button bsSize="small" onClick={this._open} disabled={this.props.disabled} title={this.props.disabled ? `Reset zoom to enable filters` : ``}>
