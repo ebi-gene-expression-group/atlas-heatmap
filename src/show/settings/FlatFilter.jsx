@@ -19,7 +19,7 @@ const FlatFilter = React.createClass({
       <div className="gxaFilter">
         <h4>{this.props.name}</h4>
         <div className="filterBody">
-          <div className="options">
+          <div>
           {this.props.values.map((value) => (
             <div key={value}>
               <input type="checkbox"

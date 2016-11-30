@@ -27,28 +27,28 @@ const FilterOption = React.createClass({
   },
   render(){
     return (
-      <div className="gxaHeatmapModalSelectionMenu">
+      <div className="filterBody">
         <input type="checkbox"
           value={this.props.name}
           onChange={this.toggleAll}
           disabled={this.props.selectDisabled}
           checked={this.props.values.every((v) => this.props.selected.indexOf(v)>-1)}/>
-        <a className="groupName"
+        <div className="groupName"
            onClick={this.props.closeDisabled?()=>{}: this.toggleOpen}
            href="#">
            {this.props.name}
            {!this.props.closeDisabled && <Glyphicon style={{fontSize: `x-small`, paddingLeft: `5px`}} glyph={this.props.isOpen? "menu-up" : "menu-down"}/>}
-        </a>
+        </div>
         {this.props.isOpen &&
           <div className="options">
           {this.props.values.map((value) => (
-            <span key={value}>
+            <span className="option" key={value}>
               <input type="checkbox"
                 value={value}
                 onChange={(evt)=>this.toggleOne(value, evt)}
                 disabled={this.props.selectDisabled}
                 checked={this.props.selected.indexOf(value)>-1}/>
-                {value}
+                <span> {value}</span>
             </span>
           ))}
           </div>

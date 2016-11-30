@@ -2,9 +2,16 @@
   .filterBody {
     .groupName {
       display: inline-block;
+      cursor:pointer;
+      &:hover{
+        text-decoration: underline;
+      }
     }
     .options {
-      paddingLeft: 5px;
+      .option{
+        margin: 5px;
+      }
+      padding-left: 10px;
       font-size: small;
     }
   }
