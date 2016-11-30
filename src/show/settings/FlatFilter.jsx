@@ -1,5 +1,7 @@
 const React = require(`react`);
 const PropTypes = require(`../../PropTypes.js`);
+const xor = require(`lodash/xor`);
+
 require('./Components.less');
 
 const FlatFilter = React.createClass({
@@ -9,8 +11,7 @@ const FlatFilter = React.createClass({
   }),
 
   toggleOne(which, evt){
-    debugger;
-    //TODO propagate this selection
+    this.props.propagateFilterSelection(xor(this.props.selected,[which]))
   },
 
   render() {

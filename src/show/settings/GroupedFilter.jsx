@@ -17,12 +17,10 @@ const FilterOption = React.createClass({
     onNewSelected: React.PropTypes.func.isRequired
   },
   toggleAll(evt){
-    debugger;
-    //TODO call onNewSelected either with all or with nothing
+    this.props.onNewSelected(xor(this.props.values,this.props.selected).length ? this.props.values : [])
   },
   toggleOne(which, evt){
-    debugger;
-    //TODO call onNewSelected with selected and this one element added/excluded
+    this.props.onNewSelected(xor(this.props.selected,[which]))
   },
   toggleOpen(evt){
     this.props.onToggleOpen();
@@ -36,10 +34,10 @@ const FilterOption = React.createClass({
           disabled={this.props.selectDisabled}
           checked={this.props.values.every((v) => this.props.selected.indexOf(v)>-1)}/>
         <a className="groupName"
-           onClick={this.toggleOpen}
+           onClick={this.props.closeDisabled?()=>{}: this.toggleOpen}
            href="#">
            {this.props.name}
-           <Glyphicon style={{fontSize: `x-small`, paddingLeft: `5px`}} glyph={this.props.isOpen? "menu-up" : "menu-down"}/>
+           {!this.props.closeDisabled && <Glyphicon style={{fontSize: `x-small`, paddingLeft: `5px`}} glyph={this.props.isOpen? "menu-up" : "menu-down"}/>}
         </a>
         {this.props.isOpen &&
           <div className="options">

@@ -7,6 +7,7 @@ const PropTypes = require( `../../PropTypes.js`);
 const FilterGroup = require(`./FilterGroup.jsx`);
 const FlatFilter = require(`./FlatFilter.jsx`);
 const GroupedFilter = require(`./GroupedFilter.jsx`);
+const deepEquals = require(`lodash/isEqual`);
 
 
 const SettingsModal = React.createClass({
@@ -31,11 +32,9 @@ const SettingsModal = React.createClass({
             showModal: false
         };
     },
-
     _close() {
         this.setState({
-            showModal: false,
-            filtersSelection: this._filtersSelectionBeforeModalOpen()
+            showModal: false
         });
     },
 
@@ -45,7 +44,8 @@ const SettingsModal = React.createClass({
     },
 
     _open() {
-        this.setState({ showModal: true });
+        this.setState({ showModal: true,
+        filtersSelection: this._filtersSelectionBeforeModalOpen() });
     },
 
     // _renderFilter(filter) {
@@ -64,19 +64,23 @@ const SettingsModal = React.createClass({
     //         />
     //     )
     // },
+
     _renderFilter(_filter) {
       const FilterComponent = _filter.valueGroupings ? GroupedFilter : FlatFilter;
+
       return (
         <FilterComponent
           key = {_filter.name}
           propagateFilterSelection = {
             (selected) => {
               this.setState((previousState)=>({
-                filtersSelection: previousState.filtersSelection.map((filterSelection)=>(
-                  filterSelection.name == _filter.name
-                  ? Object.assign ({}, filterSelection, {selected: selected})
-                  : filterSelection
-                ))
+                filtersSelection:
+                  previousState.filtersSelection
+                  .map((filterSelection)=>(
+                    filterSelection.name == _filter.name
+                    ? Object.assign ({}, filterSelection, {selected: selected})
+                    : filterSelection
+                  ))
               }))
             }
           }
@@ -96,7 +100,24 @@ const SettingsModal = React.createClass({
         this.setState({ filtersSelection: newFiltersSelection });
     },
 
+    _filtersCorrespondingToCurrentSelection(){
+      return (
+        this.props.filters
+        .map(_filter => (
+          Object.assign({},
+          _filter,
+          { selected:
+             this.state.filtersSelection
+             .find((f)=>f.name==_filter.name)
+             .selected
+           })
+        ))
+      )
+    },
+
     render() {
+      //TODO {this.props.filters.map(this._renderFilter)}
+      //is wrong because it has the wrong selected yo yo yo
         return (
             <div>
                 <Button bsSize="small" onClick={this._open} disabled={this.props.disabled} title={this.props.disabled ? `Reset zoom to enable filters` : ``}>
@@ -109,7 +130,7 @@ const SettingsModal = React.createClass({
                         <Modal.Title>Filters</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {this.props.filters.map(this._renderFilter)}
+                        {this._filtersCorrespondingToCurrentSelection().map(this._renderFilter)}
                     </Modal.Body>
                     <Modal.Footer>
                         <Button bsStyle="primary" onClick={this._apply}>Apply</Button>
