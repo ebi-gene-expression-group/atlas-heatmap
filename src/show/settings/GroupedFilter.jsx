@@ -1,6 +1,7 @@
 const React = require(`react`);
 const Glyphicon = require(`react-bootstrap/lib/Glyphicon`);
 const PropTypes = require(`../../PropTypes.js`);
+const xor = require(`lodash/xor`);
 require('./Components.less');
 
 
@@ -24,8 +25,7 @@ const FilterOption = React.createClass({
     //TODO call onNewSelected with selected and this one element added/excluded
   },
   toggleOpen(evt){
-    debugger;
-    //TODO call onToggleOpen
+    this.props.onToggleOpen();
   },
   render(){
     return (
@@ -44,11 +44,14 @@ const FilterOption = React.createClass({
         {this.props.isOpen &&
           <div className="options">
           {this.props.values.map((value) => (
+            <span key={value}>
               <input type="checkbox"
                 value={value}
-                onChange={(evt)=>this.props.toggleOne(value, evt)}
+                onChange={(evt)=>this.toggleOne(value, evt)}
                 disabled={this.props.selectDisabled}
                 checked={this.props.selected.indexOf(value)>-1}/>
+                {value}
+            </span>
           ))}
           </div>
         }
@@ -73,7 +76,7 @@ const GroupedFilter = React.createClass({
 
 
   renderValueGrouping(name, values){
-    const userWantsOpen = this.state.groupsUserAskedToKeepOpen.indexOf(name)>-1
+    const userWantedOpen = this.state.groupsUserAskedToKeepOpen.indexOf(name)>-1
     const selectedHere = this.props.selected.filter((e)=>values.indexOf(e)>-1)
     const selectedNotHere = this.props.selected.filter((e)=>values.indexOf(e)==-1)
     const impliedOpen = !(selectedHere.length == 0 || values.every((v) => selectedHere.indexOf(v)>-1))
@@ -82,14 +85,10 @@ const GroupedFilter = React.createClass({
         name={name}
         values={values}
         selected={selectedHere}
-        isOpen={userWantsOpen || impliedOpen}
+        isOpen={userWantedOpen || impliedOpen}
         selectDisabled={this.props.disabled}
         closeDisabled={impliedOpen}
-        onToggleOpen={()=>{
-          userWantsOpen
-          ? this.state.groupsUserAskedToKeepOpen.filter((_f)=>(_f.name!=_filter.name))
-          : this.state.groupsUserAskedToKeepOpen.concat([_filter.name])
-        }}
+        onToggleOpen={()=>{this.setState((previousState)=>({groupsUserAskedToKeepOpen: xor(previousState.groupsUserAskedToKeepOpen, [name])}))}}
         onNewSelected={(selectedInThisOption)=>{
           this.props.propagateFilterSelection(
             selectedNotHere
