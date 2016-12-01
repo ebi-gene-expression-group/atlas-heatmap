@@ -94,7 +94,7 @@ const SettingsModal = React.createClass({
                     <span style={{verticalAlign: `middle`}}> Filters</span>
                 </Button>
 
-                <Modal show={this.state.showModal} onHide={this._close}>
+                <Modal show={this.state.showModal} onHide={this._close} bsSize="large">
                     <Modal.Header closeButton>
                         <Modal.Title>Filters</Modal.Title>
                     </Modal.Header>

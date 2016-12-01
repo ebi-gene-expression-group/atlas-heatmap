@@ -53,14 +53,14 @@ const FilterOption = React.createClass({
         {this.props.isOpen &&
           <div className="options">
           {this.props.values.map((value) => (
-            <span className="option" key={value}>
+            <div className="option" key={value}>
               <input type="checkbox"
                 value={value}
                 onChange={(evt)=>this.toggleOne(value, evt)}
                 disabled={this.props.selectDisabled}
                 checked={this.props.selected.indexOf(value)>-1}/>
                 <span> {value}</span>
-            </span>
+            </div>
           ))}
           </div>
         }
