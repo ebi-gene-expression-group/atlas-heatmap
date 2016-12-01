@@ -137,6 +137,7 @@ module.exports = React.createClass({
                 groupingTriplets
                 .map(groupingTriplet => groupingTriplet.groupingLabel)
               )
+              .sort()
               .map(groupingLabel => [
                 groupingLabel,
                 _.sortedUniq(
