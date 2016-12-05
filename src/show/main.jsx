@@ -56,7 +56,7 @@ const HeatmapOptions = React.createClass({
 
                     <div style={{display: `inline-block`, paddingLeft: `10px`}}>
                         <SettingsModal
-                            filters={this.props.filters}
+                            filters={this.props.filters[0]}
                             orderings={this.props.orderings}
                             propagateChosenFilterSelection={this.props.filtersSelect}
                             disabled={this.props.disableSettings}

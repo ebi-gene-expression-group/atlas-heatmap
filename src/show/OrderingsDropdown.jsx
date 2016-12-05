@@ -12,6 +12,7 @@ const OrderingsDropdown = React.createClass({
 
     handleChange(eventKey, event) {
         this.props.orderings.onSelect(event.target.text);
+        event.preventDefault();
     },
 
     _orderingIcon(ordering) {
@@ -37,7 +38,7 @@ const OrderingsDropdown = React.createClass({
                     <Dropdown.Menu bsSize="small">
                         {this.props.orderings.available.map(orderingName =>
                             (
-                                <MenuItem style={{textDecoration: `none`}} key={orderingName}>{orderingName}</MenuItem>
+                                <MenuItem style={{textDecoration: `none`}} key={orderingName} href="#">{orderingName}</MenuItem>
                             )
                         )}
                     </Dropdown.Menu>
