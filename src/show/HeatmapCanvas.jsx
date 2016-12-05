@@ -6,7 +6,13 @@ var React = require('react');
 var ReactHighcharts = require('react-highcharts');
 var Highcharts = ReactHighcharts.Highcharts;
 require('highcharts-heatmap')(Highcharts);
+
 require('highcharts-custom-events')(Highcharts);
+// Overrides default Custom Events behaviour
+window.oncontextmenu = function() {
+    return true;
+};
+
 var hash = require('object-hash');
 
 var PropTypes = require('../PropTypes.js');
