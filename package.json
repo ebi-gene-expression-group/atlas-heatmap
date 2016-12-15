@@ -12,6 +12,7 @@
   "dependencies": {
     "anatomogram": "^0.3.0",
     "color": "^0.11.3",
+    "downloadjs": "^1.4.6",
     "expression-atlas-number-format": "latest",
     "he": "^1.1.0",
     "highcharts-custom-events": "^2.0.1",

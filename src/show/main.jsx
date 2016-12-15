@@ -157,15 +157,42 @@ const anatomogramCallbacks = (heatmapDataToPresent, highlightOntologyIds) =>
 const show = (heatmapDataToPresent, orderings, filters, filtersSelect, zoom, zoomCallback, colorAxis, formatters, tooltips, legend, coexpressions, properties) => {
     const marginRight = 60;
     const heatmapConfig = properties.loadResult.heatmapConfig;
-
     return (
         <div>
             <HeatmapOptions marginRight={marginRight}
                             introductoryMessage={heatmapConfig.introductoryMessage}
                             downloadOptions={{
-                                downloadProfilesURL: heatmapConfig.downloadProfilesURL,
-                                atlasBaseURL: heatmapConfig.atlasBaseURL,
-                                disclaimer: heatmapConfig.disclaimer
+                              download: {
+                                name: "download",
+                                descriptionLines: [].concat.apply([],
+                                  [
+                                    orderings.available.length > 1
+                                      ? ["Ordering: "+ orderings.selected]
+                                      : [],
+                                    filters.filter((_filter) => (
+                                      _filter.selected.length < _filter.values.length
+                                    ))
+                                    .map((_filter) => (
+                                      "Filter By " +_filter.name+
+                                        ": "+ (
+                                          _filter.selected.length < 5
+                                          ? _filter.selected.join(", ")
+                                          : _filter.selected.length
+                                        ) + " selected out of " + (
+                                          _filter.values.length < 5
+                                          ? _filter.values.join(", ")
+                                          : _filter.values.length + " filter values"
+                                        )
+                                    )),
+                                    coexpressions
+                                      ? "Including " + coexpressions.numCoexpressionsVisible
+                                        + " genes with similar expression pattern"
+                                      : []
+                                  ]
+                                ),
+                                heatmapData: heatmapDataToPresent
+                              },
+                              disclaimer: heatmapConfig.disclaimer
                             }}
                             orderings={orderings}
                             filters={filters}

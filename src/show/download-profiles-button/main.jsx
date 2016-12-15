@@ -3,11 +3,16 @@ const Modal = require(`react-bootstrap/lib/Modal`);
 const Button = require(`react-bootstrap/lib/Button`);
 const Glyphicon = require(`react-bootstrap/lib/Glyphicon`);
 const Disclaimers = require(`./Disclaimers.jsx`);
+const PropTypes = require('../../PropTypes.js');
 
+const Download = require(`./Download.js`).commenceDownload;
 const DownloadProfilesButton = React.createClass({
     propTypes: {
-        atlasBaseURL: React.PropTypes.string.isRequired,
-        downloadProfilesURL: React.PropTypes.string.isRequired,
+        download: React.PropTypes.shape({
+          name: React.PropTypes.string.isRequired,
+          descriptionLines : React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+          heatmapData: PropTypes.HeatmapData,
+        }),
         disclaimer: React.PropTypes.string.isRequired,
         onDownloadCallbackForAnalytics: React.PropTypes.func.isRequired
     },
@@ -33,8 +38,8 @@ const DownloadProfilesButton = React.createClass({
     },
 
     _commenceDownload() {
-        this.props.onDownloadCallbackForAnalytics();
-        window.location.href = this.props.atlasBaseURL + this.props.downloadProfilesURL;
+        this.props.onDownloadCallbackForAnalytics()
+        Download(this.props.download)
     },
 
     _commenceDownloadAndCloseModal() {
@@ -46,7 +51,7 @@ const DownloadProfilesButton = React.createClass({
         return (
             <a onClick={this._afterDownloadButtonClicked}>
                 <Button bsSize="small">
-                    <Glyphicon glyph="download-alt"/> Download all results
+                    <Glyphicon glyph="download-alt"/> Download table content
                 </Button>
 
                 <Modal show={this.state.showModal} onHide={this._closeModal}>
