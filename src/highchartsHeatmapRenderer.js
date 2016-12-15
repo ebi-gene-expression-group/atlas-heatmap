@@ -1,15 +1,8 @@
-"use strict";
+const React = require('react');
+const ReactDOM = require('react-dom');
 
-var React = require('react');
-var ReactDOM = require('react-dom');
-
-//*------------------------------------------------------------------*
-
-var EventEmitter = require('events');
-
-var HighchartsHeatmapContainer = require('./HighchartsHeatmapContainer.jsx');
-
-//*------------------------------------------------------------------*
+const EventEmitter = require('events');
+const HighchartsHeatmapContainer = require('./HighchartsHeatmapContainer.jsx');
 
 /**
  * @param {Object}      options
@@ -32,25 +25,25 @@ var HighchartsHeatmapContainer = require('./HighchartsHeatmapContainer.jsx');
 
 exports.render = function(options) {
 
-    var atlasHost = options.atlasHost === undefined ? "https://www.ebi.ac.uk" : options.atlasHost,
+    const atlasHost = options.atlasHost === undefined ? "https://www.ebi.ac.uk" : options.atlasHost,
         atlasPath = "/gxa";
 
-    var atlasBaseURL =
+    const atlasBaseURL =
         (atlasHost.indexOf("http://") === 0 || atlasHost.indexOf("https://") === 0
           ? ""
           : options.proxyPrefix || "https://")
         + atlasHost
         + atlasPath;
 
-    var linksAtlasBaseURL = options.selfHosted? (options.proxyPrefix || "https://")+ "www.ebi.ac.uk/gxa": atlasBaseURL;
+    const linksAtlasBaseURL = options.selfHosted? (options.proxyPrefix || "https://")+ "www.ebi.ac.uk/gxa": atlasBaseURL;
 
     //If using this renderer for a standalone widget, see uk.ac.ebi.atlas.widget.HeatmapWidgetController.java for the source URL/params required
-    var sourceURL = options.sourceURL ||
+    const sourceURL = options.sourceURL ||
                       atlasBaseURL + "/widgets/heatmap"
                       + (options.isMultiExperiment? "/baselineAnalytics" : "/referenceExperiment")
                       + "?" + options.params;
 
-    var anatomogramEventEmitter = new EventEmitter();
+    const anatomogramEventEmitter = new EventEmitter();
     anatomogramEventEmitter.setMaxListeners(0);
 
     ReactDOM.render(

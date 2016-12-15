@@ -119,7 +119,7 @@ const heatmapCanvas = (heatmapConfig, tooltips, anatomogramCallbacks, heatmapPro
 const anatomogramCallbacks = (heatmapDataToPresent, highlightOntologyIds) =>
     ({
         onUserSelectsRow(rowLabel) {
-            var y =
+            const y =
                 heatmapDataToPresent
                     .yAxisCategories
                     .findIndex(e => e.label === rowLabel);

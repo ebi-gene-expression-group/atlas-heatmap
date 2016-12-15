@@ -15,7 +15,7 @@
     "downloadjs": "^1.4.6",
     "expression-atlas-number-format": "latest",
     "he": "^1.1.0",
-    "highcharts-custom-events": "^2.0.1",
+    "highcharts-custom-events": "^2.0.2",
     "highcharts-heatmap": "^0.1.2",
     "jquery": "^2.2.1",
     "lodash": "^4.13.1",
