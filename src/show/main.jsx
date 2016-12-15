@@ -163,10 +163,11 @@ const show = (heatmapDataToPresent, orderings, filters, filtersSelect, zoom, zoo
                             introductoryMessage={heatmapConfig.introductoryMessage}
                             downloadOptions={{
                               download: {
-                                name: "download",
+                                name: heatmapConfig.shortDescription || "download",
                                 descriptionLines: [].concat.apply([],
                                   [
-                                    orderings.available.length > 1
+                                    heatmapConfig.description,
+                                    orderings.selected != "Default"
                                       ? ["Ordering: "+ orderings.selected]
                                       : [],
                                     filters.filter((_filter) => (

@@ -63,9 +63,39 @@ var getConfig=function(setupConfig,data){
     coexpressions : coexpressions(setupConfig,data)
   };
   //See in heatmap-data.jsp which thirteen properties this config is populated with.
-  Object.assign(config, data.config);
-  Object.assign(config, {geneURL: geneURL(config)});
-  Object.assign(config,{genomeBrowserTemplate: setupConfig.isExperimentPage? genomeBrowserTemplate(config):""});
+  Object.assign(config, data.config)
+  Object.assign(config, {
+    geneURL: geneURL(config)
+  })
+  Object.assign(config, {
+    genomeBrowserTemplate:
+      setupConfig.isExperimentPage
+      ? genomeBrowserTemplate(config)
+      : ""
+  })
+  Object.assign(config, {
+    description:
+      data.jsonExperiment
+        ? (setupConfig.isExperimentPage && data.jsonExperiment.description)
+          ? data.jsonExperiment.description
+          : (setupConfig.isReferenceExperiment && data.jsonExperiment.URL)
+            ? "Reference experiment: "+setupConfig.atlasBaseURL+data.jsonExperiment.URL
+            : ""
+        : setupConfig.isMultiExperiment
+          ? "Query results: " + decodeURI(config.geneQuery)
+            + (config.conditionQuery
+                ? ", in conditions: " + decodeURI(config.conditionQuery)
+                : "")
+            + ", in species: " + config.species
+          : ""
+  })
+  Object.assign(config, {
+    shortDescription:
+      config.experimentAccession
+        ? (setupConfig.isReferenceExperiment? "ReferenceExp" : "")
+          + config.experimentAccession
+        : "expression-atlas-"+ config.species.replace(/ +/, "-")
+  })
 
   return Object.freeze(config);
 };

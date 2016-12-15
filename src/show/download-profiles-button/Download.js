@@ -5,7 +5,6 @@ const CommenceDownload = require("downloadjs");
 TODO Units? there can be both FPKMs and sometimes TPMs
 */
 
-
 const heatmapDataIntoLinesOfData = (heatmapData) => {
 
   const heatmapDataAsMatrix =
@@ -41,9 +40,12 @@ exports.buildUrl = buildUrl;
 exports.commenceDownload = (args) => {
   CommenceDownload(
     buildUrl(
-      ["#Results: "+args.name+ ", "+new Date().toISOString()]
+      [
+        "# Downloaded from: "+window.location.href,
+        "# Timestamp: "+new Date().toISOString()
+      ]
       .concat(
-        args.descriptionLines.map((line)=>"#"+line),
+        args.descriptionLines.map((line)=>"# "+line),
         heatmapDataIntoLinesOfData(args.heatmapData))
       ),
     args.name.replace(/" +"/,"_")+".tsv",
