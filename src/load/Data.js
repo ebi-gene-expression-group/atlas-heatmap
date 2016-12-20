@@ -89,7 +89,7 @@ const getYAxisCategories = function (rows, config) {
     config.isExperimentPage
     ? function (profile) {
         return {"label": profile.name,
-                "id": profile.id,
+                "id": profile.uri || profile.id,
                 "info":{
                   trackId:profile.id,
                   designElement:profile.designElement||""
@@ -97,7 +97,7 @@ const getYAxisCategories = function (rows, config) {
       }
     : function (profile) {
         return {"label": profile.name,
-                "id" : profile.id + "?geneQuery=" + config.geneQuery +
+                "id" : profile.uri || profile.id + "?geneQuery=" + config.geneQuery +
                     (profile.serializedFilterFactors?"&serializedFilterFactors=" + encodeURIComponent(profile.serializedFilterFactors):""),
                 "info":{
                   trackId:"",

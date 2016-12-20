@@ -109,9 +109,13 @@ var YAxisLabel = React.createClass({
     resourceId: React.PropTypes.string.isRequired,
     extra: React.PropTypes.string
   },
+  //TODO: remove the "otherwise" branch when production Atlas supplies URIs for labels (expected: early 2017)
   render: function(){
     var geneNameWithLink =
-      <a href={this.props.config.atlasBaseURL+(this.props.config.isMultiExperiment? "/experiments/":"/genes/")+this.props.resourceId}>
+      <a href={
+        this.props.resourceId.startsWith("http")
+        ? this.props.resourceId
+        : this.props.config.atlasBaseURL+(this.props.config.isMultiExperiment? "/experiments/":"/genes/")+this.props.resourceId}>
         {this.props.labelText}
       </a>;
     return (
