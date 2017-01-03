@@ -81,13 +81,15 @@ var getConfig=function(setupConfig,data){
           : (setupConfig.isReferenceExperiment && data.jsonExperiment.URL)
             ? "Reference experiment: "+setupConfig.atlasBaseURL+data.jsonExperiment.URL
             : ""
-        : setupConfig.isMultiExperiment
-          ? "Query results: " + decodeURI(config.geneQuery)
-            + (config.conditionQuery
-                ? ", in conditions: " + decodeURI(config.conditionQuery)
-                : "")
-            + ", in species: " + config.species
-          : ""
+        : config.description
+          ? config.description
+          : setupConfig.isMultiExperiment
+            ? "Query results for: " + decodeURIComponent(config.geneQuery)
+              + (config.conditionQuery && decodeURIComponent(config.conditionQuery).length > 2
+                  ? ", in conditions: " + decodeURIComponent(config.conditionQuery)
+                  : "")
+              + ", in species: " + config.species
+            : ""
   })
   Object.assign(config, {
     shortDescription:
