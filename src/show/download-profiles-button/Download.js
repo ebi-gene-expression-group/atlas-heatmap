@@ -12,16 +12,18 @@ const heatmapDataIntoLinesOfData = (heatmapData) => {
     .map((y) => (
       _range(heatmapData.xAxisCategories.length)
       .map((x) => (
-        "NA"
+        'NA'
       ))
-    ))
+    ));
+
   heatmapData.dataSeries.forEach((series)=>{
     series.data.forEach((point)=>{
       heatmapDataAsMatrix[point.y][point.x] = point.value
     })
-  })
+  });
+
   return (
-    [[""].concat(heatmapData.xAxisCategories.map((header)=> header.label))].concat(
+    [[''].concat(heatmapData.xAxisCategories.map((header)=> header.label))].concat(
       heatmapData.yAxisCategories.map((rowLabel, ix)=>(
         [].concat.apply([rowLabel.label], heatmapDataAsMatrix[ix])
       ))
@@ -29,11 +31,9 @@ const heatmapDataIntoLinesOfData = (heatmapData) => {
       line.join('\t')
     ))
   )
-}
+};
 
-const buildUrl = (lines) => (
-  'data:text/tsv;charset=utf-8,' + encodeURI(lines.join('\n'))
-)
+const buildUrl = lines => 'data:text/tsv;charset=utf-8,' + encodeURIComponent(lines.join('\n'));
 
 exports.buildUrl = buildUrl;
 
@@ -41,14 +41,14 @@ exports.commenceDownload = (args) => {
   CommenceDownload(
     buildUrl(
       [
-        "# Downloaded from: "+window.location.href,
-        "# Timestamp: "+new Date().toISOString()
+        '# Downloaded from: ' + window.location.href,
+        '# Timestamp: ' + new Date().toISOString()
       ]
       .concat(
-        args.descriptionLines.map((line)=>"# "+line),
+        args.descriptionLines.map(line => '# ' + line),
         heatmapDataIntoLinesOfData(args.heatmapData))
       ),
-    args.name.replace(/" +"/,"_")+".tsv",
-    "text/tsv"
+    args.name.replace(/" +"/, '_') + '.tsv',
+    'text/tsv'
   )
-}
+};
