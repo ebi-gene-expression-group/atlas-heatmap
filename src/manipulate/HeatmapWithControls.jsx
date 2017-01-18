@@ -1,5 +1,4 @@
 const React = require(`react`);
-const Button = require( `react-bootstrap/lib/Button`);
 const FormattersFactory = require(`./Formatters.jsx`);
 const TooltipsFactory = require(`./tooltips/main.jsx`);
 const PropTypes = require(`../PropTypes.js`);

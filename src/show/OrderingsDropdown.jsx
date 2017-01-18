@@ -32,13 +32,14 @@ const OrderingsDropdown = React.createClass({
         return (
             <span>
                 <Dropdown id="orderings-dropdown" onSelect={this.handleChange} title={this.props.disabled ? `Reset zoom to enable sorting options` : ``}>
-                    <Dropdown.Toggle bsSize="small" disabled={this.props.disabled}>
+                    <Dropdown.Toggle bsSize="small" disabled={this.props.disabled}
+                                     style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
                         <Glyphicon glyph={this._orderingIcon(this.props.orderings.selected)} /> {this.props.orderings.selected}
                     </Dropdown.Toggle>
                     <Dropdown.Menu bsSize="small">
                         {this.props.orderings.available.map(orderingName =>
                             (
-                                <MenuItem style={{textDecoration: `none`}} key={orderingName} href="#">{orderingName}</MenuItem>
+                                <MenuItem style={{listStyleImage: `none`}} key={orderingName} href="#">{orderingName}</MenuItem>
                             )
                         )}
                     </Dropdown.Menu>

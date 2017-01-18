@@ -89,7 +89,8 @@ const SettingsModal = React.createClass({
     render() {
         return (
             <div>
-                <Button bsSize="small" onClick={this._open} disabled={this.props.disabled} title={this.props.disabled ? `Reset zoom to enable filters` : ``}>
+                <Button bsSize="small" onClick={this._open} disabled={this.props.disabled} title={this.props.disabled ? `Reset zoom to enable filters` : ``}
+                        style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
                     <Glyphicon glyph="equalizer"/>
                     <span style={{verticalAlign: `middle`}}> Filters</span>
                 </Button>

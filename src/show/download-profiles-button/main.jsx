@@ -50,7 +50,8 @@ const DownloadProfilesButton = React.createClass({
     render() {
         return (
             <a onClick={this._afterDownloadButtonClicked}>
-                <Button bsSize="small">
+                <Button bsSize="small"
+                        style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
                     <Glyphicon glyph="download-alt"/> Download table content
                 </Button>
 
