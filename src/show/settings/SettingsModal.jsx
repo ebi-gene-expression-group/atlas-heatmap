@@ -106,8 +106,10 @@ const SettingsModal = React.createClass({
                       }
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button bsStyle="primary" onClick={this._apply}>Apply</Button>
-                        <Button onClick={this._close}>Close</Button>
+                        <Button bsStyle="primary" onClick={this._apply}
+                                style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>Apply</Button>
+                        <Button onClick={this._close}
+                                style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>Close</Button>
                     </Modal.Footer>
                 </Modal>
             </div>
