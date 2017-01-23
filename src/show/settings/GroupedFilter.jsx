@@ -109,15 +109,13 @@ const GroupedFilter = React.createClass({
     return (
       <div className="gxaFilter">
         <h4>{this.props.name}</h4>
-        <Button bsSize="xsmall" onClick={() => {
-            this.props.propagateFilterSelection(this.props.values)
-          }}>
+        <Button bsSize="xsmall" onClick={() => {this.props.propagateFilterSelection(this.props.values)}}
+                style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
           <Glyphicon glyph="plus"/>
           <span style={{verticalAlign: `middle`}}> Choose all</span>
         </Button>
-        <Button bsSize="xsmall" onClick={() => {
-          this.props.propagateFilterSelection([])
-          }}>
+        <Button bsSize="xsmall" onClick={() => {this.props.propagateFilterSelection([])}}
+                style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
           <Glyphicon glyph="minus"/>
           <span style={{verticalAlign: `middle`}}> Remove all</span>
         </Button>
