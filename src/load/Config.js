@@ -1,106 +1,94 @@
-"use strict";
+// const genomeBrowserTemplate = require('./genomeBrowserTemplate.js');
 
-var genomeBrowserTemplate = require('./genomeBrowserTemplate.js');
-var capitalizeFirstLetter = function(str){
-  return !str? str: str.charAt(0).toUpperCase() + str.substr(1);
+const capitalizeFirstLetter = str => !str ? str : str.charAt(0).toUpperCase() + str.substr(1);
+
+const _introductoryMessage = (isMultiExperiment, profiles) => {
+    const shownRows = profiles.rows.length;
+    const totalRows = profiles.searchResultTotal;
+
+    const what =
+        (isMultiExperiment ? `experiment` : `gene`) +
+        (totalRows > 1 ? `` : ``);
+
+    return `Showing ${shownRows} ` + (totalRows === shownRows ? what + `:` : `of ${totalRows} ${what} found:`);
 };
 
-var _introductoryMessage= function(isMultiExperiment, profiles) {
-  var shownRows = profiles.rows.length,
-      totalRows = profiles.searchResultTotal;
+const geneURL = config =>
+    `/query?geneQuery=${config.geneQuery}&conditionQuery=${config.conditionQuery}&organism=${config.species}`;
 
-  var what =
-      (isMultiExperiment ? 'experiment' : 'gene') +
-      (totalRows > 1 ? 's' : '');
+const _coexpressions = jsonCoexpressions =>
+    /*
+     The backend code and the feature in the old heatmap were written to support coexpressions of multiple genes.
+     It doesn't seem necessary, so this assumes zero or one coexpressions.
+     */
+    ( jsonCoexpressions[0] ?
+            {
+                coexpressedGene: jsonCoexpressions[0].geneName,
+                numCoexpressionsAvailable:
+                    jsonCoexpressions[0].jsonProfiles ? jsonCoexpressions[0].jsonProfiles.rows.length : 0
+            } :
+            ``
+    );
 
-  return 'Showing ' + shownRows + ' ' +
-      (totalRows === shownRows ? what + ':' : 'of ' + totalRows + ' ' + what + ' found:');
-};
+const coexpressions = (setupConfig, data) =>
+    (
+        setupConfig.isExperimentPage && data.jsonCoexpressions && Array.isArray(data.jsonCoexpressions) ?
+            _coexpressions(data.jsonCoexpressions) : ``
+    );
 
-var geneURL = function(config){
-  return "/query" +
-  "?geneQuery=" + config.geneQuery +
-  "&conditionQuery=" + config.conditionQuery +
-  "&organism=" + config.species;
-}
 
-var _coexpressions = function(jsonCoexpressions){
-  /*
-  The backend code and the feature in the old heatmap were written to support coexpressions of multiple genes.
-  It doesn't seem necessary, so this assumes zero or one coexpressions.
-  */
-  return (
-    jsonCoexpressions[0]
-    ? {
-      coexpressedGene: jsonCoexpressions[0].geneName,
-      numCoexpressionsAvailable: jsonCoexpressions[0].jsonProfiles ? jsonCoexpressions[0].jsonProfiles.rows.length : 0
+const getConfig = (setupConfig, data) => {
+    const config = {
+        geneQuery: data.config.geneQuery,
+        atlasBaseURL: setupConfig.atlasBaseURL,
+        pathToFolderWithBundledResources: setupConfig.pathToFolderWithBundledResources,
+        isExperimentPage: setupConfig.isExperimentPage,
+        isMultiExperiment: setupConfig.isMultiExperiment,
+        isReferenceExperiment: setupConfig.isReferenceExperiment,
+        isDifferential: setupConfig.isDifferential,
+        introductoryMessage: _introductoryMessage(setupConfig.isMultiExperiment,data.profiles),
+        description: setupConfig.isExperimentPage && data.experiment && data.experiment.description ? data.experiment.description : ``,
+        xAxisLegendName: capitalizeFirstLetter(data.config.columnType) || `Experimental condition`,
+        yAxisLegendName: setupConfig.isExperimentPage ? `Gene name`: `Experiment`,
+        coexpressions : coexpressions(setupConfig, data)
+    };
+
+
+    let description = ``;
+    if (data.jsonExperiment) {
+        if (data.jsonExperiment.description && setupConfig.isExperimentPage) {
+            description = data.jsonExperiment.description;
+        } else if (setupConfig.isReferenceExperiment && data.jsonExperiment.URL) {
+            description = `Reference experiment: ${setupConfig.atlasBaseURL}${data.jsonExperiment.URL}`;
+        }
+    } else if (config.description) {
+        description = config.description;
+    } else if (setupConfig.isMultiExperiment) {
+        description = `Query results for: ${decodeURIComponent(config.geneQuery)}`;
+        if (config.conditionQuery && decodeURIComponent(config.conditionQuery).length > 2) {
+            description = `${description}, in conditions: ${decodeURIComponent(config.conditionQuery)}`;
+        }
+        description = `${description}, in species: ${config.species}`
     }
-    : ""
-  )
-}
-var coexpressions = function(setupConfig, data){
-  return (
-    setupConfig.isExperimentPage
-      && data.jsonCoexpressions
-      && Array.isArray(data.jsonCoexpressions)
-      ? _coexpressions(data.jsonCoexpressions) : ""
-  )
-}
 
-var getConfig=function(setupConfig,data){
-  var config = {
-    geneQuery: data.config.geneQuery,
-    atlasBaseURL: setupConfig.atlasBaseURL,
-    pathToFolderWithBundledResources: setupConfig.pathToFolderWithBundledResources,
-    isExperimentPage: setupConfig.isExperimentPage,
-    isMultiExperiment: setupConfig.isMultiExperiment,
-    isReferenceExperiment: setupConfig.isReferenceExperiment,
-    isDifferential: setupConfig.isDifferential,
-    introductoryMessage: _introductoryMessage(setupConfig.isMultiExperiment,data.profiles),
-    description: setupConfig.isExperimentPage && data.experiment && data.experiment.description ? data.experiment.description : "",
-    xAxisLegendName: capitalizeFirstLetter(data.config.columnType) || "Experimental condition",
-    yAxisLegendName: setupConfig.isExperimentPage ? "Gene name": "Experiment",
-    coexpressions : coexpressions(setupConfig,data)
-  };
-  //See in heatmap-data.jsp which thirteen properties this config is populated with.
-  Object.assign(config, data.config)
-  Object.assign(config, {
-    geneURL: geneURL(config)
-  })
-  Object.assign(config, {
-    genomeBrowserTemplate:
-      setupConfig.isExperimentPage
-      ? genomeBrowserTemplate(config)
-      : ""
-  })
-  Object.assign(config, {
-    description:
-      data.jsonExperiment
-        ? (setupConfig.isExperimentPage && data.jsonExperiment.description)
-          ? data.jsonExperiment.description
-          : (setupConfig.isReferenceExperiment && data.jsonExperiment.URL)
-            ? "Reference experiment: "+setupConfig.atlasBaseURL+data.jsonExperiment.URL
-            : ""
-        : config.description
-          ? config.description
-          : setupConfig.isMultiExperiment
-            ? "Query results for: " + decodeURIComponent(config.geneQuery)
-              + (config.conditionQuery && decodeURIComponent(config.conditionQuery).length > 2
-                  ? ", in conditions: " + decodeURIComponent(config.conditionQuery)
-                  : "")
-              + ", in species: " + config.species
-            : ""
-  })
-  Object.assign(config, {
-    shortDescription:
-      config.experimentAccession
-        ? (setupConfig.isReferenceExperiment? "ReferenceExp" : "")
-          + config.experimentAccession
-        : "expression-atlas-"+ config.species.replace(/ +/, "-")
-  })
+    let shortDescription = ``;
+    if (config.experimentAccession) {
+        if (setupConfig.isReferenceExperiment) {
+            shortDescription = `ReferenceExp`;
+        }
+        shortDescription = `${shortDescription}${config.experimentAccession}`;
+    } else {
+        shortDescription = `expression-atlas-${data.config.species.replace(/ +/, `-`)}`;
+    }
 
-  return Object.freeze(config);
+    Object.assign(config,
+        data.config,
+        { geneURL: geneURL(config)},
+        { genomeBrowserTemplate: setupConfig.isExperimentPage ? `` : `` },
+        { description: description },
+        { shortDescription: shortDescription});
+
+    return Object.freeze(config);
 };
-
 
 module.exports = getConfig;
