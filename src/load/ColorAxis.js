@@ -1,14 +1,7 @@
-"use strict";
+const React = require('react');
+// var validateDataSeries = require('../PropTypes.js').validateDataSeries;
+const Colour = require("color");
 
-//*------------------------------------------------------------------*
-
-var React = require('react');
-var validateDataSeries = require('../PropTypes.js').validateDataSeries;
-var Colour = require("color");
-
-//*------------------------------------------------------------------*
-
-//*------------------------------------------------------------------*
 
 var highlightColour = function(c){
   return (
@@ -19,7 +12,9 @@ var highlightColour = function(c){
 }
 
 var dataClassesFromSeries = function(dataSeries){
-  validateDataSeries(dataSeries);
+  // PropTypes should only be used with proper React components
+  // https://facebook.github.io/react/warnings/dont-call-proptypes.html
+  // validateDataSeries(dataSeries);
   var xs =
     dataSeries
     .map(function(series){

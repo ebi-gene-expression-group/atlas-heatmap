@@ -1,6 +1,5 @@
-"use strict";
 const React = require(`react`);
-const validate = require(`react-prop-types-check`);
+// const validate = require(`react-prop-types-check`);
 
 
 const PointPropType = React.PropTypes.shape({
@@ -24,12 +23,13 @@ const DataSeriesProps = {
     data: React.PropTypes.arrayOf(PointPropType).isRequired
 };
 
-
-const ValidateDataSeries = dataSeries => {
-    dataSeries.forEach(series => {
-        validate(series, DataSeriesProps);
-    });
-};
+// PropTypes should only be used with proper React components
+// https://facebook.github.io/react/warnings/dont-call-proptypes.html
+// const ValidateDataSeries = dataSeries => {
+//     dataSeries.forEach(series => {
+//         validate(series, DataSeriesProps);
+//     });
+// };
 
 
 const AxisCategoriesPropType =
@@ -73,10 +73,10 @@ const OrderingsPropType = (props, propName) => {
 
 const HeatmapDataPropType = (props, propName) => {
     const heatmapData = props[propName];
-    const possiblyError = ValidateDataSeries(heatmapData.dataSeries);
-    if (possiblyError !== undefined) {
-        return possiblyError;
-    }
+    // const possiblyError = ValidateDataSeries(heatmapData.dataSeries);
+    // if (possiblyError !== undefined) {
+    //     return possiblyError;
+    // }
 
     const width = heatmapData.xAxisCategories.length;
     const height = heatmapData.yAxisCategories.length;
@@ -127,22 +127,23 @@ const FilterProps = {
         values: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
         selected: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
         valueGroupings: React.PropTypes.arrayOf((props, propName)=> {
-          var prop = props[propName]
-          if (prop === undefined) {
-              return new Error(`${propName} missing in ${props}`)
-          } else if (!Array.isArray(prop) || prop.length !==2) {
-              return new Error(`${prop} invalid: expected array of length two`)
-          } else if (typeof prop[0]!=="string"){
-            return new Error(`${prop[0]} should be a string representing name of the grouping`)
-          } else if (!Array.isArray(prop[1])) {
-            return new Error(`${prop[1]} should be an array with members of the grouping `)
-          }
+            const prop = props[propName];
+
+            if (prop === undefined) {
+                return new Error(`${propName} missing in ${props}`)
+            } else if (!Array.isArray(prop) || prop.length !==2) {
+                return new Error(`${prop} invalid: expected array of length two`)
+            } else if (typeof prop[0]!=="string"){
+                return new Error(`${prop[0]} should be a string representing name of the grouping`)
+            } else if (!Array.isArray(prop[1])) {
+                return new Error(`${prop[1]} should be an array with members of the grouping `)
+            }
         })
     };
 
 
 module.exports = {
-    validateDataSeries : ValidateDataSeries,
+    // validateDataSeries : ValidateDataSeries,
     PointsInDataSeries : PointsInDataSeriesPropType,
     Point: PointPropType,
     HeatmapData : HeatmapDataPropType,
