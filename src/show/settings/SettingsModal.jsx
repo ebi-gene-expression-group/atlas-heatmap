@@ -6,7 +6,6 @@ const Glyphicon = require(`react-bootstrap/lib/Glyphicon`);
 const PropTypes = require( `../../PropTypes.js`);
 const FlatFilter = require(`./FlatFilter.jsx`);
 const GroupedFilter = require(`./GroupedFilter.jsx`);
-const deepEquals = require(`lodash/isEqual`);
 
 
 const SettingsModal = React.createClass({
