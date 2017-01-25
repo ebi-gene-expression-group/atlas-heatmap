@@ -1,16 +1,15 @@
-"use strict";
-//*------------------------------------------------------------------*
-var React = require('react');
-var ReactDOMServer = require('react-dom/server');
-var PropTypes = require('../PropTypes.js');
-var scientificNotation = function(value){
-  return <b>{require('expression-atlas-number-format').scientificNotation(value)}</b>;
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+import NumberFormat from 'expression-atlas-number-format';
+
+import escapedHtmlDecoder from 'he';
+
+
+const scientificNotation = function(value){
+    return NumberFormat.scientificNotation(value, {fontWeight: `bold`});
 };
-var escapedHtmlDecoder = require('he');
 
-//*------------------------------------------------------------------*
-
-var Tooltip = React.createClass({
+const Tooltip = React.createClass({
   propTypes: {
     config: React.PropTypes.shape({
       isDifferential: React.PropTypes.bool.isRequired,
@@ -99,7 +98,7 @@ var Tooltip = React.createClass({
   }
 });
 
-var YAxisLabel = React.createClass({
+const YAxisLabel = React.createClass({
   propTypes: {
     config: React.PropTypes.shape({
       atlasBaseURL: React.PropTypes.string.isRequired,
@@ -111,7 +110,7 @@ var YAxisLabel = React.createClass({
   },
   //TODO: remove the "otherwise" branch when production Atlas supplies URIs for labels (expected: early 2017)
   render: function(){
-    var geneNameWithLink =
+    const geneNameWithLink =
       <a href={
         this.props.resourceId.startsWith("http")
         ? this.props.resourceId
@@ -129,11 +128,11 @@ var YAxisLabel = React.createClass({
   }
 });
 
-var reactToHtml = function(component){
+const reactToHtml = function(component){
   return escapedHtmlDecoder.decode(ReactDOMServer.renderToStaticMarkup(component));
-}
+};
 
-var makeFormatter = function(config){
+const makeFormatter = function(config){
   return {
     xAxis: function Formatter(value){
       return value.label;
@@ -157,13 +156,13 @@ var makeFormatter = function(config){
         color: '#148ff3'
     },
     tooltip: function Formatter (series, point) {
-      var o = {
+      const o = {
         colour: point.color,
         xLabel: point.options.info.xLabel || series.xAxis.categories[point.x].label,
         yLabel: series.yAxis.categories[point.y].label,
         value:  point.value,
-      }
-      for(var key in point.options.info){
+      };
+      for(let key in point.options.info){
         if(point.options.info.hasOwnProperty(key)){
           o[key] = point.options.info[key];
         }
@@ -173,7 +172,6 @@ var makeFormatter = function(config){
       );
     }
   }
-}
-//*------------------------------------------------------------------*
+};
 
 module.exports = makeFormatter;

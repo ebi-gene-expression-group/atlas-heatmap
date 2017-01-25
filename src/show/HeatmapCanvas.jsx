@@ -1,7 +1,3 @@
-"use strict";
-
-//*------------------------------------------------------------------*
-
 var React = require('react');
 var ReactHighcharts = require('react-highcharts');
 var Highcharts = ReactHighcharts.Highcharts;
