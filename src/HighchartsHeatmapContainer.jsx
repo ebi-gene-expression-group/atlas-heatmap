@@ -202,6 +202,8 @@ const ContainerLoader = React.createClass({
             this._handleAjaxFailure(jqXHR, textStatus, `DOM element not mounted!`);
         } else if (data.hasOwnProperty(`error`)) {
             this._handleAjaxFailure(jqXHR, textStatus, data.error);
+        } else if (! data.profiles){
+          this._handleAjaxFailure(jqXHR, textStatus, `No table data present in the response to query.`);
         } else {
             this.onAjaxSuccessful(data);
         }
