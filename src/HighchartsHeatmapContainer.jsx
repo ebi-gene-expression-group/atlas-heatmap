@@ -7,26 +7,22 @@ const Load = require(`./load/main.js`);
 const HighchartsHeatmap = require(`./manipulate/HeatmapWithControls.jsx`);
 require(`./HighchartsHeatmapContainer.css`);
 
+const outwardLink = require(`./util/adjustOutwardLinks.js`)
 
 const ExperimentDescription = React.createClass({
     propTypes: {
-        linksAtlasBaseURL: React.PropTypes.string.isRequired,
-        experiment: React.PropTypes.shape({
-            URL: React.PropTypes.string.isRequired,
-            description: React.PropTypes.string.isRequired,
-            species: React.PropTypes.string.isRequired
-        }).isRequired
+      url: React.PropTypes.string.isRequired,
+      description: React.PropTypes.string.isRequired,
+      species: React.PropTypes.string.isRequired
     },
 
     render () {
-        const experimentURL = this.props.linksAtlasBaseURL + this.props.experiment.URL;
-
         return (
             <div style={{width: `100%`, paddingBottom: `20px`}}>
                 <div id="experimentDescription">
-                    <a id="goto-experiment" className="gxaThickLink" title="Experiment Page" href={experimentURL}>{this.props.experiment.description}</a>
+                    <a id="goto-experiment" className="gxaThickLink" title="Experiment Page" href={this.props.url}>{this.props.description}</a>
                 </div>
-                <div id="experimentOrganisms">Organism: <span style={{fontStyle: `italic`}}>{this.props.experiment.species}</span></div>
+                <div id="experimentOrganisms">Organism: <span style={{fontStyle: `italic`}}>{this.props.species}</span></div>
             </div>
         );
     }
@@ -104,7 +100,7 @@ const ContainerLoader = React.createClass({
         pathToFolderWithBundledResources: React.PropTypes.string.isRequired,
         sourceURL: React.PropTypes.string.isRequired,
         atlasBaseURL: React.PropTypes.string.isRequired,
-        linksAtlasBaseURL: React.PropTypes.string.isRequired,
+        proxyPrefix: React.PropTypes.string.isRequired,
         showAnatomogram:React.PropTypes.bool.isRequired,
         isDifferential: React.PropTypes.bool.isRequired,
         isMultiExperiment: React.PropTypes.bool.isRequired,
@@ -116,13 +112,13 @@ const ContainerLoader = React.createClass({
     },
 
     render () {
-
-        const geneURL = this.props.linksAtlasBaseURL + (this.state.loadResult.heatmapConfig.geneURL|| "");
-
         return (
             <div>
                 { this._isReferenceExperiment() && this.state.experimentData ?
-                    <ExperimentDescription experiment={this.state.experimentData} linksAtlasBaseURL={this.props.linksAtlasBaseURL}/>
+                    <ExperimentDescription
+                      url={this.state.loadResult.heatmapConfig.moreInformationLink}
+                      description={this.state.experimentData.description}
+                      species={this.state.experimentData.species} />
                     : null
                 }
                 { this.state.ajaxCompleted ?
@@ -138,8 +134,13 @@ const ContainerLoader = React.createClass({
                     </div>
                 }
                 { this.props.isWidget ?
-                    <div><p><a href={geneURL}>See more expression data at Expression Atlas.</a>
-                        <br/>This expression view is provided by <a href={this.props.linksAtlasBaseURL}>Expression Atlas</a>.
+                    <div><p><a href={outwardLink(
+                        this.props.proxyPrefix,
+                        this.state.ajaxCompleted
+                          ? this.state.loadResult.heatmapConfig.moreInformationLink
+                          :this.props.atlasBaseURL)
+                        }> See more expression data at Expression Atlas.</a>
+                        <br/>This expression view is provided by <a href={outwardLink(this.props.proxyPrefix, this.props.atlasBaseURL)}>Expression Atlas</a>.
                         <br/>Please direct any queries or feedback to <a href="mailto:arrayexpress-atlas@ebi.ac.uk">arrayexpress-atlas@ebi.ac.uk</a></p>
                     </div>
                     :
@@ -225,6 +226,7 @@ const ContainerLoader = React.createClass({
             isReferenceExperiment: this._isReferenceExperiment(),
             isDifferential: this.props.isDifferential,
             atlasBaseURL: this.props.atlasBaseURL,
+            proxyPrefix: this.props.proxyPrefix,
             pathToFolderWithBundledResources: this.props.pathToFolderWithBundledResources
         };
 

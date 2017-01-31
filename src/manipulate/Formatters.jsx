@@ -4,6 +4,7 @@ import NumberFormat from 'expression-atlas-number-format';
 
 import escapedHtmlDecoder from 'he';
 
+const outwardLink = require(`../util/adjustOutwardLinks.js`)
 
 const scientificNotation = function(value){
     return NumberFormat.scientificNotation(value, {fontWeight: `bold`});
@@ -102,6 +103,7 @@ const YAxisLabel = React.createClass({
   propTypes: {
     config: React.PropTypes.shape({
       atlasBaseURL: React.PropTypes.string.isRequired,
+      proxyPrefix: React.PropTypes.string.isRequired,
       isMultiExperiment: React.PropTypes.bool.isRequired
     }).isRequired,
     labelText: React.PropTypes.string.isRequired,
@@ -112,9 +114,12 @@ const YAxisLabel = React.createClass({
   render: function(){
     const geneNameWithLink =
       <a href={
-        this.props.resourceId.startsWith("http")
-        ? this.props.resourceId
-        : this.props.config.atlasBaseURL+(this.props.config.isMultiExperiment? "/experiments/":"/genes/")+this.props.resourceId}>
+        outwardLink(
+          this.props.config.proxyPrefix,
+          this.props.resourceId.startsWith("http")
+          ? this.props.resourceId
+          : this.props.config.atlasBaseURL+(this.props.config.isMultiExperiment? "/experiments/":"/genes/")+this.props.resourceId
+        )}>
         {this.props.labelText}
       </a>;
     return (

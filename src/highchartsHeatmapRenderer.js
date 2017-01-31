@@ -55,14 +55,14 @@ You could select this option and add yourself an integration test that checks wh
 **/
 
 exports.render = function(options) {
-
-    const atlasHost = options.atlasHost === undefined ? "https://www.ebi.ac.uk" : options.atlasHost,
-        atlasPath = "/gxa";
+    const atlasHost = options.atlasHost === undefined ? "https://www.ebi.ac.uk" : options.atlasHost
+    const atlasPath = "/gxa"
+    const proxyPrefix = options.proxyPrefix || "https://"
 
     const atlasBaseURL =
         (atlasHost.indexOf("http://") === 0 || atlasHost.indexOf("https://") === 0
           ? ""
-          : options.proxyPrefix || "https://")
+          : proxyPrefix)
         + atlasHost
         + atlasPath;
 
@@ -83,8 +83,9 @@ exports.render = function(options) {
             {
                 sourceURL: sourceURL,
                 atlasBaseURL: atlasBaseURL,
+                proxyPrefix: proxyPrefix,
                 linksAtlasBaseURL: linksAtlasBaseURL,
-                pathToFolderWithBundledResources: options.pathToFolderWithBundledResources || linksAtlasBaseURL + "/resources/js-bundles/",
+                pathToFolderWithBundledResources: options.pathToFolderWithBundledResources || atlasBaseURL + "/resources/js-bundles/",
                 showAnatomogram: options.showAnatomogram === undefined || options.showAnatomogram,
                 isDifferential: !!options.isDifferential,
                 isMultiExperiment: !!options.isMultiExperiment,

@@ -14,7 +14,7 @@ const _introductoryMessage = (isMultiExperiment, profiles) => {
 };
 
 const geneURL = config =>
-    `/query?geneQuery=${config.geneQuery}&conditionQuery=${config.conditionQuery}&organism=${config.species}`;
+    `${config.atlasBaseURL}/query?geneQuery=${config.geneQuery||""}&conditionQuery=${config.conditionQuery||""}&organism=${config.species||""}`;
 
 const _coexpressions = jsonCoexpressions =>
     /*
@@ -41,6 +41,7 @@ const getConfig = (setupConfig, data) => {
     const config = {
         geneQuery: data.config.geneQuery,
         atlasBaseURL: setupConfig.atlasBaseURL,
+        proxyPrefix: setupConfig.proxyPrefix,
         pathToFolderWithBundledResources: setupConfig.pathToFolderWithBundledResources,
         isExperimentPage: setupConfig.isExperimentPage,
         isMultiExperiment: setupConfig.isMultiExperiment,
@@ -83,7 +84,13 @@ const getConfig = (setupConfig, data) => {
 
     Object.assign(config,
         data.config,
-        { geneURL: geneURL(config)},
+        { moreInformationLink:
+            setupConfig.isMultiExperiment
+            ? geneURL(config)
+            : data.jsonExperiment
+              ? data.jsonExperiment.URL
+              : setupConfig.atlasBaseURL
+        },
         { genomeBrowserTemplate: setupConfig.isExperimentPage ? `` : `` },
         { description: description },
         { shortDescription: shortDescription});
