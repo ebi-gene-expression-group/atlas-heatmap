@@ -48,7 +48,7 @@ You could select this option and add yourself an integration test that checks wh
 @param {Object}          options.anatomogramDataEventEmitter - emits events to the facets tree to signal the existence of anatomogram
 @param {boolean}         options.isDifferential
 @param {boolean}         options.isMultiExperiment
-@param {boolean}        options.isWidget
+@param {boolean}        options.isWidget - set to true if you're hosting the widget outside Expression Atlas pages
 
 ### Development only
 @param {string}          options.pathToFolderWithBundledResources - use if you're serving the /svg's from an unusual location. Development only.
@@ -85,7 +85,7 @@ exports.render = function(options) {
                 pathToFolderWithBundledResources: options.pathToFolderWithBundledResources || atlasBaseURL + "/resources/js-bundles/",
                 showAnatomogram: options.showAnatomogram === undefined || options.showAnatomogram,
                 isDifferential: !!options.isDifferential,
-                isMultiExperiment: !!options.isMultiExperiment,
+                isMultiExperiment: options.isMultiExperiment === undefined || !!options.isMultiExperiment,
                 isWidget: options.isWidget === undefined || options.isWidget,
                 disableGoogleAnalytics: !!options.disableGoogleAnalytics,
                 fail: options.fail,
