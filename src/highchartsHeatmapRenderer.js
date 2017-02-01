@@ -66,8 +66,6 @@ exports.render = function(options) {
         + atlasHost
         + atlasPath;
 
-    const linksAtlasBaseURL = options.selfHosted? (options.proxyPrefix || "https://")+ "www.ebi.ac.uk/gxa": atlasBaseURL;
-
     //If using this renderer for a standalone widget, see uk.ac.ebi.atlas.widget.HeatmapWidgetController.java for the source URL/params required
     const sourceURL = options.sourceURL ||
                       atlasBaseURL + "/widgets/heatmap"
@@ -84,7 +82,6 @@ exports.render = function(options) {
                 sourceURL: sourceURL,
                 atlasBaseURL: atlasBaseURL,
                 proxyPrefix: proxyPrefix,
-                linksAtlasBaseURL: linksAtlasBaseURL,
                 pathToFolderWithBundledResources: options.pathToFolderWithBundledResources || atlasBaseURL + "/resources/js-bundles/",
                 showAnatomogram: options.showAnatomogram === undefined || options.showAnatomogram,
                 isDifferential: !!options.isDifferential,
