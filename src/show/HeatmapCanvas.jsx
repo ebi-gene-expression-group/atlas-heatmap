@@ -122,7 +122,7 @@ var HeatmapCanvas = React.createClass({
                               };
                             }.bind(this))(),
                           mouseOut: (function() {
-                             var f =this.props.onUserSelectsColumn;
+                             var f =this.props.onUserSelectsPoint;
                               return function(){return f("","");};
                             }.bind(this))(),
                           click: !this.props.genomeBrowserTemplate? function(){}: function(){
