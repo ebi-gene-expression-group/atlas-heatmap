@@ -1,5 +1,3 @@
-// const genomeBrowserTemplate = require('./genomeBrowserTemplate.js');
-
 const capitalizeFirstLetter = str => !str ? str : str.charAt(0).toUpperCase() + str.substr(1);
 
 const _introductoryMessage = (isMultiExperiment, profiles) => {
@@ -36,6 +34,22 @@ const coexpressions = (setupConfig, data) =>
             _coexpressions(data.jsonCoexpressions) : ``
     );
 
+const genomeBrowserPath = (isDifferential, experimentAccession, atlasBaseUrl,selectedColumnId, selectedGeneId ) => {
+  const atlasTrackBaseUrlWithTrackFileHeader =
+    `${atlasBaseUrl}/experiments/${experimentAccession}` +
+    `/tracks/${experimentAccession}.${selectedColumnId}`;
+
+  const contigViewBottom =
+    `contigviewbottom=url:${atlasTrackBaseUrlWithTrackFileHeader}.genes.` +
+    `${isDifferential ? `log2foldchange`: `expressions`}.bedGraph`;
+
+  const tiling =
+    isDifferential
+    ? `=tiling,url:${atlasTrackBaseUrlWithTrackFileHeader}.genes.pval.bedGraph=pvalue;`
+    : ``;
+
+  return `/Location/View?g=${selectedGeneId};${contigViewBottom}${tiling};format=BEDGRAPH`;
+}
 
 const getConfig = (setupConfig, data) => {
     const config = {
@@ -73,15 +87,14 @@ const getConfig = (setupConfig, data) => {
     }
 
     let shortDescription = ``;
-    if (config.experimentAccession) {
+    if (data.config.experimentAccession) {
         if (setupConfig.isReferenceExperiment) {
             shortDescription = `ReferenceExp`;
         }
-        shortDescription = `${shortDescription}${config.experimentAccession}`;
+        shortDescription = `${shortDescription}${data.config.experimentAccession}`;
     } else {
         shortDescription = `expression-atlas-${data.config.species.replace(/ +/, `-`)}`;
     }
-
     Object.assign(config,
         data.config,
         { moreInformationLink:
@@ -91,7 +104,14 @@ const getConfig = (setupConfig, data) => {
               ? data.jsonExperiment.URL
               : setupConfig.atlasBaseURL
         },
-        { genomeBrowserTemplate: setupConfig.isExperimentPage ? `` : `` },
+        { genomeBrowserTemplate:
+            setupConfig.isExperimentPage
+             && data.config.resources
+             && data.config.resources.genome_browser
+             && data.config.resources.genome_browser.length
+             ? data.config.resources.genome_browser[0] + genomeBrowserPath(config.isDifferential, data.config.experimentAccession, config.atlasBaseURL,"__x__", "__y__")
+             : ``
+        },
         { description: description },
         { shortDescription: shortDescription});
 

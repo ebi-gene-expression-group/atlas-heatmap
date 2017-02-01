@@ -128,6 +128,7 @@ var HeatmapCanvas = React.createClass({
                           click: !this.props.genomeBrowserTemplate? function(){}: function(){
                             var x = this.series.xAxis.categories[this.x].info.trackId;
                             var y = this.series.yAxis.categories[this.y].info.trackId;
+
                             window.open(this.series.chart.userOptions.genomeBrowserTemplate.replace(/__x__/g,x).replace(/__y__/g,y),"_blank");
                           }
                       }
