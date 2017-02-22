@@ -25,7 +25,10 @@
     "react-bootstrap": "0.30.7",
     "react-dom": "15.3.2",
     "react-highcharts": "8.3.2",
-    "react-tooltip": "https://github.com/wbazant/react-tooltip/tarball/dist"
+    "react-refetch": "^1.0.0",
+    "react-tooltip": "https://github.com/wbazant/react-tooltip/tarball/dist",
+    "uri.js": "^0.1.3",
+    "whatwg-fetch": "^2.0.2"
   },
   "devDependencies": {
     "babel-core": "^6.14.0",
