@@ -54,10 +54,10 @@ You could select this option and add yourself an integration test that checks wh
 @param {string}          options.pathToFolderWithBundledResources - use if you're serving the /svg's from an unusual location. Development only.
 **/
 
-exports.render = function(options) {
-    const atlasHost = options.atlasHost === undefined ? "https://www.ebi.ac.uk" : options.atlasHost
-    const atlasPath = "/gxa"
-    const proxyPrefix = options.proxyPrefix || "https://"
+export default function(options) {
+    const atlasHost = options.atlasHost === undefined ? "https://www.ebi.ac.uk" : options.atlasHost;
+    const atlasPath = "/gxa";
+    const proxyPrefix = options.proxyPrefix || "https://";
 
     const atlasBaseURL =
         (atlasHost.indexOf("http://") === 0 || atlasHost.indexOf("https://") === 0

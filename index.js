@@ -1,1 +1,3 @@
-module.exports = require(`./src/highchartsHeatmapRenderer.js`);
+import render from './src/HighchartsHeatmapRenderer.jsx';
+
+export {render};
