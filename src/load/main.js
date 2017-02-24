@@ -1,14 +1,9 @@
-"use strict";
+const Config = require('./Config.js');
+const Orderings = require('./Orderings.js');
+const ColorAxis = require('./ColorAxis.js');
+const Data = require('./Data.js');
 
-//*------------------------------------------------------------------*
-
-var Config = require('./Config.js');
-var Orderings = require('./Orderings.js');
-var ColorAxis = require('./ColorAxis.js');
-var Data = require('./Data.js');
-//*------------------------------------------------------------------*
-
-var _allRows = function(data){
+const _allRows = function(data){
   return (
     [].concat.apply(
       data.profiles.rows,
@@ -25,13 +20,14 @@ var _allRows = function(data){
         })
       }))
     );
-}
-var get = function(setupConfig,payload){
-  var config = Config(setupConfig, payload);
-  var rows = _allRows(payload);
-  var columnHeaders = payload.columnHeaders;
+};
 
-  var data = Data(config,rows,columnHeaders, payload.columnGroupings);
+const get = function(setupConfig, payload) {
+  const config = Config(setupConfig, payload);
+  const rows = _allRows(payload);
+  const columnHeaders = payload.columnHeaders;
+
+  const data = Data(config,rows,columnHeaders, payload.columnGroupings);
 
   return {
     heatmapConfig: config,
