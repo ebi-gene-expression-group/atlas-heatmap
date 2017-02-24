@@ -6,7 +6,7 @@ const _introductoryMessage = (isMultiExperiment, profiles) => {
 
     const what =
         (isMultiExperiment ? `experiment` : `gene`) +
-        (totalRows > 1 ? `` : ``);
+        (totalRows > 1 ? `s` : ``);
 
     return `Showing ${shownRows} ` + (totalRows === shownRows ? what + `:` : `of ${totalRows} ${what} found:`);
 };
