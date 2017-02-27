@@ -3,11 +3,10 @@ const $ = require(`jquery`);
 
 const Anatomogram = require(`anatomogram`);
 
-const Load = require(`./load/main.js`);
 const HighchartsHeatmap = require(`./manipulate/HeatmapWithControls.jsx`);
-require(`./HighchartsHeatmapContainer.css`);
 
-const outwardLink = require(`./util/adjustOutwardLinks.js`)
+const Load = require(`./load/main.js`);
+const outwardLink = require(`./util/adjustOutwardLinks.js`);
 
 const ExperimentDescription = React.createClass({
     propTypes: {
