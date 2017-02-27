@@ -37,20 +37,17 @@ export default function(options, test) {
     const { showAnatomogram = true, isWidget = true, disableGoogleAnalytics = false, fail, anatomogramDataEventEmitter,  target } = options;
     const { atlasUrl = `https://www.ebi.ac.uk/gxa/`, inProxy = ``, outProxy = ``, experiment = ``, query } = test;
 
-    const inboundLinksUrl = new URI(inProxy + atlasUrl);
-    const outboundLinksUrl = new URI(outProxy + atlasUrl);
-
-    const sourceUrl = inboundLinksUrl.clone().segment(resolveEndpoint(experiment)).search(parseQuery(query));
+    const sourceUrl = URI(resolveEndpoint(experiment)).search(parseQuery(query));
 
     ReactDOM.render(
-        <ContainerLoader sourceUrl={sourceUrl}
-                         inboundLinksUrl={inboundLinksUrl}
-                         outboundLinksUrl={outboundLinksUrl}
+        <ContainerLoader inProxy={inProxy}
+                         outProxy={outProxy}
+                         atlasUrl={atlasUrl}
+                         sourceUrl={sourceUrl.toString()}
                          showAnatomogram={showAnatomogram}
                          isWidget={isWidget}
                          disableGoogleAnalytics={disableGoogleAnalytics}
                          fail={fail}
-                         anatomogramEventEmitter={new EventEmitter().setMaxListeners(0)}
                          anatomogramDataEventEmitter={anatomogramDataEventEmitter} />,
 
         typeof target === `string` ? document.getElementById(target) : target
@@ -75,9 +72,10 @@ function parseQuery(query) {
     }
 
     return {
-        species: stringifyIfNotString(query.species),
         geneQuery: stringifyIfNotString(query.gene),
-        conditionQuery: stringifyIfNotString(query.condition)
+        conditionQuery: stringifyIfNotString(query.condition),
+        species: stringifyIfNotString(query.species)
+
     }
 }
 
