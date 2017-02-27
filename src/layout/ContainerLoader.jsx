@@ -1,28 +1,25 @@
 import React from 'react';
 import { connect, PromiseState } from 'react-refetch';
 import URI from 'urijs';
-import EventEmitter from 'events';
-
-import Load from '../load/main.js';
 
 import ExperimentDescription from './ExperimentDescription.jsx';
+import Container from './Container.jsx';
 import Footer from './Footer.jsx';
-import '../HighchartsHeatmapContainer.css';
 
 class ContainerLoader extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            googleAnalyticsCallback: function () {}
-        };
     }
 
     render () {
-        const { sourceUrlFetch } = this.props;
+        const {inProxy, outProxy, atlasUrl, sourceUrlFetch} = this.props;
 
         if (sourceUrlFetch.pending) {
-            return <div><img src={URI(`resources/images/loading.gif`).absoluteTo(this.props.inboundLinksUrl)}/></div>;
+            return (
+                <div>
+                    <img src={inProxy + URI(`resources/images/loading.gif`).absoluteTo(this.props.atlasUrl)}/>
+                </div>
+            );
         } else if (sourceUrlFetch.rejected) {
 
             const error = {
@@ -37,76 +34,46 @@ class ContainerLoader extends React.Component {
 
         } else if (sourceUrlFetch.fulfilled) {
             const data = sourceUrlFetch.value;
-
             const {geneQuery, conditionQuery, species} = data.config;
 
-            const moreInformationUrl = this.props.sourceUrl.segment().slice(-1)[0] === `baseline_refexperiment` ?
-                URI(data.jsonExperiment.relUrl).absoluteTo(this.props.outboundLinksUrl) :
-                this.props.outboundLinksUrl.clone().segment(`query`).search({geneQuery, conditionQuery, species});
-
+            const moreInformationUrl = data.experiment ?    // single experiment?
+                URI(data.experiment.relUrl).absoluteTo(atlasUrl).search(``) :
+                URI(atlasUrl).segment(`query`).search({geneQuery, conditionQuery, species});
 
             return (
                 <div>
-                    {this.props.sourceUrl.segment().slice(-1)[0] === `baseline_refexperiment` ?
-                        <ExperimentDescription experimentUrl={moreInformationUrl}
-                                               description={data.jsonExperiment.description}
-                                               species={data.jsonExperiment.species} /> : null}
+                    {this.props.isWidget && data.experiment ?
+                        <ExperimentDescription outProxy={outProxy}
+                                               experimentUrl={URI(data.experiment.relUrl).absoluteTo(atlasUrl).toString()}
+                                               description={data.experiment.description} /> :
+                        null}
 
-                    <Container columnHeaders={data.columnHeaders}
-                               profiles={data.profiles}
-                               geneSetProfiles={{}}
-                               anatomogramData={data.anatomogram}
-                               experimentData={data.experiment}
-                               loadResult={{} /*Load(setupConfig, data)*/}
-                               googleAnalyticsCallback={this.state.googleAnalyticsCallback}
-                    />
+                    <Container disableGoogleAnalytics={this.props.disableGoogleAnalytics}
+                               showAnatomogram={this.props.showAnatomogram}
+                               data={data} />
 
                     {this.props.isWidget ?
-                        <Footer outboundLinksUrl={this.props.outboundLinksUrl}
-                                moreInformationUrl={moreInformationUrl} /> : null}
+                        <Footer outProxy={outProxy}
+                                atlasUrl={atlasUrl}
+                                moreInformationUrl={moreInformationUrl.toString()} /> :
+                        null}
                 </div>
             );
         }
     }
-
-    componentDidMount () {
-        if (!this.props.disableGoogleAnalytics) {
-            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-            ga('create', 'UA-37676851-1', 'auto');
-            ga('send', 'pageview');
-
-            this.setState({googleAnalyticsCallback: ga});
-        }
-    }
-
-    componentDidUpdate () {
-        if (this.props.anatomogramDataEventEmitter) {
-            if (this.state.anatomogramData && Object.keys(this.state.anatomogramData).length !== 0) {
-                this.props.anatomogramDataEventEmitter.emit(`existAnatomogramData`, true);
-            } else {
-                this.props.anatomogramDataEventEmitter.emit(`existAnatomogramData`, false);
-            }
-        }
-    }
-
 }
 
 ContainerLoader.props = {
-    sourceUrl: React.PropTypes.instanceOf(URI).isRequired,
-    inboundLinksUrl: React.PropTypes.instanceOf(URI).isRequired,
-    outboundLinksUrl: React.PropTypes.instanceOf(URI).isRequired,
+    inProxy: React.PropTypes.string.isRequired,
+    outProxy: React.PropTypes.string.isRequired,
+    atlasUrl: React.PropTypes.string.isRequired,
+    sourceUrl: React.PropTypes.string.isRequired,
     showAnatomogram: React.PropTypes.bool.isRequired,
     isWidget: React.PropTypes.bool.isRequired,
     disableGoogleAnalytics: React.PropTypes.bool.isRequired,
-    fail: React.PropTypes.func,
-    anatomogramEventEmitter: React.PropTypes.instanceOf(EventEmitter).isRequired,
-    anatomogramDataEventEmitter: React.PropTypes.instanceOf(EventEmitter).isRequired
+    fail: React.PropTypes.func
 };
 
 export default connect(props => ({
-    sourceUrlFetch: props.sourceUrl.toString(),
+    sourceUrlFetch: props.inProxy + URI(props.sourceUrl).absoluteTo(props.atlasUrl),
 }))(ContainerLoader)
