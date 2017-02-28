@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+
+    <title>Highcharts heatmap demo</title>
+
+    <meta charset="utf-8">
+    <title>Expression Atlas &lt; Demo pages</title>
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="MobileOptimized" content="width" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#70BDBD"> <!-- Android Chrome mobile browser tab color -->
+
+    <!-- CSS: implied media=all -->
+    <!-- CSS concatenated and minified via ant build script-->
+    <link rel="stylesheet" href="https://www.ebi.ac.uk/web_guidelines/EBI-Framework/v1.1/libraries/foundation-6/css/foundation.css" type="text/css" media="all">
+    <link rel="stylesheet" href="https://www.ebi.ac.uk/web_guidelines/EBI-Framework/v1.1/css/ebi-global.css" type="text/css" media="all">
+    <link rel="stylesheet" href="https://www.ebi.ac.uk/web_guidelines/EBI-Icon-fonts/v1.1/fonts.css" type="text/css" media="all">
+
+    <!-- Use this CSS file for any custom styling -->
+    <link rel="stylesheet" href="https://www.ebi.ac.uk/gxa/resources/css/foundation/atlas.css" type="text/css" media="all">
+
+    <!-- also inform ES so we can host your colour palette file -->
+    <link rel="stylesheet" href="https://www.ebi.ac.uk/gxa/resources/css/foundation/theme-atlas.css" type="text/css" media="all">
+</head>
+
+<body>
+
+<div id="content" role="main" class="row">
+    <h2>Demo pages</h2>
+
+    <div>
+        <h3>Widget you can include in your page</h3>
+
+        <ul>
+            <li>
+                <a href="multiple_experiments.html">Multiple experiments result: H. sapiens / zinc finger</a>
+                – <a href='https://localhost:8443/gxa/json/baseline_experiments?species=homo+sapiens&geneQuery=[{"value":"zinc+finger"}]'>JSON</a>,
+                <a href="http://jsonformatter.org/9857a7">JSON formatter</a>
+            </li>
+            <li>
+                <a href="reference_experiment_multiple_results.html">Reference experiment, multiple results: C. elegans / zinc finger</a>
+                – <a href='https://localhost:8443/gxa/json/baseline_refexperiment?species=caenorhabditis+elegans&geneQuery=[{%22value%22:%22zinc+finger%22}]'>JSON</a>,
+                <a href="http://jsonformatter.org/327788">JSON formatter</a>
+            </li>
+            <li>
+                <a href="reference_experiment_single_gene.html">Reference experiment, single result, no coexpression: C. elegans / eef-1A.1</a>
+                <a href='https://localhost:8443/gxa/json/baseline_refexperiment?species=caenorhabditis+elegans&geneQuery=[{"value":"eef-1A.1"}]'>JSON</a>,
+                <a href="http://jsonformatter.org/fdda0a">JSON formatter</a>
+            </li>
+            <li>
+                <a href="reference_experiment_single_gene_single_expression.html">Reference experiment, single result & single expression, no coexpression: C. elegans / WBGene00000662</a>
+                <a href='https://localhost:8443/gxa/json/baseline_refexperiment?species=caenorhabditis+elegans&geneQuery=[{"value":"WBGene00000662"}]'>JSON</a>,
+                <a href="http://jsonformatter.org/fdda0a">JSON formatter</a>
+            </li>
+
+        </ul>
+
+        <h3>Version for experiment page of Expression Atlas</h3>
+        <ul>
+            <li>
+                <a href="experiment_single_gene_coexpression.html">Single result with coexpressed genes: E-MTAB-513 / ENSG00000024862</a>
+                – <a href='https://localhost:8443/gxa/json/experiments/E-MTAB-513?species=homo+sapiens&geneQuery=[{"value":"ENSG00000024862","category":"ensgene"}]'>JSON</a>,
+                <a href="http://jsonformatter.org/7e56ee">JSON formatter</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>
