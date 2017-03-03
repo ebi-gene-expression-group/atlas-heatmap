@@ -4,8 +4,8 @@ var CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
     entry: {
-        heatmapHighcharts: ['whatwg-fetch', './index.js'],
-        dependencies: ['color', 'downloadjs', 'he', 'highcharts-custom-events', 'highcharts-heatmap', 'jquery',
+        heatmapHighcharts: ['babel-polyfill', 'whatwg-fetch', './index.js'],
+        dependencies: ['color', 'downloadjs', 'he', 'highcharts-custom-events', 'react-refetch',
             'lodash', 'object-hash', 'rc-slider', 'react', 'react-bootstrap', 'react-dom', 'react-highcharts']
     },
     output: {
