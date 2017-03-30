@@ -16,8 +16,8 @@ import ContainerLoader from './layout/ContainerLoader.jsx';
  * @param {string}          options.outProxy - Outbound proxy for links that take you outside the current domain
  * @param {string}          options.experiment
  * @param {Object|string}   options.query - Query object or relative URL endpoint to source data from:
- *                              e.g. json/experiments/E-PROT-1, json/genes/ENSG00000005801, json/genesets/GO:0000001
- *                                   json/baseline_refexperiment?geneQuery=…, json/baseline_experiments?geneQuery=…
+ *                              e.g. json/experiments/E-PROT-1, /json/genes/ENSG00000005801, /json/genesets/GO:0000001
+ *                                   json/baseline_refexperiment?geneQuery=…, /json/baseline_experiments?geneQuery=…
  * @param {string}                              options.query.species
  * @param {{value: string, category: string}[]} options.query.gene
  * @param {{value: string, category: string}[]} options.query.condition
@@ -63,7 +63,7 @@ function resolveEndpoint(experiment) {
 
 function parseQuery(query) {
     if (!query) {
-        return ``;
+        return null;
     }
 
     if (typeof query === `string`) {
