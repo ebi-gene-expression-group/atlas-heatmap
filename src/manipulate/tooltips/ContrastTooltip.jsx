@@ -1,12 +1,6 @@
-"use strict";
+import React from 'react';
 
-//*------------------------------------------------------------------*
-
-var React = require('react');
-
-//*------------------------------------------------------------------*
-
-var contrastTablePropTypes = {
+const contrastTablePropTypes = {
     experimentDescription: React.PropTypes.string.isRequired,
     contrastDescription: React.PropTypes.string.isRequired,
     testReplicates: React.PropTypes.number.isRequired,
@@ -21,7 +15,7 @@ var contrastTablePropTypes = {
     )
 };
 
-var ContrastTooltipTable = React.createClass({
+const ContrastTooltipTable = React.createClass({
     propTypes: contrastTablePropTypes,
 
     propertyRow: function (property) {
@@ -33,7 +27,7 @@ var ContrastTooltipTable = React.createClass({
             return property.contrastPropertyType === "FACTOR";
         }
 
-        var style = {whiteSpace: "normal"};
+        const style = {whiteSpace: "normal"};
 
         if (isFactor(property)) {
             style.fontWeight = "bold";
@@ -72,7 +66,7 @@ var ContrastTooltipTable = React.createClass({
     }
 });
 
-var ContrastTooltip = React.createClass({
+const ContrastTooltip = React.createClass({
   propTypes: Object.assign({
     resources: React.PropTypes.arrayOf(React.PropTypes.shape({
       type: React.PropTypes.oneOf(["gsea_go", "gsea_interpro", "gsea_reactome", "ma-plot"]).isRequired,
@@ -87,7 +81,8 @@ var ContrastTooltip = React.createClass({
       "gsea_interpro": "Click to view Interpro domains enrichment analysis plot",
       "gsea_reactome":"Click to view Reactome pathways enrichment analysis plot",
       "ma-plot" :"Click to view MA plot for the contrast across all genes"
-    }
+    };
+
     return (
       <div className="gxaContrastTooltip">
         <ContrastTooltipTable {...this.props} />
@@ -112,8 +107,6 @@ var ContrastTooltip = React.createClass({
       </div>
     )
   }
-})
+});
 
-//*------------------------------------------------------------------*
-
-module.exports = ContrastTooltip;
+export default ContrastTooltip;

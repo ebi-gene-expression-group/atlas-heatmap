@@ -1,12 +1,6 @@
-"use strict";
+import React from 'react';
 
-//*------------------------------------------------------------------*
-
-var React = require('react');
-
-//*------------------------------------------------------------------*
-
-var FactorTooltip = React.createClass({
+const FactorTooltip = React.createClass({
 
     propertyRow: function (property) {
         if (!property.testValue) {
@@ -14,15 +8,15 @@ var FactorTooltip = React.createClass({
         }
 
         function isFactor(property) {
-            return property.contrastPropertyType === 'FACTOR';
+            return property.contrastPropertyType === `FACTOR`;
         }
 
-        var style = {'whiteSpace': 'normal'};
+        const style = {whiteSpace: `normal`};
 
         if (isFactor(property)) {
-            style['fontWeight'] = 'bold';
+            style[`fontWeight`] = `bold`;
         } else {
-            style['color'] = 'gray';
+            style[`color`] = `gray`;
         }
 
         return (
@@ -34,10 +28,10 @@ var FactorTooltip = React.createClass({
     },
 
     render: function () {
-      var propertyNames =
-        this.props.properties
-        .map((e)=>e.propertyName)
-        .filter((e,ix,self)=>self.indexOf(e)==ix);
+        const propertyNames =
+            this.props.properties
+            .map(e => e.propertyName)
+            .filter((e,ix,self) => self.indexOf(e) === ix);
 
       return (
         <div className="gxaFactorTooltip">
@@ -45,22 +39,22 @@ var FactorTooltip = React.createClass({
             <thead>
               <tr>
                 <th>Property</th>
-                <th>Value{this.props.replicates? " (N="+this.props.replicates+")":""}</th>
+                <th>Value{this.props.replicates ? ` (N=${this.props.replicates})` : ``}</th>
               </tr>
             </thead>
             <tbody>
-              {propertyNames.map((propertyName)=>{
-                var values =
+              {propertyNames.map(propertyName => {
+                const values =
                   this.props.properties
-                  .filter((e)=>e.propertyName==propertyName)
+                  .filter(e => e.propertyName === propertyName)
                   .map((e)=>e.testValue)
-                  .filter((e,ix,self)=>self.indexOf(e)==ix);
+                  .filter((e,ix,self)=>self.indexOf(e) === ix);
                 return {
                   propertyName: propertyName,
                   testValue:
                     values.length
-                    ? values.reduce((l,r)=>l+", "+r)
-                    : ""
+                    ? values.reduce((l,r) => `${l}, ${r}`)
+                    : ``
                 }
               }).map(this.propertyRow)}
             </tbody>
@@ -70,6 +64,4 @@ var FactorTooltip = React.createClass({
     }
 });
 
-//*------------------------------------------------------------------*
-
-module.exports = FactorTooltip;
+export default FactorTooltip;

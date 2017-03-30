@@ -1,12 +1,6 @@
-"use strict";
+import React from 'react';
 
-//*------------------------------------------------------------------*
-
-var React = require('react');
-
-//*------------------------------------------------------------------*
-
-var GeneTooltip = React.createClass({
+const GeneTooltip = React.createClass({
   propTypes:{
     atlasBaseURL: React.PropTypes.string.isRequired,
     label: React.PropTypes.string.isRequired,
@@ -34,8 +28,9 @@ var GeneTooltip = React.createClass({
     if(this.state.loaded){
       return;
     }
+    // TODO Use react-refetch
     //https://www.sitepoint.com/guide-vanilla-ajax-without-jquery/
-    var xhr = new XMLHttpRequest();
+    const xhr = new XMLHttpRequest();
     xhr.open('GET', this.props.atlasBaseURL+"/json/genename-tooltip?identifier="+this.props.id, true);
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {//request done
@@ -91,7 +86,7 @@ var GeneTooltip = React.createClass({
             [].concat.apply([],
               [this.props.label]
               .concat(this.state.data.synonyms)
-              .indexOf(this.props.id)==-1
+              .indexOf(this.props.id)===-1
               ? [this.props.id]
               : []
             , this.state.data.synonyms)
@@ -112,6 +107,6 @@ var GeneTooltip = React.createClass({
       </div>
     )
   }
-})
+});
 
-module.exports = GeneTooltip;
+export default GeneTooltip;

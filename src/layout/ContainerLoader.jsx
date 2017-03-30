@@ -48,8 +48,12 @@ class ContainerLoader extends React.Component {
                                                description={data.experiment.description} /> :
                         null}
 
-                    <Container disableGoogleAnalytics={this.props.disableGoogleAnalytics}
+                    <Container inProxy={this.props.inProxy}
+                               outProxy={this.props.outProxy}
+                               atlasUrl={atlasUrl}
+                               disableGoogleAnalytics={this.props.disableGoogleAnalytics}
                                showAnatomogram={this.props.showAnatomogram}
+                               isWidget={this.props.isWidget}
                                data={data} />
 
                     {this.props.isWidget ?

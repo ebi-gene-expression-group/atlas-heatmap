@@ -2,11 +2,11 @@ const React = require( `react`);
 const Dropdown = require(`react-bootstrap/lib/Dropdown`);
 const MenuItem = require(`react-bootstrap/lib/MenuItem`);
 const Glyphicon = require(`react-bootstrap/lib/Glyphicon`);
-const PropTypes = require( `../PropTypes.js`);
+// const PropTypes = require( `../PropTypes.js`);
 
 const OrderingsDropdown = React.createClass({
     propTypes: {
-        orderings: PropTypes.Orderings,
+        // orderings: PropTypes.Orderings,
         disabled: React.PropTypes.bool.isRequired
     },
 

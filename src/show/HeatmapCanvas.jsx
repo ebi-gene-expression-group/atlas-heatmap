@@ -1,263 +1,272 @@
-var React = require('react');
-var ReactHighcharts = require('react-highcharts');
-var Highcharts = ReactHighcharts.Highcharts;
-require('highcharts-heatmap')(Highcharts);
+import React from 'react';
+import ReactHighcharts from 'react-highcharts';
+import HighchartsHeatmap from 'highcharts/modules/heatmap';
+import HighchartsCustomEvents from 'highcharts-custom-events';
 
-require('highcharts-custom-events')(Highcharts);
-// Overrides default Custom Events behaviour
+const Highcharts = ReactHighcharts.Highcharts;
+HighchartsHeatmap(Highcharts);
+HighchartsCustomEvents(Highcharts);
+// require('highcharts-custom-events')(Highcharts);
+
+import hash from 'object-hash';
+
+import {heatmapDataPropTypes} from '../manipulate/chartDataPropTypes.js';
+
+// Custom Events default behaviour disables context menu on right-click, we bring it back
 window.oncontextmenu = function() {
     return true;
 };
 
-var hash = require('object-hash');
-
-var PropTypes = require('../PropTypes.js');
-
-//*------------------------------------------------------------------*
-
-var HeatmapCanvas = React.createClass({
-  propTypes: {
-      marginRight: React.PropTypes.number.isRequired,
-      ontologyIdsToHighlight: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-      heatmapData: PropTypes.HeatmapData,
-      colorAxis: React.PropTypes.object,
-      formatters : React.PropTypes.shape({
-        xAxis: PropTypes.Formatter,
-        xAxisStyle: React.PropTypes.object.isRequired,
-        yAxis: PropTypes.Formatter,
-        yAxisStyle: React.PropTypes.object.isRequired,
-        tooltip: PropTypes.Formatter
-      }).isRequired,
-      genomeBrowserTemplate: React.PropTypes.string.isRequired,
-      onUserSelectsRow:React.PropTypes.func.isRequired,
-      onUserSelectsColumn:React.PropTypes.func.isRequired,
-      onUserSelectsPoint:React.PropTypes.func.isRequired,
-      onUserClicksColumn:React.PropTypes.func,
-      onZoom: React.PropTypes.func.isRequired
-  },
-
-  shouldComponentUpdate: function(nextProps){
-    return hash.MD5(nextProps.heatmapData)!==hash.MD5(this.props.heatmapData);
-  },
-
-  componentWillReceiveProps: function(nextProps){
-    var chart = this.refs.chart.getChart();
-    var forEachXNotInYsEmit = function(xs, ys, eventName){
-      xs
-      .filter(function(id){
-        return ys.indexOf(id)==-1;
-      })
-      .filter(function uniq(id,ix,self){
-        return ix==self.indexOf(id);
-      })
-      .forEach(function(id){
-        Highcharts.fireEvent(chart, eventName, {svgPathId: id});
-      }.bind(this));
-    };
-    forEachXNotInYsEmit(nextProps.ontologyIdsToHighlight, this.props.ontologyIdsToHighlight,'handleGxaAnatomogramTissueMouseEnter');
-    forEachXNotInYsEmit(this.props.ontologyIdsToHighlight, nextProps.ontologyIdsToHighlight,'handleGxaAnatomogramTissueMouseLeave');
-  },
-
-  render: function(){
-    var xAxisLongestHeaderLength =
-      Math.max.apply(null, this.props.heatmapData.xAxisCategories.map(function(category) {return category.label.length}));
-    var marginTop =
-      this.props.heatmapData.xAxisCategories.length < 10 ? 30 :   // labels aren’t tilted
-          this.props.heatmapData.xAxisCategories.length < 50 ? Math.min(150, Math.round(xAxisLongestHeaderLength * 3.75)) : // labels at -45°
-              Math.min(250, Math.round(xAxisLongestHeaderLength * 5.5));  // labels at -90°
-
-    var dimensions= {
-      marginTop:marginTop,
-      marginRight: //leave space for tilted long headers
-      //TODO the marginRight value of props used to be the same here and in top legend.
-      //Probably it's time to get rid of this prop.
-        this.props.marginRight*(1+10/Math.pow(1+this._countColumnsToShow(),2)),
-      height:
-        Math.max(70, this._countRowsToShow() * 30 + marginTop)
+class HeatmapCanvas extends React.Component {
+    constructor(props) {
+        super(props);
     }
 
-    var maxWidthFraction = 1-Math.exp(-(0.2+0.05*Math.pow(this._countColumnsToShow()+1,2)));
-    return (
-        <div style={{maxWidth:maxWidthFraction*100+"%"}}>
-        <ReactHighcharts
-          config={this._highchartsOptions(dimensions, this.props.heatmapData)}
-          ref="chart"/>
-        </div>
-    );
-  },
-  _count_sToShow: function(xOrY){
-    return (
-      [].concat.apply([], this.props.heatmapData.dataSeries.map((el)=>el.data))
-      .map((el)=>el[xOrY])
-      .sort((l,r)=>l-r)
-      .filter((el, ix, self)=>self.indexOf(el) == ix)
-      .length
-    );
-  },
+    shouldComponentUpdate(nextProps) {
+        // Callback that does setState fails: https://github.com/kirjs/react-highcharts/issues/245
+        // Don’t call render again after zoom happens
+        return hash.MD5(nextProps.heatmapData)!==hash.MD5(this.props.heatmapData);
+    }
 
-  _countRowsToShow: function(){
-    return this._count_sToShow("y");
-  },
 
-  _countColumnsToShow: function(){
-    //we have turned the min and max on to show empty columns in heatmap
-    return this.props.heatmapData.xAxisCategories.length;
-  },
+    _countColumns() {
+        return this.props.heatmapData.xAxisCategories.length;
+    }
 
-  _highchartsOptions: function(dimensions, data){
-    return (
-      {
-          plotOptions: {
-              heatmap: {
-                  turboThreshold: 0
-              },
-              series: {
-                  cursor: !!this.props.genomeBrowserTemplate ? "pointer" :undefined,
-                  point: {
-                      events: {
-                          mouseOver: (function() {
-                             var f =this.props.onUserSelectsPoint;
-                              return function(){
-                                return f(this.options.info.xId ||this.series.xAxis.categories[this.x].id,this.series.yAxis.categories[this.y].id);
-                              };
-                            }.bind(this))(),
-                          mouseOut: (function() {
-                             var f =this.props.onUserSelectsPoint;
-                              return function(){return f("","");};
-                            }.bind(this))(),
-                          click: !this.props.genomeBrowserTemplate? function(){}: function(){
-                            var x = this.series.xAxis.categories[this.x].info.trackId;
-                            var y = this.series.yAxis.categories[this.y].info.trackId;
+    _getAdjustedMarginRight() {
+        const initialMarginRight = 60;
+        return initialMarginRight * (1 + 10 / Math.pow(1 + this._countColumns(), 2));
+    }
 
-                            window.open(this.series.chart.userOptions.genomeBrowserTemplate.replace(/__x__/g,x).replace(/__y__/g,y),"_blank");
-                          }
-                      }
-                  },
+    _getAdjustedMarginTop() {
+        const longestColumnLabelLength =
+            Math.max(...this.props.heatmapData.xAxisCategories.map(category => category.label.length));
 
-                  states: {
-                      hover: {
-                          color: '#eeec38' //#edab12 color cell on mouse over
-                      },
-                      select: {
-                          color: '#eeec38'
-                      }
-                  }
-              }
-          },
-          credits: {
-              enabled: false //remove Highcharts text in the bottom right corner
-          },
-          chart: Object.assign({
-              type: 'heatmap',
-              spacingTop: 0,
-              plotBorderWidth: 1,
-              zoomType: 'x',
-              events: {
-                  handleGxaAnatomogramTissueMouseEnter: function(e) {
-                      Highcharts.each(this.series, function (series) {
-                          Highcharts.each(series.points, function (point) {
-                              if (point.series.xAxis.categories[point.x].id === e.svgPathId) {
-                                  point.select(true, true);
-                              }
-                          });
-                      });
-                  },
-                  handleGxaAnatomogramTissueMouseLeave: function(e) {
-                      var points = this.getSelectedPoints();
-                      if (points.length > 0) {
-                          Highcharts.each(points, function (point) {
-                              point.select(false);
-                          });
-                      }
-                  }
-              }
-          },dimensions),
-          legend: {
-              enabled: false
-          },
-          title: null,
-          colorAxis: this.props.colorAxis || undefined,
-          xAxis: { //assays
-              tickLength: 5,
-              tickColor: 'rgb(192, 192, 192)',
-              lineColor: 'rgb(192, 192, 192)',
-              labels: {
-                  style: this.props.formatters.xAxisStyle,
-                  events: {
-                    mouseover: (() => {
-                        var f = this.props.onUserSelectsColumn;
-                        return function() {return f && f(this.value);}
-                    })(),
-                    mouseout:(() => {
-                        var f = this.props.onUserSelectsColumn;
-                        return function() {return f && f("");}
-                    })(),
-                    click: (() => {
-                        var f = this.props.onUserClicksColumn;
-                        return function() { return f && f(this.value);}
-                    })()
-                  },
-                  autoRotation: [-45, -90],
-                  formatter: (function() { var f =this.props.formatters.xAxis; return function(){return f(this.value);};}.bind(this))()
-              },
+        // Minimum margins when labels aren’t tilted, -45° and -90° respectively; see labels.autoRotation below
+        const [horizontalLabelsMarginTop, tiltedLabelsMarginTop, verticalLabelsMarginTop] = [30, 100, 200];
 
-              opposite: 'true',
-              categories: data.xAxisCategories,
-              min:0,
-              max: data.xAxisCategories.length-1,
+        // TODO To know if the labels are actually rotated we must take into account the width of the chart and div
+        if (this._countColumns() < 10) {
+            return horizontalLabelsMarginTop;
+        } else if (this._countColumns() < 80) {
+            return Math.max(tiltedLabelsMarginTop, Math.round(longestColumnLabelLength * 3.85));
+        } else {
+            return Math.max(verticalLabelsMarginTop, Math.round(longestColumnLabelLength * 5.5));
+        }
+    }
 
-              events: {
-                  setExtremes: function(event) { this.props.onZoom(event.min !== undefined && event.max !== undefined) }.bind(this)
-              }
-          },
-          yAxis: { //experiments or bioentities
-              useHTML: true,
-              reversed: true,
-              labels: {
-                  style: this.props.formatters.yAxisStyle,
-                  events: {
-                    mouseover:(function() {
-                       var f =this.props.onUserSelectsRow;
-                       return function(){
-                         return f( //We assume the longest text is the callback we want
-                           [].concat.apply([],
-                             [].concat.apply([],this.element.children)
-                             .filter(c=>!c.style||c.style.fill!="black") //skip design elements
-                           )
-                           .map((c)=>c.textContent)
-                           .reduce((l,r)=>(l.length>r.length?l:r), "")
-                         )
-                       };
-                     }.bind(this))(),
-                    mouseout: (function() { var f =this.props.onUserSelectsRow; return function(){return f("");};}.bind(this))()
-                  },
-                  formatter: (function() { var f =this.props.formatters.yAxis; return function(){return f(this.value);};}.bind(this))()
-              },
+    _getAdjustedHeight(marginTop, marginBottom) {
+        const rowsCount = this.props.heatmapData.yAxisCategories.length;
+        const rowHeight = 30;
+        return rowsCount * rowHeight + marginTop + marginBottom;
+    }
 
-              categories: data.yAxisCategories,
-              title: null,
-              gridLineWidth: 0,
-              minorGridLineWidth: 0,
-              endOnTick: false
-          },
-          tooltip: {
-              useHTML: true,
-              formatter: (function() { var f =this.props.formatters.tooltip; return function(){return f(this.series,this.point);};}.bind(this))()
-          },
+    render() {
+        // TODO Should the margins be recalculated when the window is resized?
+        const marginBottom = 10;
+        const marginTop = this._getAdjustedMarginTop();
+        const marginRight = this._getAdjustedMarginRight();
+        const height = this._getAdjustedHeight(marginTop, marginBottom);
 
-          genomeBrowserTemplate: this.props.genomeBrowserTemplate,
-          series: data.dataSeries.map(function(e){
-              return {
-                name: e.info.name,
-                color: e.info.colour,
-                borderWidth: data.xAxisCategories.length > 200 ? 0 :1 ,
-                borderColor: "white",
-                data: e.data
-              }
+        const {cellTooltipFormatter, xAxisFormatter, yAxisFormatter, genomeBrowserTemplate, onZoom} = this.props;
+        const {onHover, onClick} = this.props;
+
+        const highchartsConfig = {
+            chart: {
+                marginTop,
+                marginBottom,
+                marginRight,
+                height,
+                type: 'heatmap',
+                spacingTop: 0,
+                plotBorderWidth: 1,
+                zoomType: 'x',
+                events: {
+                //     handleGxaAnatomogramTissueMouseEnter: function (e) {
+                //         Highcharts.each(this.series, function (series) {
+                //             Highcharts.each(series.points, function (point) {
+                //                 if (point.series.xAxis.categories[point.x].id === e.svgPathId) {
+                //                     point.select(true, true);
+                //                 }
+                //             });
+                //         });
+                //     },
+                //     handleGxaAnatomogramTissueMouseLeave: function (e) {
+                //         var points = this.getSelectedPoints();
+                //         if (points.length > 0) {
+                //             Highcharts.each(points, function (point) {
+                //                 point.select(false);
+                //             });
+                //         }
+                //     }
+                }
+            },
+
+            plotOptions: {
+                heatmap: {
+                    turboThreshold: 0
+                },
+
+                series: {
+                    cursor: Boolean(this.props.genomeBrowserTemplate) ? "pointer" : undefined,
+                    point: {
+                        events: {
+                            click: this.props.genomeBrowserTemplate ?
+                                function () {
+                                    const x = this.series.xAxis.categories[this.x].info.trackId;
+                                    const y = this.series.yAxis.categories[this.y].info.trackId;
+
+                                    window.open(genomeBrowserTemplate.replace(/_x_/g, x).replace(/_y_/g, y), "_blank");
+                                } :
+                                function () {}
+                        }
+                    },
+
+                    states: {
+                        hover: {
+                            color: `#eeec38` //#edab12 color cell on mouse over
+                        },
+                        select: {
+                            color: `#eeec38`
+                        }
+                    }
+                }
+            },
+
+            credits: {
+                enabled: false
+            },
+
+            legend: {
+                enabled: false
+            },
+
+            title: null,
+
+            colorAxis: this.props.colorAxis || undefined,
+
+            xAxis: { //assays
+                tickLength: 5,
+                tickColor: `rgb(192, 192, 192)`,
+                lineColor: `rgb(192, 192, 192)`,
+                labels: {
+                    style: this.props.xAxisStyle,
+                    // Events in labels enabled by 'highcharts-custom-events'
+                    events: {
+                        mouseover: function() {
+                            onHover && onHover(true, `xAxisLabel`, this.value)
+                        },
+                        mouseout: function() {
+                            onHover && onHover(false);
+                        },
+                        click: function() {
+                            onClick(`xAxisLabel`, this.value)
+                        }
+                    },
+                    autoRotation: [-45, -90],
+                    formatter: function() {
+                        return xAxisFormatter(this.value);
+                    }
+                },
+
+                opposite: 'true',
+                categories: this.props.heatmapData.xAxisCategories,
+                min: 0,
+                max: this._countColumns() - 1,
+
+                events: {
+                    setExtremes: function(event) {
+                        onZoom(event.min !== undefined && event.max !== undefined)
+                    }
+                }
+            },
+
+            yAxis: { //experiments or bioentities
+                useHTML: true,
+                reversed: true,
+                labels: {
+                    style: this.props.yAxisStyle,
+                    // Events in labels enabled by 'highcharts-custom-events'
+                    events: {
+                        mouseover: function() {
+                            onHover && onHover(true, `yAxisLabel`, this.value)
+                        },
+                        mouseout: function() {
+                            onHover && onHover(false);
+                        }
+                    },
+                    formatter: function() {
+                        return yAxisFormatter(this.value);
+                    }
+                },
+
+                categories: this.props.heatmapData.yAxisCategories,
+                title: null,
+                gridLineWidth: 0,
+                minorGridLineWidth: 0,
+                endOnTick: false
+            },
+
+            tooltip: {
+                useHTML: true,
+                formatter: function() {
+                    return cellTooltipFormatter(this.series, this.point);
+                }
+            },
+
+            series: this.props.heatmapData.dataSeries.map(e => {
+                return {
+                    name: e.info.name,
+                    color: e.info.colour,
+                    borderWidth: this._countColumns() > 200 ? 0 : 1,
+                    borderColor: `white`,
+                    data: e.data
+                }
             })
-      }
-    );
-  }
-});
+        };
 
-module.exports = HeatmapCanvas;
+        const maxWidthFraction = 1 - Math.exp(-(0.2 + 0.05 * Math.pow(1 + this._countColumns(), 2)));
+        //<div id="highchartsHeatmapContainer" style={{maxWidth: maxWidthFraction * 100 + `%`}}>
+        return (
+            <div>
+                <ReactHighcharts config={highchartsConfig}/>
+            </div>
+        );
+    }
+}
+
+HeatmapCanvas.propTypes = {
+    heatmapData: heatmapDataPropTypes.isRequired,
+    colorAxis: React.PropTypes.object,
+    cellTooltipFormatter: React.PropTypes.func.isRequired,
+    xAxisFormatter: React.PropTypes.func.isRequired,
+    xAxisStyle: React.PropTypes.object.isRequired,
+    yAxisFormatter: React.PropTypes.func.isRequired,
+    yAxisStyle: React.PropTypes.object.isRequired,
+    genomeBrowserTemplate: React.PropTypes.string.isRequired,
+    onZoom: React.PropTypes.func.isRequired,
+    onHover: React.PropTypes.func,
+    onClick: React.PropTypes.func,
+    // ontologyIdsToHighlight: React.PropTypes.arrayOf(React.PropTypes.string).isRequired
+
+};
+
+export default HeatmapCanvas;
+
+  // componentWillReceiveProps: function(nextProps){
+  //   var chart = this.refs.chart.getChart();
+  //   var forEachXNotInYsEmit = function(xs, ys, eventName){
+  //     xs
+  //     .filter(function(id){
+  //       return ys.indexOf(id)==-1;
+  //     })
+  //     .filter(function uniq(id,ix,self){
+  //       return ix==self.indexOf(id);
+  //     })
+  //     .forEach(function(id){
+  //       Highcharts.fireEvent(chart, eventName, {svgPathId: id});
+  //     }.bind(this));
+  //   };
+  //   forEachXNotInYsEmit(nextProps.ontologyIdsToHighlight, this.props.ontologyIdsToHighlight,'handleGxaAnatomogramTissueMouseEnter');
+  //   forEachXNotInYsEmit(this.props.ontologyIdsToHighlight, nextProps.ontologyIdsToHighlight,'handleGxaAnatomogramTissueMouseLeave');
+  // }

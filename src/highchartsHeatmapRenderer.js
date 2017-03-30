@@ -1,8 +1,4 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
-
-const EventEmitter = require('events');
-const HighchartsHeatmapContainer = require('./HighchartsHeatmapContainer.jsx');
+import HighchartsHeatmapRenderer from './HighchartsHeatmapRenderer.jsx';
 
 /**
  API of this widget
@@ -37,62 +33,50 @@ You could select this option and add yourself an integration test that checks wh
 
 ### Optional connection setup
 @param {string}          options.proxyPrefix - proxy prefix for outbound links, optionally set as "http(s?)://" or to proxy URL e.g. "www.myproxy.org?url="
-@param {string}         options.atlasHost - Atlas host with protocol and port - where to source the data from, default: "https://www.ebi.ac.uk"
+@param {string}          options.atlasHost - Atlas host with protocol and port - where to source the data from, default: "https://www.ebi.ac.uk"
 
 ### Optional options
-@param {boolean}        options.disableGoogleAnalytics - Disable Google Analytics
+@param {boolean}         options.disableGoogleAnalytics - Disable Google Analytics
 @param {function}        options.fail - Callback to run if the AJAX request to the server fails. (jqXHR, textStatus)
-@param {boolean}        options.showAnatomogram - optionally hide the anatomogram
+@param {boolean}         options.showAnatomogram - optionally hide the anatomogram
 
 ### Advanced options
 @param {Object}          options.anatomogramDataEventEmitter - emits events to the facets tree to signal the existence of anatomogram
 @param {boolean}         options.isDifferential
 @param {boolean}         options.isMultiExperiment
-@param {boolean}        options.isWidget - set to true if you're hosting the widget outside Expression Atlas pages
+@param {boolean}         options.isWidget - set to true if you're hosting the widget outside Expression Atlas pages
 
 ### Development only
 @param {string}          options.pathToFolderWithBundledResources - use if you're serving the /svg's from an unusual location. Development only.
 **/
 
-export default function(options) {
-    const atlasHost = options.atlasHost === undefined ? "https://www.ebi.ac.uk" : options.atlasHost;
+export default function(options, newOptions) {
+    if (newOptions) {
+        HighchartsHeatmapRenderer(newOptions);
+    }
+
+    const atlasHost = options.atlasHost === undefined ? `https://www.ebi.ac.uk"` : options.atlasHost;
     const atlasPath = "/gxa";
-    const proxyPrefix = options.proxyPrefix || "https://";
+    const atlasUrl = atlasHost + atlasPath;
 
-    const atlasBaseURL =
-        (atlasHost.indexOf("http://") === 0 || atlasHost.indexOf("https://") === 0
-          ? ""
-          : proxyPrefix)
-        + atlasHost
-        + atlasPath;
+    let queryUrlSegment = options.sourceURL ?
+        options.sourceURL.slice(options.atlasHost.length) : null;
+    queryUrlSegment = queryUrlSegment && queryUrlSegment.startsWith(`/`) ? queryUrlSegment.slice(1) : queryUrlSegment;
 
-    //If using this renderer for a standalone widget, see uk.ac.ebi.atlas.widget.HeatmapWidgetController.java for the source URL/params required
-    const sourceURL = options.sourceURL ||
-                      atlasBaseURL + "/widgets/heatmap"
-                      + (options.isMultiExperiment? "/baselineAnalytics" : "/referenceExperiment")
-                      + "?" + options.params;
+    const experiment = options.params.startsWith(`experiment=`) ?
+        options.params.slice(`experiment=`.length) : null;
 
-    const anatomogramEventEmitter = new EventEmitter();
-    anatomogramEventEmitter.setMaxListeners(0);
+    const transformedOptions = {
+        target: options.target,
+        disableGoogleAnalytics: options.disableGoogleAnalytics,
+        fail: options.fail,
+        showAnatomogram: options.showAnatomogram,
+        isWidget: options.isWidget,
+        atlasUrl: atlasUrl,
+        inProxy: options.proxyPrefix,
+        experiment: experiment ? experiment : null,
+        query: queryUrlSegment ? queryUrlSegment : null
+    };
 
-    ReactDOM.render(
-        React.createElement(
-            HighchartsHeatmapContainer,
-            {
-                sourceURL: sourceURL,
-                atlasBaseURL: atlasBaseURL,
-                proxyPrefix: proxyPrefix,
-                pathToFolderWithBundledResources: options.pathToFolderWithBundledResources || atlasBaseURL + "/resources/js-bundles/",
-                showAnatomogram: options.showAnatomogram === undefined || options.showAnatomogram,
-                isDifferential: !!options.isDifferential,
-                isMultiExperiment: options.isMultiExperiment === undefined || !!options.isMultiExperiment,
-                isWidget: options.isWidget === undefined || options.isWidget,
-                disableGoogleAnalytics: !!options.disableGoogleAnalytics,
-                fail: options.fail,
-                anatomogramEventEmitter:anatomogramEventEmitter,
-                anatomogramDataEventEmitter: options.anatomogramDataEventEmitter
-            }
-        ),
-        (typeof options.target === "string") ? document.getElementById(options.target) : options.target
-    );
+    HighchartsHeatmapRenderer(transformedOptions);
 };

@@ -1,43 +1,37 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import URI from 'urijs';
-import EventEmitter from 'events';
-import ContainerLoader from './layout/ContainerLoader.jsx';
 
-import oldRender from './highchartsHeatmapRenderer.js';
+import ContainerLoader from './layout/ContainerLoader.jsx';
 
 /**
  * @param {Object}          options
  * @param {string | Object} options.target - a <div> id or a DOM element, as returned by ReactDOM.findDOMNode()
- * @param {boolean=}        options.disableGoogleAnalytics - Disable Google Analytics
+ * @param {boolean}         options.disableGoogleAnalytics - Disable Google Analytics
  * @param {function}        options.fail - Callback to run if the AJAX request to the server fails. (jqXHR, textStatus)
- * @param {Object}          options.anatomogramDataEventEmitter - emits events to the facets tree to signal the existence of anatomogram
- * @param {boolean=}        options.showAnatomogram - optionally hide the anatomogram
- * @param {boolean=}        options.isWidget
- *
- * @param {Object}          test - Use new way to build URL
- * @param {string=}         test.atlasUrl - Atlas host and path with protocol and port
- * @param {string}          test.inProxy - Inbound proxy to pull assets from outside your domain
- * @param {string}          test.outProxy - Outbound proxy for links that take you outside the current domain
- * @param {string}          test.experiment
- * @param {Object|string}   test.query - Query object or URL endpoint to source data from:
- *                              e.g. /json/experiments/E-PROT-1, /json/genes/ENSG00000005801, /json/genesets/GO:0000001
- *                                   /json/baseline_refexperiment?geneQuery=..., /json/baseline_experiments?geneQuery=...
- * @param {string}                              test.query.species
- * @param {{value: string, category: string}[]} test.query.gene
- * @param {{value: string, category: string}[]} test.query.condition
+ * @param {boolean}         options.showAnatomogram - optionally hide the anatomogram
+ * @param {boolean}         options.isWidget
+ * @param {string}          options.atlasUrl - Atlas host and path with protocol and port
+ * @param {string}          options.inProxy - Inbound proxy to pull assets from outside your domain
+ * @param {string}          options.outProxy - Outbound proxy for links that take you outside the current domain
+ * @param {string}          options.experiment
+ * @param {Object|string}   options.query - Query object or relative URL endpoint to source data from:
+ *                              e.g. json/experiments/E-PROT-1, json/genes/ENSG00000005801, json/genesets/GO:0000001
+ *                                   json/baseline_refexperiment?geneQuery=…, json/baseline_experiments?geneQuery=…
+ * @param {string}                              options.query.species
+ * @param {{value: string, category: string}[]} options.query.gene
+ * @param {{value: string, category: string}[]} options.query.condition
+ * @param {function}        options.onRender - Callback to run after each render
  */
 
-export default function(options, test) {
+export default function(options) {
 
-    if (!test) {
-        oldRender(options);
-    }
+    const { showAnatomogram = true, isWidget = true, disableGoogleAnalytics = false, fail, onRender = () => {}, target } = options;
+    const { atlasUrl = `https://www.ebi.ac.uk/gxa/`, inProxy = ``, outProxy = ``, experiment = ``, query } = options;
 
-    const { showAnatomogram = true, isWidget = true, disableGoogleAnalytics = false, fail, anatomogramDataEventEmitter,  target } = options;
-    const { atlasUrl = `https://www.ebi.ac.uk/gxa/`, inProxy = ``, outProxy = ``, experiment = ``, query } = test;
-
-    const sourceUrl = URI(resolveEndpoint(experiment)).search(parseQuery(query));
+    const parsedQuery = parseQuery(query);
+    const sourceUrl = typeof parsedQuery === `string` ?
+        parsedQuery : URI(resolveEndpoint(experiment)).search(parseQuery(query));
 
     ReactDOM.render(
         <ContainerLoader inProxy={inProxy}
@@ -47,10 +41,11 @@ export default function(options, test) {
                          showAnatomogram={showAnatomogram}
                          isWidget={isWidget}
                          disableGoogleAnalytics={disableGoogleAnalytics}
-                         fail={fail}
-                         anatomogramDataEventEmitter={anatomogramDataEventEmitter} />,
+                         fail={fail} />,
 
-        typeof target === `string` ? document.getElementById(target) : target
+        typeof target === `string` ? document.getElementById(target) : target,
+
+        onRender
     );
 
 };
@@ -67,6 +62,10 @@ function resolveEndpoint(experiment) {
 }
 
 function parseQuery(query) {
+    if (!query) {
+        return ``;
+    }
+
     if (typeof query === `string`) {
         return query;
     }

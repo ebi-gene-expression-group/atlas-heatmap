@@ -38,8 +38,7 @@ const Container = React.createClass({
 
     render () {
         const heatmapProps = {
-            loadResult: this.props.loadResult,
-            googleAnalyticsCallback: this.props.googleAnalyticsCallback
+            loadResult: this.props.loadResult
         }; // Overridden: ontologyIdsToHighlight, onOntologyIdIsUnderFocus
 
         const anatomogramConfig = {
@@ -106,7 +105,6 @@ const ContainerLoader = React.createClass({
         isWidget: React.PropTypes.bool.isRequired,
         disableGoogleAnalytics: React.PropTypes.bool.isRequired,
         fail: React.PropTypes.func,
-        googleAnalyticsCallback: React.PropTypes.func,
         anatomogramDataEventEmitter: React.PropTypes.object
     },
 
@@ -170,7 +168,6 @@ const ContainerLoader = React.createClass({
             },
             geneSetProfiles: {},
             anatomogramData: {},
-            googleAnalyticsCallback: function () {},
             loadResult: {
                 heatmapConfig: {},
                 orderings: {
@@ -253,10 +250,10 @@ const ContainerLoader = React.createClass({
                     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
                 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
             })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-            ga('create', 'UA-37676851-1', 'auto');
-            ga('send', 'pageview');
-            this.setState({googleAnalyticsCallback: ga});
+            window.ga('create', 'UA-37676851-1', 'auto', 'atlas-highcharts-widget');
+            window.ga('atlas-highcharts-widget.send', 'pageview');
+        } else {
+            window.ga = () => {};
         }
     }
 });

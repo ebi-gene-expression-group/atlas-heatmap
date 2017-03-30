@@ -1,206 +1,255 @@
-const React = require(`react`);
-const FormattersFactory = require(`./Formatters.jsx`);
-const TooltipsFactory = require(`./tooltips/main.jsx`);
-const PropTypes = require(`../PropTypes.js`);
-const Show = require(`../show/main.jsx`);
-const _ = require(`lodash`);
+import React from 'react';
 
-module.exports = React.createClass({
-    displayName: `Heatmap with settings`,
+import OrderingsDropdown from './controls/OrderingsDropdown.jsx';
+import FiltersModal from './controls/filter/FiltersModal.jsx';
+import DownloadButton from './controls/download-button/DownloadButton.jsx';
 
-    propTypes: {
-        loadResult: PropTypes.LoadResult,
-        googleAnalyticsCallback: React.PropTypes.func.isRequired,
-        ontologyIdsToHighlight: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-        onOntologyIdIsUnderFocus: React.PropTypes.func.isRequired
-    },
+import tooltipsFactory from './tooltips/main.jsx';
+import TooltipStateManager from './tooltips/TooltipStateManager.jsx';
+import axesFormatters from './formatters/axesFormatters.jsx';
+import cellTooltipFormatter from './formatters/heatmapCellTooltipFormatter.jsx';
+import HeatmapCanvas from '../show/HeatmapCanvas.jsx';
 
-    getInitialState() {
-        return {
-            ordering: `Default`,
-            filtersSelection: this._filtersInitially(),
-            coexpressionsShown: 0,
-            zoom: false
-        };
-    },
-    _getFilterSelection(name) {
-      return (this.state.filtersSelection.find((f)=>f.name==name) || {selected: []}).selected
-    },
+import HeatmapLegend from '../show/heatmap-legend/HeatmapLegend.jsx';
+import CoexpressionOption from './coexpression/CoexpressionOption.jsx';
 
-    _onUserZoom(zoomedIn) {
-        this.setState({ zoom: zoomedIn })
-    },
+import {manipulate} from './Manipulators.js';
+
+import {heatmapDataPropTypes, heatmapConfigPropTypes, orderingsPropTypesValidator, filterPropTypes}
+from '../manipulate/chartDataPropTypes.js';
+
+class HeatmapWithControls extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    _getSelectedOrdering() {
+        const selectedOrderingKey =
+            Object.keys(this.props.orderings).find(
+                orderingKey => this.props.orderings[orderingKey].name === this.props.selectedOrderingName
+            );
+        return this.props.orderings[selectedOrderingKey];
+    }
 
     _heatmapDataToPresent() {
-        return require(`./Manipulators.js`).manipulate(
+        return manipulate(
             {
-                keepSeries: (series) => this._getFilterSelection(this._expressionLevelInSelectedBucketFilter().name).includes(series.info.name),
-                keepRow: (row) => !row.info.index || row.info.index <= this.state.coexpressionsShown,
-                keepColumn: (columnHeader) => (
-                  this._columnHeadersThatColumnGroupingFiltersSayWeCanInclude().length == 0 ||
-                  this._columnHeadersThatColumnGroupingFiltersSayWeCanInclude().includes(columnHeader.label)
-                ),
-                ordering: this.props.loadResult.orderings[this.state.ordering],
-                allowEmptyColumns:
-                    this.props.loadResult.heatmapConfig.isExperimentPage &&
-                    (_.isEqual(this._filtersInitially(), this._filtersCurrently())),
+                //this.state.selectedHeatmapFilters
+                //.find(selectedFilter => selectedFilter.name === this.props.chartData.expressionLevelFilters.name)
+                //.valueNames
+                keepSeries: series => this.props.selectedFilters[0].valueNames.includes(series.info.name),
+                keepRow: this.props.heatmapConfig.coexpressionsAvailable ?
+                    rowHeader => this._rowHeadersThatCoexpressionSliderSaysWeCanInclude().includes(rowHeader.label) :
+                    () => true,
+                keepColumn: this.props.groupingFilters.length > 0 ?
+                    columnHeader =>
+                        this._columnHeadersThatColumnGroupingFiltersSayWeCanInclude().includes(columnHeader.label) :
+                    () => true,
+                ordering: this._getSelectedOrdering(),
+                allowEmptyColumns: this.props.heatmapConfig.experiment
             },
-            this.props.loadResult.heatmapData
+            this.props.heatmapData
         )
-    },
+    }
+
+    _rowHeadersThatCoexpressionSliderSaysWeCanInclude() {   // to keep up with the quirky function names
+        return this.props.heatmapData.yAxisCategories
+            .slice(0, this.props.coexpressionsShown + 1)
+            .map(yAxisCategory => yAxisCategory.label)
+    }
 
     _columnHeadersThatColumnGroupingFiltersSayWeCanInclude() {
-      return (
-        this._columnBelongsToGroupingFilterPerGrouping()
-        .map((groupingFilter) => groupingFilter.name)
-        .map((name) => this._getFilterSelection(name))
-        .reduce((l,r) => l.concat(r), [])
-      )
-    },
+        // In experiment heatmaps no Anatomical Systems filter are available, but they are built nonetheless and every
+        // grouping filter is selected by default, so all columns are included
+        const groupingFilterNames =
+            this.props.groupingFilters
+                .filter(filter => filter.valueGroupings.length > 0)
+                .map(groupingFilter => groupingFilter.name);
 
-    _labels() {
+        return this.props.selectedFilters
+            .filter(selectedFilter => groupingFilterNames.includes(selectedFilter.name))
+            .reduce((acc, selectedGroupingFilter) => [...acc, ...selectedGroupingFilter.valueNames], []);
+
+    }
+
+    _renderOrderingsAndFilters() {
         return (
-            this.props.loadResult.heatmapData.dataSeries.map(e => ({
-                colour: e.info.colour,
-                name: e.info.name
-            }))
+            this.props.heatmapConfig.isMultiExperiment ?
+                <div>
+                    <OrderingsDropdown orderings={Object.keys(this.props.orderings).map(
+                        orderingKey => this.props.orderings[orderingKey].name)}
+                                       selected={this.props.selectedOrderingName}
+                                       onSelect={this.props.onSelectOrdering}
+                                       zoom={this.props.zoom}
+                                       hasLessThanTwoRows={this.props.heatmapData.xAxisCategories.length < 2}
+                    />
+                    <FiltersModal filters={[this.props.expressionLevelFilters, ...this.props.groupingFilters]}
+                                  selectedFilters={this.props.selectedFilters}
+                                  onSelectFilters={this.props.onSelectFilters}
+                                  disabled={this.props.zoom}
+                    />
+                </div>
+                :
+                null
         );
-    },
+    }
 
-    _orderings() {
-        return {
-            available: Object.keys(this.props.loadResult.orderings),
-            selected: this.state.ordering,
-            onSelect: orderingChosen => {
-                this.setState({ ordering: orderingChosen })
-            }
-      }
-    },
+    _renderDownloadButton(heatmapDataToPresent) {
+        const downloadOptions = {
+            download: {
+                name: this.props.heatmapConfig.shortDescription || "download",
+                descriptionLines:
+                    [
+                        this.props.heatmapConfig.description,
+                        ...this.props.selectedOrderingName ? [`Ordering: ${this.props.selectedOrderingName}`] : [],
+                        ...this.props.heatmapConfig.coexpressionsAvailable ?
+                            [`Including ${this.props.coexpressionsShown} genes with similar expression pattern`] :
+                            []
+                    ],
+                heatmapData: heatmapDataToPresent
+            },
+            disclaimer: this.props.heatmapConfig.disclaimer
+        };
 
-    __filters__() {
-        return [this._expressionLevelInSelectedBucketFilter()].concat(this._columnBelongsToGroupingFilterPerGrouping())
-    },
-
-    _filtersInitially(){
-      return this.__filters__().map((filter) => ({
-        name: filter.name,
-        selected: filter.values
-      }))
-    },
-
-    _filtersCurrently(){
-      return this.__filters__().map((_filter)=>(
-        Object.assign({},
-        _filter,
-        {selected: this._getFilterSelection(_filter.name)}
-      )))
-    },
-
-    _expressionLevelInSelectedBucketFilter() {
         return (
-            {
-                name: `Expression Value${this.props.loadResult.heatmapConfig.isExperimentPage ? ` – relative` : ``}`,
-                values: this.props.loadResult.heatmapData.dataSeries.map(e => e.info.name),
-            }
+            <DownloadButton {...downloadOptions}/>
         )
-    },
-    _columnBelongsToGroupingFilterPerGrouping() {
-      const groupingTriplets = _.flattenDeep(this.props.loadResult.heatmapData.xAxisCategories.reduce((acc, columnHeader) => {
-              const groupingTriplets = columnHeader.info.groupings.map(grouping =>
-                  grouping.values.map(groupingValue =>
-                      ({
-                          name: grouping.name,
-                          groupingLabel: groupingValue.label,
-                          columnLabel: columnHeader.label
-                      })
-                  )
-              );
-              acc.push(groupingTriplets);
-
-              return acc;
-          }
-      ,[]));
-
-      const groupingNames = _.uniq(groupingTriplets.map(groupingTriplet => groupingTriplet.name));
-
-      return groupingNames.map(groupingName => {
-        const columnLabels = _.uniq(groupingTriplets
-            .filter(groupingTriplet => groupingTriplet.name === groupingName)
-            .map(groupingTriplet => groupingTriplet.columnLabel));
-
-        return {
-            name: groupingName,
-            values: columnLabels,
-            valueGroupings:
-              _.uniq(
-                groupingTriplets
-                .map(groupingTriplet => groupingTriplet.groupingLabel)
-              )
-              .sort()
-              .map(groupingLabel => [
-                groupingLabel,
-                _.sortedUniq(
-                  groupingTriplets
-                  .filter(groupingTriplet =>
-                    groupingTriplet.name === groupingName && groupingTriplet.groupingLabel === groupingLabel
-                  )
-                  .map(groupingTriplet => groupingTriplet.columnLabel)
-                )
-              ])
-          };
-        }
-      );
-    },
-
-    _onFilterChange(newFiltersSelection) {
-        this.setState({ filtersSelection: newFiltersSelection });
-    },
-
-    _legend() { //See properties required for HeatmapLegendBox
-      return (
-        this.props.loadResult.heatmapConfig.isExperimentPage
-        ? null
-        : this.props.loadResult.heatmapData.dataSeries
-            .map((e, ix) =>
-              ({
-                key: e.info.name,
-                name: e.info.name,
-                colour: e.info.colour,
-                on: this._getFilterSelection(this._expressionLevelInSelectedBucketFilter().name).includes(e.info.name)
-              })
-            )
-      );
-    },
-
-    _coexpressionOption() {
-        return (
-            this.props.loadResult.heatmapConfig.coexpressions &&
-            {
-                geneName: this.props.loadResult.heatmapConfig.coexpressions.coexpressedGene,
-                numCoexpressionsVisible: this.state.coexpressionsShown,
-                numCoexpressionsAvailable: this.props.loadResult.heatmapConfig.coexpressions.numCoexpressionsAvailable,
-                showCoexpressionsCallback: e => {this.setState({ coexpressionsShown: e })}
-            }
-        );
-    },
+    }
 
     render() {
         const heatmapDataToPresent = this._heatmapDataToPresent();
+
+        const anatomogramCallbacks = (heatmapDataToPresent, highlightOntologyIds) =>
+            ({
+                onUserSelectsRow: rowLabel => {
+                    const y =
+                        heatmapDataToPresent
+                            .yAxisCategories
+                            .findIndex(e => e.label === rowLabel);
+
+                    highlightOntologyIds(
+                        [].concat.apply([],
+                            [].concat.apply([],
+                                heatmapDataToPresent
+                                    .dataSeries
+                                    .map(series => series.data)
+                            )
+                                .filter(point => point.y === y)
+                                .map(point => point.info.xId || heatmapDataToPresent.xAxisCategories[point.x].id)
+                                .map(e => Array.isArray(e) ? e : [e])
+                        )
+                            .filter((e,ix,self) => self.indexOf(e) === ix)
+                    )
+                },
+
+                onUserSelectsColumn: columnLabel => {
+                    highlightOntologyIds(
+                        heatmapDataToPresent
+                            .xAxisCategories
+                            .filter(e => e.label === columnLabel)
+                            .map(e => e.id)
+                            .concat([``])
+                            [0]
+                    )
+                },
+
+                onUserSelectsPoint: columnId => {
+                    //Column ids are, in fact, factorValueOntologyTermId's
+                    highlightOntologyIds(columnId || ``);
+                }
+            });
+
+        const dummyAnatomogramCallbacks = {
+            onUserSelectsRow: () => {
+                console.log(`Anatomogram callback: Select row`)
+            },
+            onUserSelectsColumn: () => {
+                console.log(`Anatomogram callback: Select column`)
+            },
+            onUserSelectsPoint: () => {
+                console.log(`Anatomogram callback: Select point`)
+            }
+        };
+
+
+        const {yAxisStyle, yAxisFormatter, xAxisStyle, xAxisFormatter} = axesFormatters(this.props.heatmapConfig);
+
+        const heatmapProps = {
+            heatmapData: heatmapDataToPresent,
+            cellTooltipFormatter: cellTooltipFormatter(this.props.heatmapConfig),
+            yAxisStyle: yAxisStyle,
+            yAxisFormatter: yAxisFormatter,
+            xAxisStyle: xAxisStyle,
+            xAxisFormatter: xAxisFormatter,
+            onZoom: this.props.onZoom,
+            genomeBrowserTemplate: this.props.heatmapConfig.genomeBrowserTemplate
+            // TODO anatomogram callback to highlight column
+        };
+
+        //<HeatmapCanvas {...heatmapProps} />
         return (
-            Show(
-                heatmapDataToPresent,
-                this._orderings(),
-                this._filtersCurrently(),
-                this._onFilterChange,
-                this.state.zoom,
-                this._onUserZoom,
-                this.props.loadResult.colorAxis||undefined,
-                FormattersFactory(this.props.loadResult.heatmapConfig),
-                TooltipsFactory(this.props.loadResult.heatmapConfig, heatmapDataToPresent.xAxisCategories,heatmapDataToPresent.yAxisCategories),
-                this._legend(),
-                this._coexpressionOption(),
-                this.props
-            )
+            <div>
+                {this._renderOrderingsAndFilters()}
+                {this._renderDownloadButton(heatmapDataToPresent)}
+                <TooltipStateManager managedComponent={HeatmapCanvas}
+                                     managedComponentProps={heatmapProps}
+                                     tooltips={tooltipsFactory(
+                                         this.props.heatmapConfig,
+                                         heatmapDataToPresent.xAxisCategories,
+                                         heatmapDataToPresent.yAxisCategories
+                                     )}
+                                     onHoverColumn={dummyAnatomogramCallbacks.onUserSelectsColumn}
+                                     onHoverRow={dummyAnatomogramCallbacks.onUserSelectsRow}
+                                     onHoverPoint={dummyAnatomogramCallbacks.onUserSelectsPoint}
+                                     enableFreeze={this.props.heatmapConfig.isDifferential}
+                />
+                {this.props.legendItems ?
+                    <HeatmapLegend legendItems={this.props.legendItems}/> :
+                    null
+                }
+                {this.props.heatmapConfig.coexpressionsAvailable ?
+                    <CoexpressionOption geneName={this.props.heatmapData.yAxisCategories[0].label}
+                                        numCoexpressionsVisible={this.props.coexpressionsShown}
+                                        numCoexpressionsAvailable={this.props.heatmapData.yAxisCategories.length - 1}
+                                        showCoexpressionsCallback={e => this.props.onCoexpressionOptionChange(e)}
+                    /> :
+                    null
+                }
+            </div>
         );
     }
-});
+}
+
+HeatmapWithControls.propTypes = {
+    heatmapConfig: heatmapConfigPropTypes.isRequired,
+    heatmapData: heatmapDataPropTypes.isRequired,
+
+    orderings: orderingsPropTypesValidator,
+    selectedOrderingName: React.PropTypes.string.isRequired,
+    onSelectOrdering: React.PropTypes.func.isRequired,
+
+    expressionLevelFilters: filterPropTypes.isRequired,
+    groupingFilters: React.PropTypes.arrayOf(filterPropTypes).isRequired,
+    selectedFilters: React.PropTypes.arrayOf(React.PropTypes.shape({
+        name: React.PropTypes.string.isRequired,
+        valueNames: React.PropTypes.arrayOf(React.PropTypes.string).isRequired
+    })).isRequired,
+    onSelectFilters: React.PropTypes.func.isRequired,
+
+    legendItems: React.PropTypes.arrayOf(React.PropTypes.shape({
+        key: React.PropTypes.string.isRequired,
+        name: React.PropTypes.string.isRequired,
+        colour: React.PropTypes.string.isRequired,
+        on: React.PropTypes.bool.isRequired
+    })),
+
+    coexpressionsShown: React.PropTypes.number,
+    onCoexpressionOptionChange: React.PropTypes.func,
+
+    zoom: React.PropTypes.bool.isRequired,
+    onZoom: React.PropTypes.func,
+    // ontologyIdsToHighlight: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+    // onOntologyIdIsUnderFocus: React.PropTypes.func.isRequired,
+};
+
+export default HeatmapWithControls;
