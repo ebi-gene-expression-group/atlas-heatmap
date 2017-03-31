@@ -72,7 +72,7 @@ class HeatmapWithControls extends React.Component {
 
     }
 
-    _renderOrderingsAndFilters() {
+    _renderOrderingsAndFilters(heatmapDataToPresent) {
         return (
             this.props.heatmapConfig.isMultiExperiment ?
                 <div>
@@ -81,7 +81,7 @@ class HeatmapWithControls extends React.Component {
                                        selected={this.props.selectedOrderingName}
                                        onSelect={this.props.onSelectOrdering}
                                        zoom={this.props.zoom}
-                                       hasLessThanTwoRows={this.props.heatmapData.xAxisCategories.length < 2}
+                                       hasLessThanTwoRows={heatmapDataToPresent.yAxisCategories.length < 2}
                     />
                     <FiltersModal filters={[this.props.expressionLevelFilters, ...this.props.groupingFilters]}
                                   selectedFilters={this.props.selectedFilters}
@@ -189,7 +189,7 @@ class HeatmapWithControls extends React.Component {
         //<HeatmapCanvas {...heatmapProps} />
         return (
             <div>
-                {this._renderOrderingsAndFilters()}
+                {this._renderOrderingsAndFilters(heatmapDataToPresent)}
                 {this._renderDownloadButton(heatmapDataToPresent)}
                 <TooltipStateManager managedComponent={HeatmapCanvas}
                                      managedComponentProps={heatmapProps}
