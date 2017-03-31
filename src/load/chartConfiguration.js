@@ -76,7 +76,7 @@ const getChartConfiguration = (data, inProxy, outProxy, atlasUrl, isWidget) => {
         disclaimer,
         genomeBrowserTemplate,
         ...chartTextDecorations,
-        coexpressionsAvailable: Boolean(!isWidget && data.coexpressions),
+        coexpressionsAvailable: Boolean(data.coexpressions),
         isMultiExperiment: isMultiExperiment(experiment),
         isBaseline: isBaseline(experiment),
         isDifferential: isDifferential(experiment)

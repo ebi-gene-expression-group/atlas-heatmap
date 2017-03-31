@@ -207,7 +207,7 @@ class HeatmapWithControls extends React.Component {
                     <HeatmapLegend legendItems={this.props.legendItems}/> :
                     null
                 }
-                {this.props.heatmapConfig.coexpressionsAvailable ?
+                {this.props.heatmapConfig.coexpressionsAvailable && !this.props.heatmapConfig.isWidget ?
                     <CoexpressionOption geneName={this.props.heatmapData.yAxisCategories[0].label}
                                         numCoexpressionsVisible={this.props.coexpressionsShown}
                                         numCoexpressionsAvailable={this.props.heatmapData.yAxisCategories.length - 1}
