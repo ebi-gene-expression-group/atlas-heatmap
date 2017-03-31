@@ -68,6 +68,11 @@ const BoxplotCanvas = props => {
             tickColor: `rgb(192, 192, 192)`,
             lineColor: `rgb(192, 192, 192)`,
             categories: props.categories,
+            labels: {
+                style: {
+                    fontSize: `9px`
+                }
+            }
             // opposite: 'true'
         },
 
