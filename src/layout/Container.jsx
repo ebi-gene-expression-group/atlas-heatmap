@@ -25,44 +25,30 @@ class Container extends React.Component {
 
     render() {
         const {inProxy, outProxy, atlasUrl, isWidget} = this.props;
-        const {experiment, columnHeaders, columnGroupings, profiles, coexpressions, config} = this.props.data;
-
-        // const heatmapProps = {
-        //     loadResult: Load({
-        //         isExperimentPage: this._isExperimentPage(),
-        //         isMultiExperiment: this.props.isMultiExperiment,
-        //         isReferenceExperiment: this._isReferenceExperiment(),
-        //         isDifferential: this.props.isDifferential,
-        //         atlasBaseURL: this.props.atlasBaseURL,
-        //         proxyPrefix: this.props.proxyPrefix,
-        //         pathToFolderWithBundledResources: this.props.pathToFolderWithBundledResources
-        //     }, data)
-        // };
-
-        // const heatmapProps = {
-        //     loadResult: this.props.loadResult
-        // }; // Overridden: ontologyIdsToHighlight, onOntologyIdIsUnderFocus
-
-        const anatomogramConfig = {
-            anatomogramData: this.props.data.anatomogram,
-            pathToResources: inProxy + URI(`resources/js-bundles/`).absoluteTo(atlasUrl),
-            expressedTissueColour: experiment ? `gray` : `red`,
-            hoveredTissueColour: experiment ? `red` : `purple`,
-            idsExpressedInExperiment: columnHeaders.map(header => header.factorValueOntologyTermId)
-        };
-
+        const {experiment, columnHeaders, columnGroupings, profiles, coexpressions, config, anatomogram} = this.props.data;
         const pathToResources = inProxy + URI(`resources/js-bundles/`).absoluteTo(atlasUrl);
+        
         const chartData = loadChartData(this.props.data, inProxy, outProxy, atlasUrl, pathToResources, isWidget);
 
-        const Wrapped = Anatomogram.wrapComponent(anatomogramConfig, ChartContainer, {chartData: chartData});
-        return (
-            this.props.showAnatomogram && anatomogramConfig.anatomogramData ?
-                <Wrapped /> :
-                <ChartContainer chartData={chartData}
-                                ontologyIdsToHighlight={[]}
-                                onOntologyIdIsUnderFocus={() => {}}
-                />
-        );
+        if (anatomogram && this.props.showAnatomogram) {
+          const Wrapped = Anatomogram.wrapComponent({
+              anatomogramData: anatomogram,
+              pathToResources: inProxy + URI(`resources/js-bundles/`).absoluteTo(atlasUrl),
+              expressedTissueColour: experiment ? `gray` : `red`,
+              hoveredTissueColour: experiment ? `red` : `purple`,
+              idsExpressedInExperiment: columnHeaders.map(header => header.factorValueOntologyTermId)
+          }, ChartContainer, {chartData});
+          return (
+            <Wrapped/>
+          )
+        } else {
+          return (
+            <ChartContainer {...{chartData}}
+                            ontologyIdsToHighlight={[]}
+                            onOntologyIdIsUnderFocus={() => {}}
+            />
+          )
+        }
     }
 }
 
