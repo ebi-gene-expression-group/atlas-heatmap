@@ -36,11 +36,6 @@ src="http://www.ebi.ac.uk/gxa/resources/js-bundles/vendorCommons.bundle.js"></sc
 src="http://www.ebi.ac.uk/gxa/resources/js-bundles/expressionAtlasHeatmapHighcharts.bundle.js"></script>
 ```
 
-You could also build us from source - we use `webpack`/`npm`.
-```
-npm install expression-atlas-heatmap-highcharts
-```
-
 Tell us about any problems by raising an issue in this repository.
 
 #### Invoking the widget
@@ -54,7 +49,15 @@ expressionAtlasHeatmapHighcharts.render({
 });
 ```
 
-At the time of writing the docs are over the code: [here](https://github.com/gxa/atlas-heatmap/blob/master/src/highchartsHeatmapRenderer.js)
+#### Building from source
+
+You can also use us as a React component:
+```
+npm install expression-atlas-heatmap-highcharts
+import { ExpressionAtlasHeatmap } from 'expression-atlas-heatmap-highcharts'
+```
+
+At the time of writing the docs are over the code: [here](https://github.com/gxa/atlas-heatmap/blob/master/src/Main.jsx)
 
 #### Licence
 

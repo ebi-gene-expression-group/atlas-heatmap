@@ -23,45 +23,56 @@ import ContainerLoader from './layout/ContainerLoader.jsx';
  * @param {{value: string, category: string}[]} options.query.condition
  * @param {function}        options.onRender - Callback to run after each render
  */
+const DEFAULT_OPTIONS = {
+  showAnatomogram: true,
+  isWidget: true,
+  disableGoogleAnalytics: false,
+  onRender: () =>{},
+  atlasUrl: 'https://www.ebi.ac.uk/gxa/',
+  inProxy: '',
+  outProxy: '',
+  experiment: ''
+}
 
-export default function(options) {
+const ExpressionAtlasHeatmap = (options) => {
+  const parsedQuery = parseQuery(options.query);
+  const sourceUrl = typeof parsedQuery === `string` ?
+      parsedQuery : URI(resolveEndpoint(options.experiment)).search(parsedQuery);
 
-    const { showAnatomogram = true, isWidget = true, disableGoogleAnalytics = false, fail, onRender = () => {}, target } = options;
-    const { atlasUrl = `https://www.ebi.ac.uk/gxa/`, inProxy = ``, outProxy = ``, experiment = ``, query } = options;
+  return (
+    <ContainerLoader
+      {...DEFAULT_OPTIONS}
+      {...options}
+      sourceUrl={sourceUrl.toString()}
+      />
+  )
+}
 
-    const parsedQuery = parseQuery(query);
-    const sourceUrl = typeof parsedQuery === `string` ?
-        parsedQuery : URI(resolveEndpoint(experiment)).search(parseQuery(query));
+const render = (options) => {
+
+    const { disableGoogleAnalytics, onRender = () => {}, target } = options;
 
     ReactDOM.render(
-        <ContainerLoader inProxy={inProxy}
-                         outProxy={outProxy}
-                         atlasUrl={atlasUrl}
-                         sourceUrl={sourceUrl.toString()}
-                         showAnatomogram={showAnatomogram}
-                         isWidget={isWidget}
-                         disableGoogleAnalytics={disableGoogleAnalytics}
-                         fail={fail} />,
-
+        ExpressionAtlasHeatmap(options),
         typeof target === `string` ? document.getElementById(target) : target,
-
         onRender
     );
 
-    if (!disableGoogleAnalytics) {
+    if (! disableGoogleAnalytics) {
       googleAnalyticsCallback()
     }
 };
 
+export {ExpressionAtlasHeatmap, render}
+
 function resolveEndpoint(experiment) {
-    switch (experiment) {
-        case ``:
-            return `json/baseline_experiments`;
-        case `reference`:
-            return `json/baseline_refexperiment`;
-        default:
-            return `json/experiments/${experiment}`;
-    }
+  return (
+    ! experiment
+    ? `json/baseline_experiments`
+    : experiment === 'reference'
+      ? `json/baseline_refexperiment`
+      : `json/experiments/${experiment}`
+  )
 }
 
 function parseQuery(query) {
