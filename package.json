@@ -17,7 +17,6 @@
     "he": "1.1.0",
     "highcharts": "^5.0.7",
     "highcharts-custom-events": "2.0.10",
-    "jquery": "2.2.1",
     "lodash": "4.17.4",
     "object-hash": "1.1.4",
     "rc-slider": "4.0.1",
@@ -27,10 +26,10 @@
     "react-highcharts": "^11.5.0",
     "react-refetch": "^1.0.0",
     "react-tooltip": "https://github.com/gxa/react-tooltip/tarball/dist",
-    "urijs": "^1.18.7",
-    "whatwg-fetch": "^2.0.2"
+    "urijs": "^1.18.7"
   },
   "devDependencies": {
+    "whatwg-fetch": "^2.0.2",
     "babel-core": "^6.14.0",
     "babel-loader": "^6.2.5",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
