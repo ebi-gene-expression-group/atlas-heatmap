@@ -48,6 +48,9 @@ export default function(options) {
         onRender
     );
 
+    if (!disableGoogleAnalytics) {
+      googleAnalyticsCallback()
+    }
 };
 
 function resolveEndpoint(experiment) {
@@ -80,4 +83,13 @@ function parseQuery(query) {
 
 function stringifyIfNotString(o) {
     return typeof o === `string` ? o : JSON.stringify(o);
+}
+
+function googleAnalyticsCallback() {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  window.ga('create', 'UA-37676851-1', 'auto', 'atlas-highcharts-widget');
+  window.ga('atlas-highcharts-widget.send', 'pageview');
 }

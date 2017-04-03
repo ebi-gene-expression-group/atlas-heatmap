@@ -1,65 +1,85 @@
-import React from 'react';
-import URI from 'urijs';
-import Anatomogram from 'anatomogram';
+import React from 'react'
+import URI from 'urijs'
+import Anatomogram from 'anatomogram'
 
-import ChartContainer from '../manipulate/ChartContainer.jsx';
+import ExperimentDescription from './ExperimentDescription.jsx';
+import Footer from './Footer.jsx';
 
-import dataPropTypes from './jsonPayloadPropTypes.js';
-import loadChartData from '../load/main.js';
+import ChartContainer from '../manipulate/ChartContainer.jsx'
 
-class Container extends React.Component {
-    constructor(props) {
-        super(props);
+import DataPropTypes from './jsonPayloadPropTypes.js'
+import loadChartData from '../load/main.js'
 
-        if (this.props.disableGoogleAnalytics) {
-            window.ga = () => {}
-        } else {
-            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-            window.ga('create', 'UA-37676851-1', 'auto', 'atlas-highcharts-widget');
-            window.ga('atlas-highcharts-widget.send', 'pageview');
-        }
-    }
-
-    render() {
-        const {inProxy, outProxy, atlasUrl, isWidget} = this.props;
-        const {experiment, columnHeaders, columnGroupings, profiles, coexpressions, config, anatomogram} = this.props.data;
-        const pathToResources = inProxy + URI(`resources/js-bundles/`).absoluteTo(atlasUrl);
-        
-        const chartData = loadChartData(this.props.data, inProxy, outProxy, atlasUrl, pathToResources, isWidget);
-
-        if (anatomogram && this.props.showAnatomogram) {
-          const Wrapped = Anatomogram.wrapComponent({
-              anatomogramData: anatomogram,
-              pathToResources: inProxy + URI(`resources/js-bundles/`).absoluteTo(atlasUrl),
-              expressedTissueColour: experiment ? `gray` : `red`,
-              hoveredTissueColour: experiment ? `red` : `purple`,
-              idsExpressedInExperiment: columnHeaders.map(header => header.factorValueOntologyTermId)
-          }, ChartContainer, {chartData});
-          return (
-            <Wrapped/>
-          )
-        } else {
-          return (
-            <ChartContainer {...{chartData}}
-                            ontologyIdsToHighlight={[]}
-                            onOntologyIdIsUnderFocus={() => {}}
-            />
-          )
-        }
-    }
-}
-
-Container.propTypes = {
+const CommonPropTypes = {
     inProxy: React.PropTypes.string.isRequired,
     outProxy: React.PropTypes.string.isRequired,
     atlasUrl: React.PropTypes.string.isRequired,
+    sourceUrl: React.PropTypes.string.isRequired,
     showAnatomogram: React.PropTypes.bool.isRequired,
-    disableGoogleAnalytics: React.PropTypes.bool.isRequired,
-    data: dataPropTypes.isRequired,
-    isWidget: React.PropTypes.bool.isRequired
-};
+    isWidget: React.PropTypes.bool.isRequired,
+    data: DataPropTypes.isRequired
+}
 
-export default Container;
+
+const ChartWithAnatomogram = ({data, inProxy, outProxy, atlasUrl, showAnatomogram,isWidget}) => {
+  const {experiment, columnHeaders, columnGroupings, profiles, coexpressions, config, anatomogram} = data
+  const pathToResources = inProxy + URI(`resources/js-bundles/`).absoluteTo(atlasUrl)
+
+  const chartData = loadChartData(data, inProxy, outProxy, atlasUrl, pathToResources, isWidget)
+
+  if (anatomogram && showAnatomogram) {
+    const Wrapped = Anatomogram.wrapComponent({
+        anatomogramData: anatomogram,
+        pathToResources: inProxy + URI(`resources/js-bundles/`).absoluteTo(atlasUrl),
+        expressedTissueColour: experiment ? `gray` : `red`,
+        hoveredTissueColour: experiment ? `red` : `purple`,
+        idsExpressedInExperiment: columnHeaders.map(header => header.factorValueOntologyTermId)
+    }, ChartContainer, {chartData})
+    return (
+      <Wrapped/>
+    )
+  } else {
+    return (
+      <ChartContainer {...{chartData}}
+                      ontologyIdsToHighlight={[]}
+                      onOntologyIdIsUnderFocus={() => {}}
+      />
+    )
+  }
+}
+
+ChartWithAnatomogram.propTypes = CommonPropTypes
+
+const Container = (props) => {
+  const {data, inProxy, outProxy, atlasUrl, showAnatomogram,isWidget} = props
+  const {geneQuery, conditionQuery, species} = data.config
+
+  const moreInformationUrl = data.experiment ?    // single experiment?
+      URI(data.experiment.relUrl).absoluteTo(atlasUrl).search(``) :
+      URI(atlasUrl).segment(`query`).search({geneQuery, conditionQuery, species})
+
+  return (
+      <div>
+          {isWidget && data.experiment &&
+              <ExperimentDescription outProxy={outProxy}
+                                     experimentUrl={URI(data.experiment.relUrl).absoluteTo(atlasUrl).toString()}
+                                     description={data.experiment.description} />
+          }
+
+          <ChartWithAnatomogram
+             {...props} />
+
+          {isWidget &&
+              <Footer outProxy={outProxy}
+                      atlasUrl={atlasUrl}
+                      moreInformationUrl={moreInformationUrl.toString()} />
+          }
+      </div>
+  )
+}
+
+Container.propTypes = CommonPropTypes
+
+
+
+export default Container
