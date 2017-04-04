@@ -6,7 +6,6 @@ import HighchartsCustomEvents from 'highcharts-custom-events';
 const Highcharts = ReactHighcharts.Highcharts;
 HighchartsHeatmap(Highcharts);
 HighchartsCustomEvents(Highcharts);
-// require('highcharts-custom-events')(Highcharts);
 
 import hash from 'object-hash';
 
@@ -27,7 +26,6 @@ class HeatmapCanvas extends React.Component {
         // Don’t call render again after zoom happens
         return hash.MD5(nextProps.heatmapData)!==hash.MD5(this.props.heatmapData);
     }
-
 
     _countColumns() {
         return this.props.heatmapData.xAxisCategories.length;
@@ -209,6 +207,12 @@ class HeatmapCanvas extends React.Component {
 
             tooltip: {
                 useHTML: true,
+                shared: false,
+                borderRadius: 0,
+                borderWidth: 0,
+                shadow: false,
+                enabled: true,
+                backgroundColor: `none`,
                 formatter: function() {
                     return cellTooltipFormatter(this.series, this.point);
                 }
