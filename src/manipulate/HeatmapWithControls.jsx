@@ -72,24 +72,29 @@ class HeatmapWithControls extends React.Component {
 
     }
 
-    _renderOrderingsAndFilters(heatmapDataToPresent) {
+    _renderOrderings(heatmapDataToPresent) {
         return (
             this.props.heatmapConfig.isMultiExperiment ?
-                <div>
-                    <OrderingsDropdown orderings={Object.keys(this.props.orderings).map(
-                        orderingKey => this.props.orderings[orderingKey].name)}
-                                       selected={this.props.selectedOrderingName}
-                                       onSelect={this.props.onSelectOrdering}
-                                       zoom={this.props.zoom}
-                                       hasLessThanTwoRows={heatmapDataToPresent.yAxisCategories.length < 2}
-                    />
-                    <FiltersModal filters={[this.props.expressionLevelFilters, ...this.props.groupingFilters]}
-                                  selectedFilters={this.props.selectedFilters}
-                                  onSelectFilters={this.props.onSelectFilters}
-                                  disabled={this.props.zoom}
-                    />
-                </div>
+                <OrderingsDropdown orderings={Object.keys(this.props.orderings).map(
+                    orderingKey => this.props.orderings[orderingKey].name)}
+                                   selected={this.props.selectedOrderingName}
+                                   onSelect={this.props.onSelectOrdering}
+                                   zoom={this.props.zoom}
+                                   hasLessThanTwoRows={heatmapDataToPresent.yAxisCategories.length < 2}
+                />
                 :
+                null
+        );
+    }
+
+    _renderFilters() {
+        return (
+            this.props.heatmapConfig.isMultiExperiment ?
+                <FiltersModal filters={[this.props.expressionLevelFilters, ...this.props.groupingFilters]}
+                              selectedFilters={this.props.selectedFilters}
+                              onSelectFilters={this.props.onSelectFilters}
+                              disabled={this.props.zoom}
+                /> :
                 null
         );
     }
@@ -186,11 +191,19 @@ class HeatmapWithControls extends React.Component {
             // TODO anatomogram callback to highlight column
         };
 
-        //<HeatmapCanvas {...heatmapProps} />
         return (
             <div>
-                {this._renderOrderingsAndFilters(heatmapDataToPresent)}
-                {this._renderDownloadButton(heatmapDataToPresent)}
+                <div style={{float: `right`}}>
+                    <div style={{display: `inline-block`, padding: `5px`}}>
+                        {this._renderOrderings(heatmapDataToPresent)}
+                    </div>
+                    <div style={{display: `inline-block`, padding: `5px`}}>
+                        {this._renderFilters()}
+                    </div>
+                    <div style={{display: `inline-block`, padding: `5px`}}>
+                        {this._renderDownloadButton(heatmapDataToPresent)}
+                    </div>
+                </div>
                 <TooltipStateManager managedComponent={HeatmapCanvas}
                                      managedComponentProps={heatmapProps}
                                      tooltips={tooltipsFactory(

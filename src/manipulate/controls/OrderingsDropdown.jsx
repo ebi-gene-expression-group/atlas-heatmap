@@ -25,7 +25,7 @@ class OrderingsDropdown extends React.Component{
 
     render() {
         return (
-            <span>
+            <div>
                 <Dropdown id="orderings-dropdown"
                           onSelect={(key, e) => this.handleChange(key, e)}
                           title={this.props.zoom ? `Reset zoom to enable sorting options` : ``}
@@ -45,7 +45,7 @@ class OrderingsDropdown extends React.Component{
                     </Dropdown.Menu>
 
                 </Dropdown>
-            </span>
+            </div>
         )
     }
 
