@@ -122,8 +122,6 @@ class HeatmapWithControls extends React.Component {
     }
 
     render() {
-        const heatmapDataToPresent = this._heatmapDataToPresent();
-
         const anatomogramCallbacks = (heatmapDataToPresent, highlightOntologyIds) =>
             ({
                 onUserSelectsRow: rowLabel => {
@@ -176,7 +174,7 @@ class HeatmapWithControls extends React.Component {
             }
         };
 
-
+        const heatmapDataToPresent = this._heatmapDataToPresent();
         const {yAxisStyle, yAxisFormatter, xAxisStyle, xAxisFormatter} = axesFormatters(this.props.heatmapConfig);
 
         const heatmapProps = {
@@ -204,18 +202,23 @@ class HeatmapWithControls extends React.Component {
                         {this._renderDownloadButton(heatmapDataToPresent)}
                     </div>
                 </div>
-                <TooltipStateManager managedComponent={HeatmapCanvas}
-                                     managedComponentProps={heatmapProps}
-                                     tooltips={tooltipsFactory(
-                                         this.props.heatmapConfig,
-                                         heatmapDataToPresent.xAxisCategories,
-                                         heatmapDataToPresent.yAxisCategories
-                                     )}
-                                     onHoverColumn={dummyAnatomogramCallbacks.onUserSelectsColumn}
-                                     onHoverRow={dummyAnatomogramCallbacks.onUserSelectsRow}
-                                     onHoverPoint={dummyAnatomogramCallbacks.onUserSelectsPoint}
-                                     enableFreeze={this.props.heatmapConfig.isDifferential}
-                />
+                <div style={{clear: `both`}}>
+                {heatmapProps.heatmapData.yAxisCategories < 1 ?
+                    <div style={{padding: `50px 0`}}>No data match your filtering criteria or your original query. Please, change your query or your filters and try again.</div>
+                    :
+                    <TooltipStateManager managedComponent={HeatmapCanvas}
+                                         managedComponentProps={heatmapProps}
+                                         tooltips={tooltipsFactory(
+                                             this.props.heatmapConfig,
+                                             heatmapDataToPresent.xAxisCategories,
+                                             heatmapDataToPresent.yAxisCategories
+                                         )}
+                                         onHoverColumn={dummyAnatomogramCallbacks.onUserSelectsColumn}
+                                         onHoverRow={dummyAnatomogramCallbacks.onUserSelectsRow}
+                                         onHoverPoint={dummyAnatomogramCallbacks.onUserSelectsPoint}
+                                         enableFreeze={this.props.heatmapConfig.isDifferential}
+                    />
+                }
                 {this.props.legendItems ?
                     <HeatmapLegend legendItems={this.props.legendItems}/> :
                     null
@@ -228,6 +231,7 @@ class HeatmapWithControls extends React.Component {
                     /> :
                     null
                 }
+                </div>
             </div>
         );
     }
