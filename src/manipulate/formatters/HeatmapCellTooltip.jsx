@@ -10,7 +10,7 @@ class HeatmapCellTooltip extends React.Component {
 
     render() {
         return (
-            <div style={{whiteSpace: `pre`, background: `rgba(255, 255, 255, .80)`, padding: `5px`, border: `1px solid darkgrey`, borderRadius: `3px`, boxShadow:`3px 3px 3px darkgrey`}}>
+            <div style={{whiteSpace: `pre`, background: `rgba(255, 255, 255, .85)`, padding: `5px`, border: `1px solid darkgray`, borderRadius: `3px`, boxShadow:`2px 2px 2px darkslategray`}}>
                 {this._div(this.props.config.yAxisLegendName, this.props.yLabel)}
                 {this._div(this.props.xAxisLegendName || this.props.config.xAxisLegendName, this.props.xLabel)}
                 {this.props.config.isDifferential ?
