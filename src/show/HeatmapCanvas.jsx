@@ -24,7 +24,7 @@ class HeatmapCanvas extends React.Component {
     shouldComponentUpdate(nextProps) {
         // Callback that does setState fails: https://github.com/kirjs/react-highcharts/issues/245
         // Don’t call render again after zoom happens
-        return hash.MD5(nextProps.heatmapData)!==hash.MD5(this.props.heatmapData);
+        return hash.MD5(nextProps.heatmapData) !== hash.MD5(this.props.heatmapData);
     }
 
     _countColumns() {
@@ -32,6 +32,7 @@ class HeatmapCanvas extends React.Component {
     }
 
     _getAdjustedMarginRight() {
+        // TODO Should add extra margin if labels are slanted and last ones (3 or so?) are very long. See reference_experiment_single_gene.html
         const initialMarginRight = 60;
         return initialMarginRight * (1 + 10 / Math.pow(1 + this._countColumns(), 2));
     }
