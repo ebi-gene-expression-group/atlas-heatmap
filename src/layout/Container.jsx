@@ -1,5 +1,6 @@
 import React from 'react'
 import URI from 'urijs'
+
 import Anatomogram from 'anatomogram'
 
 import ExperimentDescription from './ExperimentDescription.jsx';
@@ -18,14 +19,13 @@ const CommonPropTypes = {
     showAnatomogram: React.PropTypes.bool.isRequired,
     isWidget: React.PropTypes.bool.isRequired,
     data: DataPropTypes.isRequired
-}
-
+};
 
 const ChartWithAnatomogram = ({data, inProxy, outProxy, atlasUrl, showAnatomogram,isWidget}) => {
-  const {experiment, columnHeaders, columnGroupings, profiles, coexpressions, config, anatomogram} = data
-  const pathToResources = inProxy + URI(`resources/js-bundles/`).absoluteTo(atlasUrl)
+  const {experiment, columnHeaders, columnGroupings, profiles, coexpressions, config, anatomogram} = data;
+  const pathToResources = inProxy + URI(`resources/js-bundles/`).absoluteTo(atlasUrl);
 
-  const chartData = loadChartData(data, inProxy, outProxy, atlasUrl, pathToResources, isWidget)
+  const chartData = loadChartData(data, inProxy, outProxy, atlasUrl, pathToResources, isWidget);
 
   if (anatomogram && showAnatomogram) {
     const Wrapped = Anatomogram.wrapComponent({
@@ -46,17 +46,17 @@ const ChartWithAnatomogram = ({data, inProxy, outProxy, atlasUrl, showAnatomogra
       />
     )
   }
-}
+};
 
-ChartWithAnatomogram.propTypes = CommonPropTypes
+ChartWithAnatomogram.propTypes = CommonPropTypes;
 
 const Container = (props) => {
-  const {data, inProxy, outProxy, atlasUrl, showAnatomogram,isWidget} = props
-  const {geneQuery, conditionQuery, species} = data.config
+  const {data, inProxy, outProxy, atlasUrl, showAnatomogram,isWidget} = props;
+  const {geneQuery, conditionQuery, species} = data.config;
 
   const moreInformationUrl = data.experiment ?    // single experiment?
       URI(data.experiment.relUrl).absoluteTo(atlasUrl).search(``) :
-      URI(atlasUrl).segment(`query`).search({geneQuery, conditionQuery, species})
+      URI(atlasUrl).segment(`query`).search({geneQuery, conditionQuery, species});
 
   return (
       <div>
@@ -66,8 +66,7 @@ const Container = (props) => {
                                      description={data.experiment.description} />
           }
 
-          <ChartWithAnatomogram
-             {...props} />
+          <ChartWithAnatomogram {...props} />
 
           {isWidget &&
               <Footer outProxy={outProxy}
@@ -76,10 +75,8 @@ const Container = (props) => {
           }
       </div>
   )
-}
+};
 
-Container.propTypes = CommonPropTypes
-
-
+Container.propTypes = CommonPropTypes;
 
 export default Container
