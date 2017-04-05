@@ -96,7 +96,7 @@ HeatmapCellTooltip.propTypes = {
     unit: React.PropTypes.string.isRequired,
     foldChange: React.PropTypes.number,
     pValue: React.PropTypes.number,
-    tStat: React.PropTypes.string,
+    tStat: React.PropTypes.number,
     xAxisLegendName: React.PropTypes.string
 };
 

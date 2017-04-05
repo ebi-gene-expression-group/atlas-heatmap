@@ -93,7 +93,7 @@ const dataClassesFromSeries = dataSeries => {
             ({
                 from: x.min,
                 to: x.max,
-                color: x.medianColour.hexString()
+                colour: x.medianColour.hexString()
             })
         )
     );

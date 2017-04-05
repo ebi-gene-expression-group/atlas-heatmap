@@ -18,11 +18,10 @@ const buildHeatMapDataPointFromExpression = function(rowInfo, rowIndex, expressi
                         x: expressionIndex,
                         y: rowIndex,
                         value: expression.foldChange,
-                        // TODO pValue and tStat are passed in as strings
                         info: {
-                            pValue: +expression.pValue,
+                            pValue: expression.pValue,
                             foldChange: expression.foldChange,
-                            tStat: +expression.tStat || ``,
+                            tStat: expression.tStat,
                             ...rowInfo
                         }
                     } :
@@ -98,14 +97,14 @@ const _splitDataSetByProportion = (data, names, colours) => {
     );
 };
 
-const splitGeneRowsIntoProportionalSeriesOfDataPoints = (profilesRows, experiment, filters, names, colors) => {
+const splitGeneRowsIntoProportionalSeriesOfDataPoints = (profilesRows, experiment, filters, names, colours) => {
     const dataPoints =
         _.flatten(profilesRows.map(
             (row, rowIndex) => buildDataPointsFromRowExpressions(experiment, row, rowIndex)));
 
     return _.flatten(
         _.range(filters.length).map(
-            i => _splitDataSetByProportion(dataPoints.filter(filters[i]), names[i], colors[i])));
+            i => _splitDataSetByProportion(dataPoints.filter(filters[i]), names[i], colours[i])));
 };
 
 // chain is a lodash wrapper of an array of pairs: [[0, dataPoint1], [0, dataPoint2], ... [3, dataPointN]]

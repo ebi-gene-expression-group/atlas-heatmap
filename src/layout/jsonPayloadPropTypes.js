@@ -52,7 +52,6 @@ const baselineExperimentProfilesRowsPropTypes = React.PropTypes.shape({
     id: React.PropTypes.string.isRequired,              // Experiment accession
     experimentType: React.PropTypes.string.isRequired,
     name: React.PropTypes.string.isRequired,            // Human-friendly exp. name with slice
-    serializedFilterFactors: React.PropTypes.string.isRequired,
     expressions: React.PropTypes.arrayOf(React.PropTypes.shape({
         value: React.PropTypes.number,
     })).isRequired,
@@ -60,10 +59,7 @@ const baselineExperimentProfilesRowsPropTypes = React.PropTypes.shape({
 });
 
 const baselineGeneProfilesRowsExpressionsPropTypes = React.PropTypes.shape({
-    factorName: React.PropTypes.string.isRequired,
-    color: React.PropTypes.string.isRequired,
     value: React.PropTypes.number,
-    svgPathId: React.PropTypes.string,
     quartiles: React.PropTypes.shape({
         min: React.PropTypes.number.isRequired,
         lower: React.PropTypes.number.isRequired,
@@ -76,12 +72,13 @@ const baselineGeneProfilesRowsExpressionsPropTypes = React.PropTypes.shape({
 const baselineGeneProfilesRowsPropTypes = React.PropTypes.shape({
     id: React.PropTypes.string.isRequired,              // Gene ID
     name: React.PropTypes.string.isRequired,            // Gene name
-    expressions: React.PropTypes.arrayOf(baselineGeneProfilesRowsExpressionsPropTypes).isRequired
+    expressions: React.PropTypes.arrayOf(baselineGeneProfilesRowsExpressionsPropTypes).isRequired,
+    uri: React.PropTypes.string.isRequired
 });
 
 
 const baselineProfilesPropTypes = React.PropTypes.shape({
-    searchResultTotal: React.PropTypes.number.isRequired,
+    searchResultTotal: React.PropTypes.string.isRequired,
     rows: React.PropTypes.arrayOf(React.PropTypes.oneOfType([
         baselineExperimentProfilesRowsPropTypes,
         baselineGeneProfilesRowsPropTypes
@@ -101,9 +98,8 @@ const differentialProfilesPropTypes = React.PropTypes.shape({
             contrastName: React.PropTypes.string.isRequired,
             color: React.PropTypes.string,
             foldChange: React.PropTypes.number,
-            // TODO pValue and tStat should be numbers too
-            pValue: React.PropTypes.string,
-            tStat: React.PropTypes.string
+            pValue: React.PropTypes.number,
+            tStat: React.PropTypes.number
         })).isRequired
     })).isRequired,
     searchResultTotal: React.PropTypes.number
@@ -143,13 +139,7 @@ const dataPropTypes = React.PropTypes.shape({
     })).isRequired,
 
     profiles: React.PropTypes.oneOfType([
-        React.PropTypes.shape({
-            searchResultTotal: React.PropTypes.number.isRequired,
-            rows: React.PropTypes.arrayOf(React.PropTypes.oneOfType([
-                baselineExperimentProfilesRowsPropTypes,
-                baselineGeneProfilesRowsPropTypes
-            ])).isRequired
-        }),
+        baselineProfilesPropTypes,
         differentialProfilesPropTypes
     ]).isRequired,
 

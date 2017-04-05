@@ -27,7 +27,7 @@ export default function(data, inProxy, outProxy, atlasUrl, pathToResources, isWi
         heatmapData,
         boxplotData,
         heatmapConfig: getChartConfiguration(data, inProxy, outProxy, atlasUrl, isWidget),
-        colorAxis : getColourAxisFromDataSeries(data.experiment, heatmapData.dataSeries),
+        colourAxis : getColourAxisFromDataSeries(data.experiment, heatmapData.dataSeries),
         orderings: createOrderingsForData(data.experiment, allRows, data.columnHeaders),
         expressionLevelFilters: getExpressionLevelFilters(data.experiment, heatmapData.dataSeries),
         groupingFilters: getColumnGroupingFilters(heatmapData.xAxisCategories)

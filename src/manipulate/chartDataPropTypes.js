@@ -84,7 +84,7 @@ const heatmapDataPropTypes = React.PropTypes.shape({
                 unit: React.PropTypes.string.isRequired,
                 foldChange: React.PropTypes.number, // These three only in diff experiments
                 pValue: React.PropTypes.number,
-                tStat: React.PropTypes.string       // TODO Should be number
+                tStat: React.PropTypes.number
             }).isRequired,
             value: React.PropTypes.number.isRequired,
             x: React.PropTypes.number.isRequired,
@@ -162,15 +162,17 @@ const filterPropTypes = React.PropTypes.shape({
     valueGroupings: React.PropTypes.array // Indirectly validated as [string, array of strings] in FilterOption
 });
 
+const colourAxisPropTypes = React.PropTypes.shape({
+    dataClasses: React.PropTypes.arrayOf(React.PropTypes.shape({
+        colour: React.PropTypes.string.isRequired,
+        from: React.PropTypes.number.isRequired,
+        to: React.PropTypes.number.isRequired
+    })).isRequired
+});
+
 const chartDataPropTypes = React.PropTypes.shape({
     heatmapConfig: heatmapConfigPropTypes.isRequired,
-    colorAxis: React.PropTypes.shape({
-        dataClasses: React.PropTypes.arrayOf(React.PropTypes.shape({
-            color: React.PropTypes.string.isRequired,
-            from: React.PropTypes.number.isRequired,
-            to: React.PropTypes.number.isRequired
-        })).isRequired
-    }),
+    colourAxis: colourAxisPropTypes,
     orderings: orderingsPropTypesValidator,
     heatmapData: heatmapDataPropTypes.isRequired,
     boxplotData: boxplotDataPropTypes,
@@ -178,4 +180,4 @@ const chartDataPropTypes = React.PropTypes.shape({
     groupingFilters: React.PropTypes.arrayOf(filterPropTypes)
 });
 
-export {heatmapConfigPropTypes, heatmapDataPropTypes, chartDataPropTypes, orderingsPropTypesValidator, filterPropTypes};
+export {heatmapConfigPropTypes, heatmapDataPropTypes, chartDataPropTypes, orderingsPropTypesValidator, filterPropTypes, colourAxisPropTypes};
