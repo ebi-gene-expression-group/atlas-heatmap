@@ -43,9 +43,8 @@ const getHeatmapXAxisCategories = (columnHeaders, columnGroupings, experiment, i
                             resources:
                                 columnHeader.resources.map(resource => ({
                                     type: resource.type,
-                                    uri: inProxy + atlasUrl + resource.uri,
-                                    icon: inProxy + atlasUrl +
-                                    Url.resolve(
+                                    uri: Url.resolve(inProxy + atlasUrl, resource.uri),
+                                    icon: Url.resolve(
                                         pathToResources,
                                         Path.basename(require(`../../assets/${resource.type}-icon.png`)))
                                 })),
