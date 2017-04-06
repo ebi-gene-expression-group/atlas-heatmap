@@ -31,12 +31,6 @@ class ChartContainer extends React.Component {
         this.onZoom = this._onZoom.bind(this);
     }
 
-    _getSelectedExpressionLevelFilters() {
-        return this.state.selectedHeatmapFilters
-            .find(selectedFilter => selectedFilter.name === this.props.chartData.expressionLevelFilters.name)
-            .valueNames;
-    }
-
     _onZoom(zoom) {
         this.setState({ zoom: zoom });
     }
@@ -59,26 +53,13 @@ class ChartContainer extends React.Component {
         return this.state.chartType === `heatmap` ? `boxplot` : `heatmap`;
     }
 
-    _getLegendItems() {
-        return this.props.chartData.heatmapConfig.isMultiExperiment ?
-            this.props.chartData.heatmapData.dataSeries
-                .map(series =>
-                    ({
-                        key: series.info.name,
-                        name: series.info.name,
-                        colour: series.info.colour,
-                        on: this._getSelectedExpressionLevelFilters().includes(series.info.name)
-                    })
-                ) :
-            null;
-    }
-
     _getChart() {
         switch (this.state.chartType) {
             case `heatmap`:
                 return (
                     <HeatmapWithControls heatmapConfig={this.props.chartData.heatmapConfig}
                                          heatmapData={this.props.chartData.heatmapData}
+                                         colourAxis={this.props.chartData.colourAxis}
 
                                          orderings={this.props.chartData.orderings}
                                          selectedOrderingName={this.state.selectedHeatmapOrderingName}
@@ -91,8 +72,6 @@ class ChartContainer extends React.Component {
 
                                          coexpressionsShown={this.state.heatmapCoexpressionsShown}
                                          onCoexpressionOptionChange={this.onCoexpressionOptionChange}
-
-                                         legendItems={this._getLegendItems()}
 
                                          zoom={this.state.zoom}
                                          onZoom={this.onZoom}

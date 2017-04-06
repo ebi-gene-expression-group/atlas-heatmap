@@ -4,23 +4,30 @@ import OrderingsDropdown from './controls/OrderingsDropdown.jsx';
 import FiltersModal from './controls/filter/FiltersModal.jsx';
 import DownloadButton from './controls/download-button/DownloadButton.jsx';
 
-import tooltipsFactory from './tooltips/main.jsx';
 import TooltipStateManager from './tooltips/TooltipStateManager.jsx';
-import axesFormatters from './formatters/axesFormatters.jsx';
-import cellTooltipFormatter from './formatters/heatmapCellTooltipFormatter.jsx';
 import HeatmapCanvas from '../show/HeatmapCanvas.jsx';
 
-import HeatmapLegend from '../show/heatmap-legend/HeatmapLegend.jsx';
+import tooltipsFactory from './tooltips/main.jsx';
+import cellTooltipFormatter from './formatters/heatmapCellTooltipFormatter.jsx';
+import axesFormatters from './formatters/axesFormatters.jsx';
+
+import HeatmapLegend from './heatmap-legend/HeatmapLegend.jsx';
 import CoexpressionOption from './coexpression/CoexpressionOption.jsx';
 
 import {manipulate} from './Manipulators.js';
 
-import {heatmapDataPropTypes, heatmapConfigPropTypes, orderingsPropTypesValidator, filterPropTypes}
+import {heatmapDataPropTypes, heatmapConfigPropTypes, orderingsPropTypesValidator, filterPropTypes, colourAxisPropTypes}
 from '../manipulate/chartDataPropTypes.js';
 
 class HeatmapWithControls extends React.Component {
     constructor(props) {
         super(props);
+    }
+
+    _getSelectedExpressionLevelFilters() {
+        return this.props.selectedFilters
+            .find(selectedFilter => selectedFilter.name === this.props.expressionLevelFilters.name)
+            .valueNames;
     }
 
     _getSelectedOrdering() {
@@ -46,7 +53,7 @@ class HeatmapWithControls extends React.Component {
                         this._columnHeadersThatColumnGroupingFiltersSayWeCanInclude().includes(columnHeader.label) :
                     () => true,
                 ordering: this._getSelectedOrdering(),
-                allowEmptyColumns: this.props.heatmapConfig.experiment
+                allowEmptyColumns: Boolean(this.props.heatmapConfig.experiment)
             },
             this.props.heatmapData
         )
@@ -179,6 +186,7 @@ class HeatmapWithControls extends React.Component {
 
         const heatmapProps = {
             heatmapData: heatmapDataToPresent,
+            colourAxis: this.props.colourAxis,
             cellTooltipFormatter: cellTooltipFormatter(this.props.heatmapConfig),
             yAxisStyle: yAxisStyle,
             yAxisFormatter: yAxisFormatter,
@@ -206,23 +214,30 @@ class HeatmapWithControls extends React.Component {
                 {heatmapProps.heatmapData.yAxisCategories < 1 ?
                     <div style={{padding: `50px 0`}}>No data match your filtering criteria or your original query. Please, change your query or your filters and try again.</div>
                     :
-                    <TooltipStateManager managedComponent={HeatmapCanvas}
-                                         managedComponentProps={heatmapProps}
-                                         tooltips={tooltipsFactory(
-                                             this.props.heatmapConfig,
-                                             heatmapDataToPresent.xAxisCategories,
-                                             heatmapDataToPresent.yAxisCategories
-                                         )}
-                                         onHoverColumn={dummyAnatomogramCallbacks.onUserSelectsColumn}
-                                         onHoverRow={dummyAnatomogramCallbacks.onUserSelectsRow}
-                                         onHoverPoint={dummyAnatomogramCallbacks.onUserSelectsPoint}
-                                         enableFreeze={this.props.heatmapConfig.isDifferential}
-                    />
+                    <div>
+                        <div style={{padding: `10px 0`}}>
+                            {this.props.heatmapConfig.introductoryMessage}
+                        </div>
+                        <TooltipStateManager managedComponent={HeatmapCanvas}
+                                             managedComponentProps={heatmapProps}
+                                             tooltips={tooltipsFactory(
+                                                 this.props.heatmapConfig,
+                                                 heatmapDataToPresent.xAxisCategories,
+                                                 heatmapDataToPresent.yAxisCategories
+                                             )}
+                                             onHoverColumn={dummyAnatomogramCallbacks.onUserSelectsColumn}
+                                             onHoverRow={dummyAnatomogramCallbacks.onUserSelectsRow}
+                                             onHoverPoint={dummyAnatomogramCallbacks.onUserSelectsPoint}
+                                             enableFreeze={this.props.heatmapConfig.isDifferential}
+                        />
+                    </div>
                 }
-                {this.props.legendItems ?
-                    <HeatmapLegend legendItems={this.props.legendItems}/> :
-                    null
-                }
+                <HeatmapLegend heatmapConfig={this.props.heatmapConfig}
+                               dataSeries={this.props.heatmapData.dataSeries}
+                               selectedExpressionLevelFilters={this._getSelectedExpressionLevelFilters()}
+                               colourAxis={this.props.colourAxis}
+                />
+
                 {this.props.heatmapConfig.coexpressionsAvailable && !this.props.heatmapConfig.isWidget ?
                     <CoexpressionOption geneName={this.props.heatmapData.yAxisCategories[0].label}
                                         numCoexpressionsVisible={this.props.coexpressionsShown}
@@ -240,6 +255,7 @@ class HeatmapWithControls extends React.Component {
 HeatmapWithControls.propTypes = {
     heatmapConfig: heatmapConfigPropTypes.isRequired,
     heatmapData: heatmapDataPropTypes.isRequired,
+    colourAxis: colourAxisPropTypes,    // Only available in experiment heatmap
 
     orderings: orderingsPropTypesValidator,
     selectedOrderingName: React.PropTypes.string.isRequired,
@@ -259,6 +275,15 @@ HeatmapWithControls.propTypes = {
         colour: React.PropTypes.string.isRequired,
         on: React.PropTypes.bool.isRequired
     })),
+
+    dataSeriesLegendProps: React.PropTypes.arrayOf(React.PropTypes.shape({
+        key: React.PropTypes.string.isRequired,
+        name: React.PropTypes.string.isRequired,
+        colour: React.PropTypes.string.isRequired,
+        on: React.PropTypes.bool.isRequired
+    })),
+
+    gradientLegendProps: colourAxisPropTypes,
 
     coexpressionsShown: React.PropTypes.number,
     onCoexpressionOptionChange: React.PropTypes.func,

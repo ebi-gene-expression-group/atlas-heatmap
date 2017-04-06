@@ -1,25 +1,23 @@
 import React from 'react';
 
-import './HeatmapLegend.less';
+import './DataSeriesHeatmapLegend.less';
 
-const HeatmapLegendBox = props =>
+const DataSeriesHeatmapLegendBox = props =>
     <div className={`legend-item${props.on ? `` : ` legend-item-off`}`}>
         <div style={{background: props.colour}} className="legend-rectangle"/>
         <span style={{verticalAlign: `middle`}}>{props.name}</span>
     </div>;
 
-const HeatmapLegendBoxPropTypes = {
+DataSeriesHeatmapLegendBox.propTypes = {
     name: React.PropTypes.string.isRequired,
     colour: React.PropTypes.string.isRequired,
     on: React.PropTypes.bool.isRequired
 };
 
-HeatmapLegendBox.propTypes = HeatmapLegendBoxPropTypes;
 
-
-const HeatmapLegend = props =>
+const DataSeriesHeatmapLegend = props =>
     <div className ="gxaHeatmapLegend">
-        {props.legendItems.map(legendItemProps => <HeatmapLegendBox {...legendItemProps} />)}
+        {props.legendItems.map(legendItemProps => <DataSeriesHeatmapLegendBox {...legendItemProps} />)}
 
         <div className="legend-item">
             <span className="icon icon-generic" data-icon="i" data-toggle="tooltip" data-placement="bottom"
@@ -29,17 +27,17 @@ const HeatmapLegend = props =>
             </span>
         </div>
 
-        <HeatmapLegendBox key={`No data available`}
-                          name={`No data available`}
-                          colour={`white`}
-                          on={true}
+        <DataSeriesHeatmapLegendBox key={`No data available`}
+                                    name={`No data available`}
+                                    colour={`white`}
+                                    on={true}
         />
     </div>;
 
-HeatmapLegend.propTypes = {
-    legendItems: React.PropTypes.arrayOf(React.PropTypes.shape(HeatmapLegendBoxPropTypes)).isRequired
+DataSeriesHeatmapLegend.propTypes = {
+    legendItems: React.PropTypes.arrayOf(React.PropTypes.shape(DataSeriesHeatmapLegendBox.propTypes)).isRequired
 };
 
-export default HeatmapLegend;
+export default DataSeriesHeatmapLegend;
 
 
