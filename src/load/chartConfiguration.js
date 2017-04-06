@@ -71,6 +71,7 @@ const getChartConfiguration = (data, inProxy, outProxy, atlasUrl, isWidget) => {
         outProxy,
         atlasUrl,
         experiment,
+        isWidget,
         description,
         shortDescription,
         disclaimer,
