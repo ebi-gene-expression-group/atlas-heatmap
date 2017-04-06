@@ -11,7 +11,7 @@ import ChartContainer from '../manipulate/ChartContainer.jsx'
 import DataPropTypes from './jsonPayloadPropTypes.js'
 import loadChartData from '../load/main.js'
 
-const ChartWithAnatomogram = ({data, inProxy, outProxy, atlasUrl, showAnatomogram,isWidget}) => {
+const ChartWithAnatomogram = ({data, inProxy, outProxy, atlasUrl, showAnatomogram, isWidget}) => {
     const {experiment, columnHeaders, columnGroupings, profiles, coexpressions, config, anatomogram} = data;
     const pathToResources = inProxy + URI(`resources/js-bundles/`).absoluteTo(atlasUrl);
 
@@ -24,7 +24,7 @@ const ChartWithAnatomogram = ({data, inProxy, outProxy, atlasUrl, showAnatomogra
             expressedTissueColour: experiment ? `gray` : `red`,
             hoveredTissueColour: experiment ? `red` : `purple`,
             idsExpressedInExperiment: columnHeaders.map(header => header.factorValueOntologyTermId)
-        }, ChartContainer, {chartData})
+        }, ChartContainer, {chartData});
         return (
             <Wrapped/>
         )
