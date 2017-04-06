@@ -9,7 +9,7 @@ HighchartsCustomEvents(Highcharts);
 
 import hash from 'object-hash';
 
-import {heatmapDataPropTypes} from '../manipulate/chartDataPropTypes.js';
+import {heatmapDataPropTypes, colourAxisPropTypes} from '../manipulate/chartDataPropTypes.js';
 
 // Custom Events default behaviour disables context menu on right-click, we bring it back
 window.oncontextmenu = function() {
@@ -142,7 +142,7 @@ class HeatmapCanvas extends React.Component {
 
             title: null,
 
-            colorAxis: this.props.colorAxis || undefined,
+            colorAxis: this.props.colourAxis,
 
             xAxis: { //assays
                 tickLength: 5,
@@ -242,7 +242,7 @@ class HeatmapCanvas extends React.Component {
 
 HeatmapCanvas.propTypes = {
     heatmapData: heatmapDataPropTypes.isRequired,
-    colorAxis: React.PropTypes.object,
+    colourAxis: colourAxisPropTypes,    // Only for experiment heatmap
     cellTooltipFormatter: React.PropTypes.func.isRequired,
     xAxisFormatter: React.PropTypes.func.isRequired,
     xAxisStyle: React.PropTypes.object.isRequired,
