@@ -77,24 +77,26 @@ const orderingsPropTypesValidator = (props, propName, componentName) => {
     });
 };
 
-const heatmapDataPropTypes = React.PropTypes.shape({
-    dataSeries: React.PropTypes.arrayOf(React.PropTypes.shape({
-        data: React.PropTypes.arrayOf(React.PropTypes.shape({
-            info: React.PropTypes.shape({
-                unit: React.PropTypes.string.isRequired,
-                foldChange: React.PropTypes.number, // These three only in diff experiments
-                pValue: React.PropTypes.number,
-                tStat: React.PropTypes.number
-            }).isRequired,
-            value: React.PropTypes.number.isRequired,
-            x: React.PropTypes.number.isRequired,
-            y: React.PropTypes.number.isRequired
-        })).isRequired,
+const dataSeriesPropTypes = React.PropTypes.arrayOf(React.PropTypes.shape({
+    data: React.PropTypes.arrayOf(React.PropTypes.shape({
         info: React.PropTypes.shape({
-            colour: React.PropTypes.string.isRequired,
-            name: React.PropTypes.string.isRequired
-        }).isRequired
+            unit: React.PropTypes.string.isRequired,
+            foldChange: React.PropTypes.number, // These three only in diff experiments
+            pValue: React.PropTypes.number,
+            tStat: React.PropTypes.number
+        }).isRequired,
+        value: React.PropTypes.number.isRequired,
+        x: React.PropTypes.number.isRequired,
+        y: React.PropTypes.number.isRequired
     })).isRequired,
+    info: React.PropTypes.shape({
+        colour: React.PropTypes.string.isRequired,
+        name: React.PropTypes.string.isRequired
+    }).isRequired
+}));
+
+const heatmapDataPropTypes = React.PropTypes.shape({
+    dataSeries: dataSeriesPropTypes.isRequired,
     xAxisCategories: React.PropTypes.arrayOf(React.PropTypes.shape({
         id: React.PropTypes.string.isRequired,
         info: React.PropTypes.shape({
@@ -180,4 +182,4 @@ const chartDataPropTypes = React.PropTypes.shape({
     groupingFilters: React.PropTypes.arrayOf(filterPropTypes)
 });
 
-export {heatmapConfigPropTypes, heatmapDataPropTypes, chartDataPropTypes, orderingsPropTypesValidator, filterPropTypes, colourAxisPropTypes};
+export {heatmapConfigPropTypes, heatmapDataPropTypes, chartDataPropTypes, orderingsPropTypesValidator, filterPropTypes, dataSeriesPropTypes, colourAxisPropTypes};
