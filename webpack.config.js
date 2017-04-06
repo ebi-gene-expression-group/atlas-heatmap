@@ -5,6 +5,7 @@ var CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = {
     entry: {
         heatmapHighcharts: ['babel-polyfill', 'whatwg-fetch', './src/Main.jsx'],
+        experimentPicker: ['babel-polyfill', 'whatwg-fetch', './html/ExperimentPicker.jsx'],
         dependencies: ['color', 'downloadjs', 'he', 'highcharts-custom-events', 'react-refetch',
             'lodash', 'object-hash', 'rc-slider', 'react', 'react-bootstrap', 'react-dom', 'react-highcharts']
     },
