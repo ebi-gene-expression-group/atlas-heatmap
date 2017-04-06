@@ -7,13 +7,34 @@ class ExperimentPicker extends React.Component {
         super(props);
 
         this.state = {
-            atlasUrl: `http://www-test.ebi.ac.uk/gxa/`,
-            experimentAccession: `E-MTAB-513`,
-            isWidget: true,
-            showAnatomogram: false
+            atlasUrl: null,
+            experimentAccession: null,
+            geneQuery: null,
+            isWidget: null,
+            showAnatomogram: null,
+            submitAtlasUrl: `http://ves-hx-77:8080/gxa/`,
+            submitExperimentAccession: `E-MTAB-513`,
+            submitGeneQuery: `[{"value":"ENSG00000024862","category":"ensgene"}]`,
+            submitIsWidget: true,
+            submitShowAnatomogram: false
         };
 
+        this.handleSubmit = this._handleSubmit.bind(this);
         this.handleInputChange = this._handleInputChange.bind(this);
+    }
+
+    _handleSubmit(event) {
+        event.preventDefault();
+
+        const {submitAtlasUrl, submitExperimentAccession, submitIsWidget, submitShowAnatomogram, submitGeneQuery} = this.state;
+
+        this.setState({
+            atlasUrl: submitAtlasUrl,
+            experimentAccession: submitExperimentAccession,
+            geneQuery: submitGeneQuery,
+            isWidget: submitIsWidget,
+            showAnatomogram: submitShowAnatomogram
+        });
     }
 
     _handleInputChange(event) {
@@ -31,25 +52,33 @@ class ExperimentPicker extends React.Component {
             <div className="row">
                 <div className="row">
                     <div className="small-12 columns">
-                        <form>
-                            <label>Expression Atlas URL: (remember the trailing slash!) <input name="atlasUrl" type="url" value={this.state.atlasUrl} onChange={this.handleInputChange} /></label>
-                            <label>Experiment accession: <input name="experimentAccession" type="text" value={this.state.experimentAccession} onChange={this.handleInputChange} /></label>
-                            <label>As widget? <input name="isWidget" type="checkbox" checked={this.state.isWidget} onChange={this.handleInputChange} /></label>
-                            <label>Show anatomogram? <input name="showAnatomogram" type="checkbox" checked={this.state.showAnatomogram} onChange={this.handleInputChange} /></label>
+                        <form onSubmit={this.handleSubmit}>
+                            <label>Expression Atlas URL: (remember the trailing slash!) <input name="submitAtlasUrl" type="url" value={this.state.submitAtlasUrl} onChange={this.handleInputChange} /></label>
+                            <label>Experiment accession: <input name="submitExperimentAccession" type="text" value={this.state.submitExperimentAccession} onChange={this.handleInputChange} /></label>
+                            <label>Gene query: <input name="submitGeneQuery" type="text" value={this.state.submitGeneQuery} onChange={this.handleInputChange} /></label>
+                            <label>As widget? <input name="submitIsWidget" type="checkbox" checked={this.state.submitIsWidget} onChange={this.handleInputChange} /></label>
+                            <label>Show anatomogram? <input name="submitShowAnatomogram" type="checkbox" checked={this.state.submitShowAnatomogram} onChange={this.handleInputChange} /></label>
+                            <button type="submit" className="button">Render</button>
                         </form>
                     </div>
                 </div>
                 <hr />
                 <div className="row">
                     <div className="small-12 columns">
-                        <ExpressionAtlasHeatmap showAnatomogram={this.state.showAnatomogram}
-                                                isWidget={this.state.isWidget}
-                                                disableGoogleAnalytics={true}
-                                                atlasUrl={this.state.atlasUrl}
-                                                inProxy={``}
-                                                outProxy={``}
-                                                experiment={this.state.experimentAccession}
-                        />
+                        {this.state.atlasUrl && this.state.experimentAccession ?
+                            <ExpressionAtlasHeatmap showAnatomogram={this.state.showAnatomogram}
+                                                    isWidget={this.state.isWidget}
+                                                    query={{
+                                                        gene: this.state.geneQuery
+                                                    }}
+                                                    disableGoogleAnalytics={true}
+                                                    atlasUrl={this.state.atlasUrl}
+                                                    inProxy={``}
+                                                    outProxy={``}
+                                                    experiment={this.state.experimentAccession}
+                            /> :
+                            null
+                        }
                     </div>
                 </div>
             </div>
