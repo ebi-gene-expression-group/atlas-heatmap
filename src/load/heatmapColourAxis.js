@@ -88,12 +88,13 @@ const dataClassesFromSeries = dataSeries => {
         L = xs.length;
     }
 
+    // The format of dataClasses is defined in http://api.highcharts.com/highmaps/colorAxis.dataClasses
     return (
         xs.map(x =>
             ({
                 from: x.min,
                 to: x.max,
-                colour: x.medianColour.hexString()
+                color: x.medianColour.hexString()
             })
         )
     );

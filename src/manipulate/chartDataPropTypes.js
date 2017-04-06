@@ -166,7 +166,7 @@ const filterPropTypes = React.PropTypes.shape({
 
 const colourAxisPropTypes = React.PropTypes.shape({
     dataClasses: React.PropTypes.arrayOf(React.PropTypes.shape({
-        colour: React.PropTypes.string.isRequired,
+        color: React.PropTypes.string.isRequired,
         from: React.PropTypes.number.isRequired,
         to: React.PropTypes.number.isRequired
     })).isRequired
