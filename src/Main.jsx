@@ -24,55 +24,54 @@ import ContainerLoader from './layout/ContainerLoader.jsx';
  * @param {function}        options.onRender - Callback to run after each render
  */
 const DEFAULT_OPTIONS = {
-  showAnatomogram: true,
-  isWidget: true,
-  disableGoogleAnalytics: false,
-  onRender: () =>{},
-  atlasUrl: 'https://www.ebi.ac.uk/gxa/',
-  inProxy: '',
-  outProxy: '',
-  experiment: ''
-}
+    showAnatomogram: true,
+    isWidget: true,
+    disableGoogleAnalytics: false,
+    atlasUrl: `https://www.ebi.ac.uk/gxa/`,
+    inProxy: ``,
+    outProxy: ``,
+    experiment: ``
+};
 
-const ExpressionAtlasHeatmap = (options) => {
-  const parsedQuery = parseQuery(options.query);
-  const sourceUrl = typeof parsedQuery === `string` ?
-      parsedQuery : URI(resolveEndpoint(options.experiment)).search(parsedQuery);
+const ExpressionAtlasHeatmap = options => {
+    const parsedQuery = parseQuery(options.query);
+    const sourceUrl = typeof parsedQuery === `string` ?
+        parsedQuery :
+        URI(resolveEndpoint(options.experiment)).search(parsedQuery);
 
-  return (
-    <ContainerLoader
-      {...DEFAULT_OPTIONS}
-      {...options}
-      sourceUrl={sourceUrl.toString()}
-      />
-  )
-}
+    return (
+        <ContainerLoader
+            {...DEFAULT_OPTIONS}
+            {...options}
+            sourceUrl={sourceUrl.toString()}
+        />
+    )
+};
 
-const render = (options) => {
-
-    const { disableGoogleAnalytics, onRender = () => {}, target } = options;
+const render = options => {
+    const { disableGoogleAnalytics = false, onRender = () => {}, target } = options;
 
     ReactDOM.render(
-        ExpressionAtlasHeatmap(options),
+        <ExpressionAtlasHeatmap {...options} />,
         typeof target === `string` ? document.getElementById(target) : target,
         onRender
     );
 
-    if (! disableGoogleAnalytics) {
-      googleAnalyticsCallback()
+    if (!disableGoogleAnalytics) {
+        googleAnalyticsCallback()
     }
 };
 
 export {ExpressionAtlasHeatmap, render}
 
 function resolveEndpoint(experiment) {
-  return (
-    ! experiment
-    ? `json/baseline_experiments`
-    : experiment === 'reference'
-      ? `json/baseline_refexperiment`
-      : `json/experiments/${experiment}`
-  )
+    return (
+        !experiment ?
+            `json/baseline_experiments` :
+            experiment === `reference` ?
+                `json/baseline_refexperiment` :
+                `json/experiments/${experiment}`
+    )
 }
 
 function parseQuery(query) {
