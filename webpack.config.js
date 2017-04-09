@@ -147,7 +147,8 @@ module.exports = {
 
     devServer: {
         hot: true,      // CLI --hot is equivalent to this option, but it also enables the HMR plugin (see above)
-        hotOnly: true,  // Won’t inject modules if there’s a compilation error (without this a
+        hotOnly: true,  // Won’t inject modules if there’s a compilation error (without this a full page reload is
+                        // done after a successful build and we lose state)
         port: 9000
     }
 };
