@@ -57,6 +57,10 @@ npm install expression-atlas-heatmap-highcharts
 import { ExpressionAtlasHeatmap } from 'expression-atlas-heatmap-highcharts'
 ```
 
+##### Notes for developers
+`imports-loader`, although not strictly needed, is necessary to build the `anatomogram` package and therefore it is 
+included in `devDependencies`.
+
 At the time of writing the docs are over the code: [here](https://github.com/gxa/atlas-heatmap/blob/master/src/Main.jsx)
 
 #### Licence
