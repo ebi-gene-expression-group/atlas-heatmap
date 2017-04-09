@@ -2,15 +2,16 @@ var webpack = require('webpack');
 var path = require('path');
 var CleanWebpackPlugin = require('clean-webpack-plugin');
 
+process.traceDeprecation = true;
+
 module.exports = {
     entry: {
         heatmapHighcharts: ['babel-polyfill', 'whatwg-fetch', './src/Main.jsx'],
-        experimentPicker: ['babel-polyfill', 'whatwg-fetch', './html/ExperimentPicker.jsx'],
-        dependencies: ['color', 'downloadjs', 'he', 'highcharts-custom-events', 'react-refetch',
-            'lodash', 'object-hash', 'rc-slider', 'react', 'react-bootstrap', 'react-dom', 'react-highcharts']
+        experimentPicker: ['babel-polyfill', 'whatwg-fetch', 'react-hot-loader/patch', './html/index.jsx'],
+        dependencies: ['color', 'downloadjs', 'he', 'highcharts', 'highcharts-custom-events', 'lodash', 'object-hash',
+            'rc-slider', 'react', 'react-bootstrap', 'react-dom', 'react-highcharts', 'react-refetch', 'urijs']
     },
     output: {
-        libraryTarget: 'var',
         library: '[name]',
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].bundle.js',
@@ -22,35 +23,131 @@ module.exports = {
         new webpack.optimize.CommonsChunkPlugin({
             name: 'dependencies',
             filename: 'vendorCommons.bundle.js',
-            minChunks: Infinity     // Explicit definition-based split. Don’t put shared modules between main and demo
-        })                          // entries in vendor.bundle.js
-
+            minChunks: Infinity     // Explicit definition-based split, see dependencies entry
+        }),
+        new webpack.HotModuleReplacementPlugin(),
+        // enable HMR globally, necessary along with devServer.hot: true (see below) for HMR to work as expected 🤔
+        new webpack.NamedModulesPlugin(),
+        // prints more readable module names in the browser console on HMR updates
     ],
 
     module: {
-        loaders: [
-            {test: /\.js$/, loader: 'babel', query: {presets: ['es2015'], plugins:['transform-object-rest-spread']},
-                // Place here all the packages that we own
-                exclude: /node_modules\/(?!(expression-atlas|anatomogram|react-ebi-species))/},
-            {test: /\.jsx$/, loader: 'babel', query: {presets: ['es2015', 'react']}},
-            {test: /\.css$/, loader: 'style-loader!css-loader'},
-            {test: /\.less$/, loader: 'style-loader!css-loader!less-loader'},
-            {test: /\.json$/, loader: 'json'},
-            {test: /\.(jpe?g|png|gif)$/i,
-                loaders: [
-                          'file?hash=sha512&digest=hex&name=[hash].[ext]',
-                          'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
+        rules: [
+            {
+                test: /\.css$/,
+                use: [
+                    {
+                        loader: 'style-loader'
+                    },
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            modules:false
+                        }
+                    }
                 ]
             },
-            {test: /\.(svg)$/i,
-                loaders: [
-                          'file?hash=sha512&digest=hex&name=[hash].[ext]'
+            {
+                test: /\.less$/,
+                use: [
+                    {
+                        loader: 'style-loader'
+                    },
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            modules:false
+                        }
+                    },
+                    {
+                        loader: 'less-loader'
+                    }
+                ]
+            },
+            {
+                test: /\.(jpe?g|png|gif)$/i,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            query: {
+                                name: '[hash].[ext]',
+                                hash: 'sha512',
+                                digest: 'hex'
+                            }
+                        }
+                    },
+                    {
+                        loader: 'image-webpack-loader',
+                        options: {
+                            query: {
+                                bypassOnDebug: true,
+                                mozjpeg: {
+                                    progressive: true,
+                                },
+                                gifsicle: {
+                                    interlaced: true,
+                                },
+                                optipng: {
+                                    optimizationLevel: 7,
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                test: /\.(svg)$/i,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            query: {
+                                name: '[hash].[ext]',
+                                hash: 'sha512',
+                                digest: 'hex'
+                            }
+                        }
+                    }
+                ]
+            },
+            // Don’t use .babelrc, we need a different config for JSX and JS files because babel-preset-react breaks
+            // some syntax in heatmapAxisCategories, specifically Array.map(condition ? e => ... : e => ...)
+            // https://discuss.babeljs.io/t/babel-preset-react-breaks-conditional-map-of-arrays-when-combined-with-latest-env-or-es2015
+            {
+                test: /\.js$/,
+                // Place after node_modules packages owned by Expression Atlas to be transpiled, as they aren’t
+                // distributed pre-bundled or with a dist kind of folder
+                exclude: /node_modules\/(?!(expression-atlas|anatomogram|react-ebi-species))/,
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: [['env', {modules: false}]],
+                            plugins: ['transform-object-rest-spread']
+                        }
+                    }
+                ]
+            },
+            {
+                test: /\.jsx$/,
+                exclude: /node_modules\/(?!(expression-atlas|anatomogram|react-ebi-species))/,
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: ['react'],
+                            plugins: ['react-hot-loader/babel']
+                        }
+                    }
                 ]
             }
         ]
     },
 
     devServer: {
-      port: 9000
+        hot: true,      // CLI --hot is equivalent to this option, but it also enables the HMR plugin (see above)
+        hotOnly: true,  // Won’t inject modules if there’s a compilation error (without this a
+        port: 9000
     }
 };
