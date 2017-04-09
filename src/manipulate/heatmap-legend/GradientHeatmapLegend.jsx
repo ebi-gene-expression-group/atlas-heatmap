@@ -1,5 +1,7 @@
 import React from 'react';
 
+import {numberWithCommas} from '../../utils.js';
+
 import './GradientHeatmapLegend.less';
 
 const renderGradient = (fromValue, fromColour, toValue, toColour) => {
@@ -10,11 +12,11 @@ const renderGradient = (fromValue, fromColour, toValue, toColour) => {
     return (
         fromValue < toValue ?
             <div style={{display: "table-row"}}>
-                <div className="gxaGradientLevel gxaGradientLevelMin">{fromValue}</div>
+                <div className="gxaGradientLevel gxaGradientLevelMin">{numberWithCommas(fromValue)}</div>
                 <div style={{display: "table-cell"}}>
                     <span className="gxaGradientColour" style={spanStyle} />
                 </div>
-                <div className="gxaGradientLevel gxaGradientLevelMax">{toValue}</div>
+                <div className="gxaGradientLevel gxaGradientLevelMax">{numberWithCommas(toValue)}</div>
             </div> :
             null
     );

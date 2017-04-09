@@ -1,6 +1,5 @@
 import {isMultiExperiment, isBaseline, isDifferential} from './experimentTypeUtils.js';
-
-const capitalizeFirstLetter = str => str.charAt(0).toUpperCase() + str.substr(1);
+import {capitalizeFirstLetter, numberWithCommas} from '../utils';
 
 // Message on top of the chart: “Showing 3 experiments:”, “Showing 12 genes of 432 found:”, “Showing 32 genes:”...
 const introductoryMessage = (experiment, profiles) => {
@@ -9,7 +8,7 @@ const introductoryMessage = (experiment, profiles) => {
 
     const what = (experiment ? `gene` : `experiment`) + (totalRows > 1 ? `s` : ``);
 
-    return `Showing ${shownRows} ` + (totalRows === shownRows ? what + `:` : `of ${totalRows} ${what} found:`);
+    return `Showing ${numberWithCommas(shownRows)} ` + (totalRows === shownRows ? what + `:` : `of ${numberWithCommas(totalRows)} ${what} found:`);
 };
 
 // _x_ and _y_ are placeholders to be replaced when clicking on a heatmap cell (see HeatmapCanvas.jsx)

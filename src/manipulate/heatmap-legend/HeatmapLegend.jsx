@@ -30,12 +30,12 @@ function renderGradientLegend(colourAxis) {
         colourAxis.dataClasses.find(dataClass => dataClass.to === maxDownRegulatedValue).color;
 
     const minUpRegulatedValue =
-        Math.min(...colourAxis.dataClasses.filter(dataClass => dataClass.from >= 0).map(dataClass => dataClass.from));
+        Math.min(...colourAxis.dataClasses.filter(dataClass => dataClass.from > 0).map(dataClass => dataClass.from));
     const minUpRegulatedColour =
         colourAxis.dataClasses.find(dataClass => dataClass.from === minUpRegulatedValue).color;
 
     const maxUpRegulatedValue =
-        Math.max(...colourAxis.dataClasses.filter(dataClass => dataClass.to >= 0).map(dataClass => dataClass.to));
+        Math.max(...colourAxis.dataClasses.filter(dataClass => dataClass.to > 0).map(dataClass => dataClass.to));
     const maxUpRegulatedColour =
         colourAxis.dataClasses.find(dataClass => dataClass.to === maxUpRegulatedValue).color;
 
