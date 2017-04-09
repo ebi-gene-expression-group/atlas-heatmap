@@ -27,7 +27,7 @@ module.exports = {
         }),
         new webpack.HotModuleReplacementPlugin(),
         // enable HMR globally, necessary along with devServer.hot: true (see below) for HMR to work as expected 🤔
-        new webpack.NamedModulesPlugin(),
+        new webpack.NamedModulesPlugin()
         // prints more readable module names in the browser console on HMR updates
     ],
 
@@ -136,7 +136,7 @@ module.exports = {
                     {
                         loader: 'babel-loader',
                         options: {
-                            presets: ['react'],
+                            presets: ['react', ['env', {modules: false}]],
                             plugins: ['react-hot-loader/babel']
                         }
                     }
