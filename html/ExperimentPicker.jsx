@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import {ExpressionAtlasHeatmap} from '../src/Main.jsx';
 
 class ExperimentPicker extends React.Component {
@@ -53,7 +52,7 @@ class ExperimentPicker extends React.Component {
                 <div className="row">
                     <div className="small-12 columns">
                         <form onSubmit={this.handleSubmit}>
-                            <label>Expression Atlas URL: (remember the trailing slash!) <input name="submitAtlasUrl" type="url" value={this.state.submitAtlasUrl} onChange={this.handleInputChange} /></label>
+                            <label>Expression Atlas URL: (remember the trailing slash) <input name="submitAtlasUrl" type="url" value={this.state.submitAtlasUrl} onChange={this.handleInputChange} /></label>
                             <label>Experiment accession: <input name="submitExperimentAccession" type="text" value={this.state.submitExperimentAccession} onChange={this.handleInputChange} /></label>
                             <label>Gene query: <input name="submitGeneQuery" type="text" value={this.state.submitGeneQuery} onChange={this.handleInputChange} /></label>
                             <label>As widget? <input name="submitIsWidget" type="checkbox" checked={this.state.submitIsWidget} onChange={this.handleInputChange} /></label>
@@ -86,12 +85,6 @@ class ExperimentPicker extends React.Component {
     }
 }
 
-const render = (target) => {
-    ReactDOM.render(
-        <ExperimentPicker />,
-        typeof target === `string` ? document.getElementById(target) : target
-    );
-};
 
-export {render};
+export default ExperimentPicker;
 
