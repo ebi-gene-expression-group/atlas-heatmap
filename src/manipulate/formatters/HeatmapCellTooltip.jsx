@@ -3,83 +3,83 @@ import React from 'react';
 import NumberFormat from 'expression-atlas-number-format';
 const scientificNotation = value => NumberFormat.scientificNotation(value, {fontWeight: `bold`});
 
-class HeatmapCellTooltip extends React.Component {
-    constructor(props) {
-        super(props);
-    }
+const _tinySquare= (colour) => {
+    return (
+        <span key={`Tiny ${colour} square`}
+              style={{
+                  border: `1px rgb(192, 192, 192) solid`,
+                  marginRight: `2px`,
+                  width: `6px`,
+                  height: `6px`,
+                  display: `inline-block`,
+                  backgroundColor: colour
+              }}
+        />
+    );
+}
 
-    render() {
-        return (
-            <div style={{whiteSpace: `pre`, background: `rgba(255, 255, 255, .85)`, padding: `5px`, border: `1px solid darkgray`, borderRadius: `3px`, boxShadow:`2px 2px 2px darkslategray`}}>
-                {this._div(this.props.config.yAxisLegendName, this.props.yLabel)}
-                {this._div(this.props.xAxisLegendName || this.props.config.xAxisLegendName, this.props.xLabel)}
-                {this.props.config.isDifferential ?
-                    [<div key={``}>{this._tinySquare()}{this._span(`Fold change`, this.props.foldChange)}</div>,
-                        this._div(`P-value`, this.props.pValue, scientificNotation),
-                        this._div(`T-statistic`, this.props.tStat)] :
-                    <div>
-                        {[
-                            this._tinySquare(),
-                            this._span(`Expression level`, this.props.value ?
-                                `${this.props.value} ${this.props.unit}` : `Below cutoff`)
-                        ]}
-                    </div>
-                }
-                {Boolean(this.props.config.genomeBrowserTemplate) ?
-                    this._info(`Click on the cell to show expression in the Genome Browser`) : null}
-            </div>
-        );
-    }
+const _info = (text) => {
+    return (
+        <div>
+            <i>{text}</i>
+        </div>
+    );
+}
 
-    _tinySquare() {
-        return (
-            <span key={`Tiny ${this.props.colour} square`}
-                  style={{
-                      border: `1px rgb(192, 192, 192) solid`,
-                      marginRight: `2px`,
-                      width: `6px`,
-                      height: `6px`,
-                      display: `inline-block`,
-                      backgroundColor: this.props.colour
-                  }}
-            />
-        );
-    }
-
-    _info (text) {
-        return (
-            <div>
-                <i>{text}</i>
-            </div>
-        );
-    }
-
-    _div(name, value, format) {
-        return (
-            name && value ?
-                <div key={`${name} ${value}`}>
-                    {`${name}: `}
-                    {value.length > 50 ? <br/> : null }
-                    {(format || this._bold)(value)}
-                </div> :
-                null
-        );
-    }
-
-    _span(name, value) {
-        return (
-            <span key={`${name} ${value}`}>
+const _div = (name, value, format) => {
+    return (
+        name && value ?
+            <div key={`${name} ${value}`}>
                 {`${name}: `}
                 {value.length > 50 ? <br/> : null }
-                {this._bold(value)}
-            </span>
-        );
-    }
-
-    _bold(value) {
-        return <b>{value}</b>;
-    }
+                {(format || _bold)(value)}
+            </div> :
+            null
+    );
 }
+
+const _span = (name, value) =>  {
+    return (
+        <span key={`${name} ${value}`}>
+            {`${name}: `}
+            {value.length > 50 ? <br/> : null }
+            {_bold(value)}
+        </span>
+    );
+}
+
+const _bold = (value) =>  {
+    return <b>{value}</b>;
+}
+
+const HeatmapCellTooltip =
+  ({config, colour, xLabel, yLabel,
+    value, unit, foldChange, pValue,
+    tStat, xAxisLegendName}) => (
+  <div style={{
+      whiteSpace: `pre`,background: `rgba(255, 255, 255, .85)`,
+      padding: `5px`, border: `1px solid darkgray`,
+       borderRadius: `3px`, boxShadow:`2px 2px 2px darkslategray`}}>
+      {_div(config.yAxisLegendName, yLabel)}
+      {_div(xAxisLegendName || config.xAxisLegendName, xLabel)}
+      {config.isDifferential
+        ?
+          [<div key={``}>{_tinySquare(colour)}{_span(`Fold change`, foldChange)}</div>,
+              _div(`P-value`, pValue, scientificNotation),
+              _div(`T-statistic`, tStat)]
+        :
+          <div>
+              {[
+                  _tinySquare(colour),
+                  _span(`Expression level`, value ?
+                      `${value} ${unit}` : `Below cutoff`)
+              ]}
+          </div>
+      }
+      { !! config.genomeBrowserTemplate &&
+          _info(`Click on the cell to show expression in the Genome Browser`) }
+  </div>
+)
 
 HeatmapCellTooltip.propTypes = {
     //TODO extend this prop checker.Props for this component are created dynamically so it's important. If differential, expect p-values and fold changes, etc.
@@ -101,4 +101,3 @@ HeatmapCellTooltip.propTypes = {
 };
 
 export default HeatmapCellTooltip;
-
