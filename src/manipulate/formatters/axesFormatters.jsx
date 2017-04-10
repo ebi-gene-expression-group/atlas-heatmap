@@ -9,6 +9,7 @@ const YAxisLabel = React.createClass({
         config: React.PropTypes.shape({
             atlasUrl: React.PropTypes.string.isRequired,
             outProxy: React.PropTypes.string.isRequired,
+            isMultiExperiment: React.PropTypes.bool.isRequired,
             isDifferential: React.PropTypes.bool.isRequired,
             experiment: React.PropTypes.shape({
                 accession: React.PropTypes.string.isRequired,
@@ -44,7 +45,7 @@ const YAxisLabel = React.createClass({
 export default config => ({
     xAxisFormatter: value => value.label,
     xAxisStyle: {
-        fontSize: `9px`,
+        fontSize: config.isDifferential ? '9px': 'smaller',
         cursor: `default`,
         textOverflow: config.experiment ? `none` : `ellipsis`,
         whiteSpace: config.isDifferential ? `normal` : `nowrap`
@@ -58,7 +59,7 @@ export default config => ({
         />
     ),
     yAxisStyle: {
-        fontSize: `10px`,
+        fontSize: config.isMultiExperiment ? 'smaller' : 'small',
         color: `#148ff3`
     }
 });
