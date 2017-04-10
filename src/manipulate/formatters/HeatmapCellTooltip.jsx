@@ -56,32 +56,48 @@ const _bold = (value) =>  {
     return <b>{value}</b>;
 }
 
-const HeatmapCellTooltip =
-  ({config, colour, xLabel, yLabel,
-    value, unit, foldChange, pValue,
-    tStat, xAxisLegendName}) => (
+const yInfo = ({config, yLabel}) => (
+  _div(config.yAxisLegendName, yLabel)
+)
+
+const xInfo = ({xAxisLegendName, config, xLabel}) => (
+  _div(xAxisLegendName || config.xAxisLegendName, xLabel)
+)
+
+const differentialNumbers = ({colour, foldChange, pValue, tStat}) => (
+  [
+    <div key={``}>{_tinySquare(colour)}{_span(`Fold change`, foldChange)}</div>,
+      _div(`P-value`, pValue, scientificNotation),
+      _div(`T-statistic`, roundTStat(tStat))
+  ]
+)
+
+const baselineNumbers = ({colour, value, unit}) => (
+  [
+    _tinySquare(colour),
+    _span(`Expression level`, value ?`${value} ${unit}` : `Below cutoff`)
+  ]
+)
+
+const extraBottomInfo = ({config}) => (
+  !! config.genomeBrowserTemplate &&
+      _info(`Click on the cell to show expression in the Genome Browser`)
+)
+
+const HeatmapCellTooltip = (props) => (
   <div style={{
       whiteSpace: `pre`,background: `rgba(255, 255, 255, .85)`,
       padding: `5px`, border: `1px solid darkgray`,
        borderRadius: `3px`, boxShadow:`2px 2px 2px darkslategray`}}>
-      {_div(config.yAxisLegendName, yLabel)}
-      {_div(xAxisLegendName || config.xAxisLegendName, xLabel)}
-      {config.isDifferential
+      {yInfo(props)}
+      {xInfo(props)}
+      {props.config.isDifferential
         ?
-          [<div key={``}>{_tinySquare(colour)}{_span(`Fold change`, foldChange)}</div>,
-              _div(`P-value`, pValue, scientificNotation),
-              _div(`T-statistic`, roundTStat(tStat))]
+          differentialNumbers(props)
         :
-          <div>
-              {[
-                  _tinySquare(colour),
-                  _span(`Expression level`, value ?
-                      `${value} ${unit}` : `Below cutoff`)
-              ]}
-          </div>
+          baselineNumbers(props)
       }
-      { !! config.genomeBrowserTemplate &&
-          _info(`Click on the cell to show expression in the Genome Browser`) }
+      { extraBottomInfo(props)}
   </div>
 )
 
@@ -95,6 +111,13 @@ HeatmapCellTooltip.propTypes = {
     }).isRequired,
     colour: React.PropTypes.string.isRequired,
     xLabel: React.PropTypes.string.isRequired,
+    xProperties:
+      React.PropTypes.arrayOf(
+        React.PropTypes.shape({
+          propertyName: React.PropTypes.string.isRequired,
+          referenceValue: React.PropTypes.string, // present iff differential
+          testValue: React.PropTypes.string.isRequired
+      })),
     yLabel: React.PropTypes.string.isRequired,
     value: React.PropTypes.number.isRequired,
     unit: React.PropTypes.string.isRequired,
