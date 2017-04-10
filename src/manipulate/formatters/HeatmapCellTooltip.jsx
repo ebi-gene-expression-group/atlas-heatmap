@@ -1,7 +1,11 @@
 import React from 'react';
 
 import NumberFormat from 'expression-atlas-number-format';
-const scientificNotation = value => NumberFormat.scientificNotation(value, {fontWeight: `bold`});
+const scientificNotation = value => NumberFormat.scientificNotation(value,4, {fontWeight: `bold`});
+
+const roundTStat = (n) => (
+  n ? +n.toFixed(4) : ""
+)
 
 const _tinySquare= (colour) => {
     return (
@@ -66,7 +70,7 @@ const HeatmapCellTooltip =
         ?
           [<div key={``}>{_tinySquare(colour)}{_span(`Fold change`, foldChange)}</div>,
               _div(`P-value`, pValue, scientificNotation),
-              _div(`T-statistic`, tStat)]
+              _div(`T-statistic`, roundTStat(tStat))]
         :
           <div>
               {[
