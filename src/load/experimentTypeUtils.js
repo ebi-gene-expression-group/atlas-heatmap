@@ -30,7 +30,7 @@ const isRnaSeqBaseline = experiment =>
 
 const getUnits = experiment => {
     if (isDifferential(experiment)) {
-        return `Log2 fold change`;  // What we use for point.value, we don't use it for display. See Formatters.jsx.
+        return `Log2-fold change`;  // What we use for point.value, we don't use it for display. See Formatters.jsx.
     } else if (isRnaSeqBaseline(experiment)) {
         return experiment.description.toUpperCase().includes(`FANTOM`) ? `TPM` : `FPKM`;
     } else {
