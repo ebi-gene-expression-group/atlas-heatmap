@@ -24,7 +24,6 @@
     "react-bootstrap": "0.30.7",
     "react-dom": "^15.4.2",
     "react-highcharts": "^11.5.0",
-    "react-hot-loader": "^3.0.0-beta.6",
     "react-refetch": "^1.0.0",
     "react-tooltip": "https://github.com/gxa/react-tooltip/tarball/dist",
     "urijs": "^1.18.7"
