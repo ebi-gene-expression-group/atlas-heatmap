@@ -12,9 +12,9 @@ const _tinySquare= (colour) => {
         <span key={`Tiny ${colour} square`}
               style={{
                   border: `1px rgb(192, 192, 192) solid`,
-                  marginRight: `2px`,
-                  width: `6px`,
-                  height: `6px`,
+                  marginRight: `0.25rem`,
+                  width: `0.6rem`,
+                  height: `0.6rem`,
                   display: `inline-block`,
                   backgroundColor: colour
               }}
