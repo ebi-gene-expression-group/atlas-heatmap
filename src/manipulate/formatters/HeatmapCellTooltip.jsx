@@ -34,9 +34,10 @@ const _div = (name, value, format) => {
     return (
         name && value ?
             <div key={`${name} ${value}`}>
-                {`${name}: `}
-                {value.length > 50 ? <br/> : null }
-                {(format || _bold)(value)}
+              {name}
+              {": "}
+              {value.length > 50 ? <br/> : null }
+              {(format || _bold)(value)}
             </div> :
             null
     );
@@ -45,9 +46,10 @@ const _div = (name, value, format) => {
 const _span = (name, value) =>  {
     return (
         <span key={`${name} ${value}`}>
-            {`${name}: `}
-            {value.length > 50 ? <br/> : null }
-            {_bold(value)}
+          {name}
+          {": "}
+          {value.length > 50 ? <br/> : null }
+          {_bold(value)}
         </span>
     );
 }
@@ -112,9 +114,12 @@ const xPropertiesDifferentialList = ({xProperties}) => (
 
 const differentialNumbers = ({colour, foldChange, pValue, tStat}) => (
   [
-    <div key={``}>{_tinySquare(colour)}{_span(`Fold change`, foldChange)}</div>,
-      _div(`P-value`, pValue, scientificNotation),
-      _div(`T-statistic`, roundTStat(tStat))
+    <div key={``}>
+      {_tinySquare(colour)}
+      {_span(<span>Log<sub>2</sub>-fold change</span>, foldChange)}
+    </div>,
+    _div(`Adjusted p-value`, pValue, scientificNotation),
+    _div(`T-statistic`, roundTStat(tStat))
   ]
 )
 
