@@ -26,7 +26,7 @@ const GradientHeatmapLegend = props => {
     const legendHeader = units.length === 0 ?
         <span>Expression level</span> :
         units === `log2-fold change` ?
-            <span>Expression level in log<sub>2</sub>-fold change</span> :
+            <span>Log<sub>2</sub>-fold change</span> :
             <span>Expression level in {getUnits(props.experiment)}</span>;
 
     return (
