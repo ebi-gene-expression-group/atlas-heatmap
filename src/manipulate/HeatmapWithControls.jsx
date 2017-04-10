@@ -218,18 +218,11 @@ class HeatmapWithControls extends React.Component {
                         <div style={{padding: `10px 0`}}>
                             {this.props.heatmapConfig.introductoryMessage}
                         </div>
-                        <TooltipStateManager managedComponent={HeatmapCanvas}
-                                             managedComponentProps={heatmapProps}
-                                             tooltips={tooltipsFactory(
-                                                 this.props.heatmapConfig,
-                                                 heatmapDataToPresent.xAxisCategories,
-                                                 heatmapDataToPresent.yAxisCategories
-                                             )}
-                                             onHoverColumn={dummyAnatomogramCallbacks.onUserSelectsColumn}
-                                             onHoverRow={dummyAnatomogramCallbacks.onUserSelectsRow}
-                                             onHoverPoint={dummyAnatomogramCallbacks.onUserSelectsPoint}
-                                             enableFreeze={this.props.heatmapConfig.isDifferential}
-                        />
+                        <HeatmapCanvas
+                           onHoverColumn={dummyAnatomogramCallbacks.onUserSelectsColumn}
+                           onHoverRow={dummyAnatomogramCallbacks.onUserSelectsRow}
+                           onHoverPoint={dummyAnatomogramCallbacks.onUserSelectsPoint}
+                           {...heatmapProps} />
                     </div>
                 }
                 <HeatmapLegend heatmapConfig={this.props.heatmapConfig}

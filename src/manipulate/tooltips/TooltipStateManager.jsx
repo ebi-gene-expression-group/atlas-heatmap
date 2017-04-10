@@ -1,6 +1,13 @@
 /*
  This class is a wrapper around react-tooltip that lets us have one big tooltip.
  The tooltip gets hidden when you hover off, and changes content when you change what you hover on.
+
+ Used to work with major hacks.
+ After Alfonso rewrote it it has fewer hacks but doesn't work when you change hover between labels instead of on/off
+ The problems come from needing the frozen property which we won't soon - no column labels.
+ Currently unused and broken :(
+ It will still be good for showing the gene tooltip which is a fine piece of work and high utility.
+ TODO restore
  */
 
 import React from 'react';

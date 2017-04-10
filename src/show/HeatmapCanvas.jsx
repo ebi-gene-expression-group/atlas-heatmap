@@ -157,9 +157,6 @@ class HeatmapCanvas extends React.Component {
                         },
                         mouseout: function() {
                             onHover && onHover(false);
-                        },
-                        click: function() {
-                            onClick(`xAxisLabel`, this.value)
                         }
                     },
                     autoRotation: [-45, -90],

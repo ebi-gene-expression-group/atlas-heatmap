@@ -45,7 +45,7 @@ export default config => ({
     xAxisFormatter: value => value.label,
     xAxisStyle: {
         fontSize: `9px`,
-        cursor: config.isDifferential ? `pointer` : `default`,
+        cursor: `default`,
         textOverflow: config.experiment ? `none` : `ellipsis`,
         whiteSpace: config.isDifferential ? `normal` : `nowrap`
     },
