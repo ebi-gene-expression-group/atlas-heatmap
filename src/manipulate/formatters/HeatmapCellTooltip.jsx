@@ -64,6 +64,52 @@ const xInfo = ({xAxisLegendName, config, xLabel}) => (
   _div(xAxisLegendName || config.xAxisLegendName, xLabel)
 )
 
+const _comparisonDiv = (name, v1, v2, format) => {
+    return (
+        name && v1 && v2 ?
+            <div key={`${name} ${v1} ${v2}`}>
+                {`${name}: `}
+                {v1.length + v2.length > 50 ? <br/> : null }
+                {(format || _bold)(v1)}
+                <i style={{margin:"0.25rem"}}>vs</i>
+                {(format || _bold)(v2)}
+            </div> :
+            null
+    );
+}
+
+
+
+const prettyName = (name) => (
+  name
+  .toLowerCase()
+  .replace(/\w\S*/, (txt) => (txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()))
+)
+
+const xPropertiesBaselineList = ({xProperties}) => (
+  xProperties
+  .filter((property)=>(
+    property.contrastPropertyType !== "SAMPLE" // would fail with showing too much stuff which isn't catastrophic
+  ))
+  .map((property)=>(
+    _div(prettyName(property.propertyName), property.testValue)
+  ))
+)
+
+const xPropertiesDifferentialList = ({xProperties}) => (
+  xProperties
+  .filter((property)=>(
+    property.testValue !== property.referenceValue
+  ))
+  .map((property)=>(
+    _comparisonDiv(
+      prettyName(property.propertyName),
+      property.testValue,
+      property.referenceValue
+    )
+  ))
+)
+
 const differentialNumbers = ({colour, foldChange, pValue, tStat}) => (
   [
     <div key={``}>{_tinySquare(colour)}{_span(`Fold change`, foldChange)}</div>,
@@ -90,7 +136,12 @@ const HeatmapCellTooltip = (props) => (
       padding: `5px`, border: `1px solid darkgray`,
        borderRadius: `3px`, boxShadow:`2px 2px 2px darkslategray`}}>
       {yInfo(props)}
-      {xInfo(props)}
+      {props.config.isMultiExperiment
+        ? xInfo(props)
+        : props.config.isDifferential
+          ? xPropertiesDifferentialList(props)
+          : xPropertiesBaselineList(props)
+      }
       {props.config.isDifferential
         ?
           differentialNumbers(props)
@@ -105,6 +156,7 @@ HeatmapCellTooltip.propTypes = {
     //TODO extend this prop checker.Props for this component are created dynamically so it's important. If differential, expect p-values and fold changes, etc.
     config: React.PropTypes.shape({
         isDifferential: React.PropTypes.bool.isRequired,
+        isMultiExperiment: React.PropTypes.bool.isRequired,
         xAxisLegendName: React.PropTypes.string.isRequired,
         yAxisLegendName: React.PropTypes.string.isRequired,
         genomeBrowserTemplate:React.PropTypes.string.isRequired
