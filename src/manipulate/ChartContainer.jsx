@@ -1,52 +1,39 @@
 import React from 'react';
+import uncontrollable from 'uncontrollable'
 
-import HeatmapWithControls from './HeatmapWithControls.jsx';
-import BoxplotCanvas from '../show/BoxplotCanvas.jsx';
+import HeatmapWithControls from './HeatmapWithControls.jsx'
+import Boxplot from '../show/BoxplotCanvas.jsx'
+import {chartDataPropTypes} from './chartDataPropTypes.js'
 
-import {chartDataPropTypes} from './chartDataPropTypes.js';
+const Heatmap = uncontrollable(HeatmapWithControls, {
+  selectedOrderingName: 'onSelectOrdering',
+  selectedFilters: 'onSelectFilters',
+  coexpressionsShown: 'onCoexpressionOptionChange',
+  zoom: 'onZoom'
+})
+//starting values on component creation, managed by uncontrollable later
+const heatmapDefaults = ({orderings, expressionLevelFilters, groupingFilters}) => ({
+  defaultSelectedOrderingName: orderings.default.name,
+  defaultSelectedFilters:
+    [expressionLevelFilters, ...groupingFilters].map(filter =>
+    ({
+        name: filter.name,
+        valueNames: filter.values.filter(fv => !fv.disabled).map(fv => fv.name) // Deep copy from props
+    })
+  ),
+  defaultCoexpressionsShown: 0,
+  defaultZoom: false
+})
 
 class ChartContainer extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            chartType: `heatmap`,
-            selectedHeatmapOrderingName: props.chartData.orderings.default.name,
-            selectedHeatmapFilters:
-                [this.props.chartData.expressionLevelFilters, ...this.props.chartData.groupingFilters].map(filter =>
-                ({
-                    name: filter.name,
-                    valueNames: filter.values.filter(fv => !fv.disabled).map(fv => fv.name) // Deep copy from props
-                })
-            ),
-            heatmapCoexpressionsShown: 0,
-            zoom: false
+            chartType: `heatmap`
         };
 
         this.handleClick = this._handleClick.bind(this);
-
-        this.onSelectHeatmapOrdering = this._onSelectHeatmapOrdering.bind(this);
-        this.onSelectFilters = this._onSelectFilters.bind(this);
-        this.onCoexpressionOptionChange = this._onCoexpressionOptionChange.bind(this);
-        this.onZoom = this._onZoom.bind(this);
-    }
-
-    _onZoom(zoom) {
-        this.setState({ zoom: zoom });
-    }
-
-    _onSelectFilters(filters) {
-        this.setState({
-            selectedHeatmapFilters: filters
-        });
-    }
-
-    _onCoexpressionOptionChange(coexpressionsToShow) {
-        this.setState({ heatmapCoexpressionsShown: coexpressionsToShow })
-    }
-
-    _onSelectHeatmapOrdering(orderingName) {
-        this.setState({ selectedHeatmapOrderingName: orderingName })
     }
 
     _theOtherChartType() {
@@ -57,34 +44,13 @@ class ChartContainer extends React.Component {
         switch (this.state.chartType) {
             case `heatmap`:
                 return (
-                    <HeatmapWithControls heatmapConfig={this.props.chartData.heatmapConfig}
-                                         heatmapData={this.props.chartData.heatmapData}
-                                         colourAxis={this.props.chartData.colourAxis}
-
-                                         orderings={this.props.chartData.orderings}
-                                         selectedOrderingName={this.state.selectedHeatmapOrderingName}
-                                         onSelectOrdering={this.onSelectHeatmapOrdering}
-
-                                         expressionLevelFilters={this.props.chartData.expressionLevelFilters}
-                                         groupingFilters={this.props.chartData.groupingFilters}
-                                         selectedFilters={this.state.selectedHeatmapFilters}
-                                         onSelectFilters={this.onSelectFilters}
-
-                                         coexpressionsShown={this.state.heatmapCoexpressionsShown}
-                                         onCoexpressionOptionChange={this.onCoexpressionOptionChange}
-
-                                         zoom={this.state.zoom}
-                                         onZoom={this.onZoom}
-                    />
+                    <Heatmap
+                      {...this.props.chartData}
+                      {...heatmapDefaults(this.props.chartData)}/>
                 );
             case `boxplot`:
-                // If the boxplot needs to have controls, add a BoxPlotWithControls component as above
                 return (
-                    <BoxplotCanvas title={this.props.chartData.boxplotData.title}
-                                   categories={this.props.chartData.boxplotData.xAxisCategories}
-                                   seriesData={this.props.chartData.boxplotData.dataSeries}
-                                   unit={this.props.chartData.boxplotData.unit}
-                    />
+                    <Boxplot {...this.props.chartData.boxplotData} />
                 );
             default:
                 return null;
@@ -116,4 +82,3 @@ ChartContainer.propTypes = {
 };
 
 export default ChartContainer;
-
