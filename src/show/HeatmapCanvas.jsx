@@ -67,8 +67,7 @@ class HeatmapCanvas extends React.Component {
         const marginRight = this._getAdjustedMarginRight();
         const height = this._getAdjustedHeight(marginTop, marginBottom);
 
-        const {cellTooltipFormatter, xAxisFormatter, yAxisFormatter, genomeBrowserTemplate, onZoom} = this.props;
-        const {onHover, onClick} = this.props;
+        const {cellTooltipFormatter, xAxisFormatter, yAxisFormatter, genomeBrowserTemplate, onZoom, events} = this.props;
 
         const highchartsConfig = {
             chart: {
@@ -79,26 +78,7 @@ class HeatmapCanvas extends React.Component {
                 type: 'heatmap',
                 spacingTop: 0,
                 plotBorderWidth: 1,
-                zoomType: 'x',
-                events: {
-                //     handleGxaAnatomogramTissueMouseEnter: function (e) {
-                //         Highcharts.each(this.series, function (series) {
-                //             Highcharts.each(series.points, function (point) {
-                //                 if (point.series.xAxis.categories[point.x].id === e.svgPathId) {
-                //                     point.select(true, true);
-                //                 }
-                //             });
-                //         });
-                //     },
-                //     handleGxaAnatomogramTissueMouseLeave: function (e) {
-                //         var points = this.getSelectedPoints();
-                //         if (points.length > 0) {
-                //             Highcharts.each(points, function (point) {
-                //                 point.select(false);
-                //             });
-                //         }
-                //     }
-                }
+                zoomType: 'x'
             },
 
             plotOptions: {
@@ -107,17 +87,22 @@ class HeatmapCanvas extends React.Component {
                 },
 
                 series: {
-                    cursor: Boolean(this.props.genomeBrowserTemplate) ? "pointer" : undefined,
+                    cursor: Boolean(events.onClickPoint) ? "pointer" : undefined,
                     point: {
                         events: {
-                            click: this.props.genomeBrowserTemplate ?
-                                function () {
-                                    const x = this.series.xAxis.categories[this.x].info.trackId;
-                                    const y = this.series.yAxis.categories[this.y].info.trackId;
-
-                                    window.open(genomeBrowserTemplate.replace(/_x_/g, x).replace(/_y_/g, y), "_blank");
-                                } :
-                                function () {}
+                            click:
+                              events.onClickPoint
+                              ? function () {
+                                    events.onClickPoint({x: this.x, y: this.y})
+                                }
+                              : function () {}
+                            ,
+                            mouseover: function() {
+                              events.onHoverPoint({x: this.x, y: this.y})
+                            },
+                            mouseout: function() {
+                              events.onHoverOff()
+                            }
                         }
                     },
 
@@ -153,10 +138,10 @@ class HeatmapCanvas extends React.Component {
                     // Events in labels enabled by 'highcharts-custom-events'
                     events: {
                         mouseover: function() {
-                            onHover && onHover(true, `xAxisLabel`, this.value)
+                          events.onHoverColumn({x: this.value})
                         },
                         mouseout: function() {
-                            onHover && onHover(false);
+                          events.onHoverOff()
                         }
                     },
                     autoRotation: [-45, -90],
@@ -182,13 +167,12 @@ class HeatmapCanvas extends React.Component {
                 reversed: true,
                 labels: {
                     style: this.props.yAxisStyle,
-                    // Events in labels enabled by 'highcharts-custom-events'
                     events: {
                         mouseover: function() {
-                            onHover && onHover(true, `yAxisLabel`, this.value)
+                            events.onHoverRow({y: this.value})
                         },
                         mouseout: function() {
-                            onHover && onHover(false);
+                            events.onHoverOff()
                         }
                     },
                     formatter: function() {
@@ -245,30 +229,14 @@ HeatmapCanvas.propTypes = {
     xAxisStyle: React.PropTypes.object.isRequired,
     yAxisFormatter: React.PropTypes.func.isRequired,
     yAxisStyle: React.PropTypes.object.isRequired,
-    genomeBrowserTemplate: React.PropTypes.string.isRequired,
-    onZoom: React.PropTypes.func.isRequired,
-    onHover: React.PropTypes.func,
-    onClick: React.PropTypes.func,
-    // ontologyIdsToHighlight: React.PropTypes.arrayOf(React.PropTypes.string).isRequired
-
+    events: React.PropTypes.shape({
+      onHoverRow: React.PropTypes.func.isRequired,
+      onHoverColumn: React.PropTypes.func.isRequired,
+      onHoverPoint:React.PropTypes.func.isRequired,
+      onHoverOff: React.PropTypes.func.isRequired,
+      onClickPoint: React.PropTypes.func
+    }),
+    onZoom: React.PropTypes.func.isRequired
 };
 
 export default HeatmapCanvas;
-
-  // componentWillReceiveProps: function(nextProps){
-  //   var chart = this.refs.chart.getChart();
-  //   var forEachXNotInYsEmit = function(xs, ys, eventName){
-  //     xs
-  //     .filter(function(id){
-  //       return ys.indexOf(id)==-1;
-  //     })
-  //     .filter(function uniq(id,ix,self){
-  //       return ix==self.indexOf(id);
-  //     })
-  //     .forEach(function(id){
-  //       Highcharts.fireEvent(chart, eventName, {svgPathId: id});
-  //     }.bind(this));
-  //   };
-  //   forEachXNotInYsEmit(nextProps.ontologyIdsToHighlight, this.props.ontologyIdsToHighlight,'handleGxaAnatomogramTissueMouseEnter');
-  //   forEachXNotInYsEmit(this.props.ontologyIdsToHighlight, nextProps.ontologyIdsToHighlight,'handleGxaAnatomogramTissueMouseLeave');
-  // }

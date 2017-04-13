@@ -3,21 +3,21 @@ import ReactHighcharts from 'react-highcharts';
 import HighchartsMore from 'highcharts/highcharts-more';
 HighchartsMore(ReactHighcharts.Highcharts);
 
-const BoxplotCanvas = props => {
+const BoxplotCanvas = ({title, xAxisCategories, dataSeries, unit}) => {
 
     const initialMarginRight = 60;
-    const marginRight = initialMarginRight * (1 + 10 / Math.pow(1 + props.categories.length, 2));
+    const marginRight = initialMarginRight * (1 + 10 / Math.pow(1 + xAxisCategories.length, 2));
 
     // We need to filter because Mat.min(undefined, <any number or anything whatsoever>) returns NaN
-    const min = Math.min(...props.seriesData.filter(quartiles => quartiles.length).map(quartiles => quartiles[0]));
-    const max = Math.max(...props.seriesData.filter(quartiles => quartiles.length).map(quartiles => quartiles[4]));
+    const min = Math.min(...dataSeries.filter(quartiles => quartiles.length).map(quartiles => quartiles[0]));
+    const max = Math.max(...dataSeries.filter(quartiles => quartiles.length).map(quartiles => quartiles[4]));
 
     // If no all five points are the same and we want to show the box plot with just points
-    // const scatter = props.seriesData.every(quartiles => _.uniq(quartiles).length === 1);
+    // const scatter = dataSeries.every(quartiles => _.uniq(quartiles).length === 1);
 
     const series = {
         name: `Observations`,
-        data: props.seriesData,
+        data: dataSeries,
         tooltip: {
             headerFormat: '<em>Factor {point.key}</em><br/>'
         }
@@ -27,7 +27,7 @@ const BoxplotCanvas = props => {
         chart: {
             marginRight,
             type: `boxplot`,
-            spacingRight: props.categories.slice(-1)[0].length > 6 ? 100 : 0
+            spacingRight: xAxisCategories.slice(-1)[0].length > 6 ? 100 : 0
         },
 
         plotOptions: {
@@ -56,7 +56,7 @@ const BoxplotCanvas = props => {
         },
 
         title: {
-            text: props.title
+            text: title
         },
 
         legend: {
@@ -67,7 +67,7 @@ const BoxplotCanvas = props => {
             tickLength: 5,
             tickColor: `rgb(192, 192, 192)`,
             lineColor: `rgb(192, 192, 192)`,
-            categories: props.categories,
+            xAxisCategories: xAxisCategories,
             labels: {
                 style: {
                     fontSize: `9px`
@@ -78,7 +78,7 @@ const BoxplotCanvas = props => {
 
         yAxis: {
             title: {
-                text: `Expression (${props.unit})`
+                text: `Expression (${unit})`
             },
             min: min,
             max: max,
@@ -93,8 +93,8 @@ const BoxplotCanvas = props => {
 
 BoxplotCanvas.propTypes = {
     title: React.PropTypes.string.isRequired,
-    categories: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-    seriesData: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.number)).isRequired,
+    xAxisCategories: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+    dataSeries: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.number)).isRequired,
     unit: React.PropTypes.string.isRequired
 };
 

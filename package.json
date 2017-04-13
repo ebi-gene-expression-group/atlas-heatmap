@@ -1,6 +1,6 @@
 {
   "name": "expression-atlas-heatmap-highcharts",
-  "version": "2.3.4",
+  "version": "2.3.6",
   "description": "Expression Atlas Highcharts heatmap and boxplot of baseline and differential expression experiments from the Expression Atlas project (https://www.ebi.ac.uk/gxa)",
   "main": "src/Main.jsx",
   "author": "Wojciech Bażant<wbazant@ebi.ac.uk>, Elisabet Barrera <barrera@ebi.ac.uk> and Alfonso Muñoz-Pomer Fuentes <amunoz@ebi.ac.uk>",
@@ -27,6 +27,7 @@
     "react-hot-loader": "^3.0.0-beta.6",
     "react-refetch": "^1.0.0",
     "react-tooltip": "https://github.com/gxa/react-tooltip/tarball/dist",
+    "uncontrollable": "^4.0.3",
     "urijs": "^1.18.7"
   },
   "devDependencies": {

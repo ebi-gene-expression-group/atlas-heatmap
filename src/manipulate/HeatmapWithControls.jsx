@@ -14,6 +14,8 @@ import axesFormatters from './formatters/axesFormatters.jsx';
 import HeatmapLegend from './heatmap-legend/HeatmapLegend.jsx';
 import CoexpressionOption from './coexpression/CoexpressionOption.jsx';
 
+import makeEvents from './Events.js'
+
 import {manipulate} from './Manipulators.js';
 
 import {heatmapDataPropTypes, heatmapConfigPropTypes, orderingsPropTypesValidator, filterPropTypes, colourAxisPropTypes}
@@ -141,14 +143,14 @@ class HeatmapWithControls extends React.Component {
                         [].concat.apply([],
                             [].concat.apply([],
                                 heatmapDataToPresent
-                                    .dataSeries
-                                    .map(series => series.data)
+                                .dataSeries
+                                .map(series => series.data)
                             )
-                                .filter(point => point.y === y)
-                                .map(point => point.info.xId || heatmapDataToPresent.xAxisCategories[point.x].id)
-                                .map(e => Array.isArray(e) ? e : [e])
+                            .filter(point => point.y === y)
+                            .map(point => point.info.xId || heatmapDataToPresent.xAxisCategories[point.x].id)
+                            .map(e => Array.isArray(e) ? e : [e])
                         )
-                            .filter((e,ix,self) => self.indexOf(e) === ix)
+                        .filter((e,ix,self) => self.indexOf(e) === ix)
                     )
                 },
 
@@ -193,8 +195,11 @@ class HeatmapWithControls extends React.Component {
             xAxisStyle: xAxisStyle,
             xAxisFormatter: xAxisFormatter,
             onZoom: this.props.onZoom,
-            genomeBrowserTemplate: this.props.heatmapConfig.genomeBrowserTemplate
-            // TODO anatomogram callback to highlight column
+            events: makeEvents({
+              heatmapData: heatmapDataToPresent,
+              onSelectOntologyIds : console.log,
+              genomeBrowserTemplate: this.props.heatmapConfig.genomeBrowserTemplate
+            })
         };
 
         return (
@@ -219,10 +224,7 @@ class HeatmapWithControls extends React.Component {
                             {this.props.heatmapConfig.introductoryMessage}
                         </div>
                         <HeatmapCanvas
-                           onHoverColumn={dummyAnatomogramCallbacks.onUserSelectsColumn}
-                           onHoverRow={dummyAnatomogramCallbacks.onUserSelectsRow}
-                           onHoverPoint={dummyAnatomogramCallbacks.onUserSelectsPoint}
-                           {...heatmapProps} />
+                          {...heatmapProps}/>
                     </div>
                 }
                 <HeatmapLegend heatmapConfig={this.props.heatmapConfig}
