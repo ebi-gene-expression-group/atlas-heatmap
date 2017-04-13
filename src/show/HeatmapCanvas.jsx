@@ -46,7 +46,7 @@ class HeatmapCanvas extends React.Component {
 
         // TODO To know if the labels are actually rotated we must take into account the width of the chart and div
         if (this._countColumns() < 10) {
-            return horizontalLabelsMarginTop;
+            return Math.max(horizontalLabelsMarginTop, Math.round(longestColumnLabelLength));
         } else if (this._countColumns() < 80) {
             return Math.max(tiltedLabelsMarginTop, Math.round(longestColumnLabelLength * 3.85));
         } else {
@@ -142,7 +142,7 @@ class HeatmapCanvas extends React.Component {
 
             colorAxis: this.props.colourAxis,
 
-            xAxis: { //assays
+            xAxis: { //assay groups, contrasts, or factors across experiments
                 tickLength: 5,
                 tickColor: `rgb(192, 192, 192)`,
                 lineColor: `rgb(192, 192, 192)`,
