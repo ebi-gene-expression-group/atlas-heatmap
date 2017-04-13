@@ -32,10 +32,6 @@ const makeCallbacks = ({heatmapData,onSelectOntologyIds,genomeBrowserTemplate}) 
       onSelectOntologyIds(ontologyIdsForColumn(x))
     },
 
-    onHoverPoint: ({x,y}) => {
-      onSelectOntologyIds(ontologyIdsForColumn(x))
-    },
-
     onHoverOff: () => {
       onSelectOntologyIds([])
     },

@@ -116,13 +116,6 @@ class HeatmapCanvas extends React.Component {
                                     events.onClickPoint({x: this.x, y: this.y})
                                 }
                               : function () {}
-                            ,
-                            mouseover: function() {
-                              events.onHoverPoint({x: this.x, y: this.y})
-                            },
-                            mouseout: function() {
-                              events.onHoverOff()
-                            }
                         }
                     },
 
@@ -266,7 +259,6 @@ HeatmapCanvas.propTypes = {
     events: React.PropTypes.shape({
       onHoverRow: React.PropTypes.func.isRequired,
       onHoverColumn: React.PropTypes.func.isRequired,
-      onHoverPoint:React.PropTypes.func.isRequired,
       onHoverOff: React.PropTypes.func.isRequired,
       onClickPoint: React.PropTypes.func
     }),
