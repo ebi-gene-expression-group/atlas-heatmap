@@ -224,10 +224,9 @@ class HeatmapCanvas extends React.Component {
             })
         };
 
-        const maxWidthFraction = 1 - Math.exp(-(0.2 + 0.05 * Math.pow(1 + this._countColumns(), 2)));
-        //<div id="highchartsHeatmapContainer" style={{maxWidth: maxWidthFraction * 100 + `%`}}>
+        const maxWidthFraction = this._countColumns() > 6 ? 1 : Math.max(0.5, 1 - Math.exp(-(1 + 0.05 * Math.pow(1 + this._countColumns(), 2))));
         return (
-            <div>
+            <div style={{maxWidth: maxWidthFraction * 100 + `%`, minWidth: "600px"}}>
                 <ReactHighcharts ref="chart" config={highchartsConfig}/>
             </div>
         );
