@@ -78,6 +78,25 @@ class HeatmapCanvas extends React.Component {
                 type: 'heatmap',
                 spacingTop: 0,
                 plotBorderWidth: 1,
+                events: {
+                   handleGxaAnatomogramTissueMouseEnter: function (e) {
+                       Highcharts.each(this.series, function (series) {
+                           Highcharts.each(series.points, function (point) {
+                               if (point.series.xAxis.categories[point.x].id === e.svgPathId) {
+                                   point.select(true, true);
+                               }
+                           });
+                       });
+                   },
+                   handleGxaAnatomogramTissueMouseLeave: function (e) {
+                       var points = this.getSelectedPoints();
+                       if (points.length > 0) {
+                           Highcharts.each(points, function (point) {
+                               point.select(false);
+                           });
+                       }
+                   }
+                },
                 zoomType: 'x'
             },
 
@@ -93,6 +112,7 @@ class HeatmapCanvas extends React.Component {
                             click:
                               events.onClickPoint
                               ? function () {
+                                  debugger;
                                     events.onClickPoint({x: this.x, y: this.y})
                                 }
                               : function () {}
@@ -215,9 +235,23 @@ class HeatmapCanvas extends React.Component {
         //<div id="highchartsHeatmapContainer" style={{maxWidth: maxWidthFraction * 100 + `%`}}>
         return (
             <div>
-                <ReactHighcharts config={highchartsConfig}/>
+                <ReactHighcharts ref="chart" config={highchartsConfig}/>
             </div>
         );
+    }
+
+    componentWillReceiveProps(nextProps){
+      const chart = this.refs.chart.getChart();
+      const forEachXNotInYsEmit = (xs, ys, eventName) => {
+        xs
+        .filter((id) => (ys.indexOf(id)==-1))
+        .filter((id,ix,self) => (ix==self.indexOf(id)))
+        .forEach((id) => {
+          Highcharts.fireEvent(chart, eventName, {svgPathId: id})
+        })
+      }
+      forEachXNotInYsEmit(nextProps.ontologyIdsToHighlight, this.props.ontologyIdsToHighlight,'handleGxaAnatomogramTissueMouseEnter');
+      forEachXNotInYsEmit(this.props.ontologyIdsToHighlight, nextProps.ontologyIdsToHighlight,'handleGxaAnatomogramTissueMouseLeave');
     }
 }
 

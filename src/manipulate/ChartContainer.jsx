@@ -45,6 +45,8 @@ class ChartContainer extends React.Component {
             case `heatmap`:
                 return (
                     <Heatmap
+                      ontologyIdsToHighlight={this.props.ontologyIdsToHighlight}
+                      onOntologyIdIsUnderFocus={this.props.onOntologyIdIsUnderFocus}
                       {...this.props.chartData}
                       {...heatmapDefaults(this.props.chartData)}/>
                 );
