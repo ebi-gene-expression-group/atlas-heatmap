@@ -46,7 +46,7 @@ class HeatmapCanvas extends React.Component {
 
         // TODO To know if the labels are actually rotated we must take into account the width of the chart and div
         if (this._countColumns() < 10) {
-            return horizontalLabelsMarginTop;
+            return Math.max(horizontalLabelsMarginTop, Math.round(longestColumnLabelLength));
         } else if (this._countColumns() < 80) {
             return Math.max(tiltedLabelsMarginTop, Math.round(longestColumnLabelLength * 3.85));
         } else {
@@ -78,6 +78,25 @@ class HeatmapCanvas extends React.Component {
                 type: 'heatmap',
                 spacingTop: 0,
                 plotBorderWidth: 1,
+                events: {
+                   handleGxaAnatomogramTissueMouseEnter: function (e) {
+                       Highcharts.each(this.series, function (series) {
+                           Highcharts.each(series.points, function (point) {
+                               if (point.series.xAxis.categories[point.x].id === e.svgPathId) {
+                                   point.select(true, true);
+                               }
+                           });
+                       });
+                   },
+                   handleGxaAnatomogramTissueMouseLeave: function (e) {
+                       var points = this.getSelectedPoints();
+                       if (points.length > 0) {
+                           Highcharts.each(points, function (point) {
+                               point.select(false);
+                           });
+                       }
+                   }
+                },
                 zoomType: 'x'
             },
 
@@ -93,16 +112,10 @@ class HeatmapCanvas extends React.Component {
                             click:
                               events.onClickPoint
                               ? function () {
+                                  debugger;
                                     events.onClickPoint({x: this.x, y: this.y})
                                 }
                               : function () {}
-                            ,
-                            mouseover: function() {
-                              events.onHoverPoint({x: this.x, y: this.y})
-                            },
-                            mouseout: function() {
-                              events.onHoverOff()
-                            }
                         }
                     },
 
@@ -129,7 +142,7 @@ class HeatmapCanvas extends React.Component {
 
             colorAxis: this.props.colourAxis,
 
-            xAxis: { //assays
+            xAxis: { //assay groups, contrasts, or factors across experiments
                 tickLength: 5,
                 tickColor: `rgb(192, 192, 192)`,
                 lineColor: `rgb(192, 192, 192)`,
@@ -211,13 +224,26 @@ class HeatmapCanvas extends React.Component {
             })
         };
 
-        const maxWidthFraction = 1 - Math.exp(-(0.2 + 0.05 * Math.pow(1 + this._countColumns(), 2)));
-        //<div id="highchartsHeatmapContainer" style={{maxWidth: maxWidthFraction * 100 + `%`}}>
+        const maxWidthFraction = this._countColumns() > 6 ? 1 : Math.max(0.5, 1 - Math.exp(-(1 + 0.05 * Math.pow(1 + this._countColumns(), 2))));
         return (
-            <div>
-                <ReactHighcharts config={highchartsConfig}/>
+            <div style={{maxWidth: maxWidthFraction * 100 + `%`, minWidth: "600px"}}>
+                <ReactHighcharts ref="chart" config={highchartsConfig}/>
             </div>
         );
+    }
+
+    componentWillReceiveProps(nextProps){
+      const chart = this.refs.chart.getChart();
+      const forEachXNotInYsEmit = (xs, ys, eventName) => {
+        xs
+        .filter((id) => (ys.indexOf(id)==-1))
+        .filter((id,ix,self) => (ix==self.indexOf(id)))
+        .forEach((id) => {
+          Highcharts.fireEvent(chart, eventName, {svgPathId: id})
+        })
+      }
+      forEachXNotInYsEmit(nextProps.ontologyIdsToHighlight, this.props.ontologyIdsToHighlight,'handleGxaAnatomogramTissueMouseEnter');
+      forEachXNotInYsEmit(this.props.ontologyIdsToHighlight, nextProps.ontologyIdsToHighlight,'handleGxaAnatomogramTissueMouseLeave');
     }
 }
 
@@ -232,7 +258,6 @@ HeatmapCanvas.propTypes = {
     events: React.PropTypes.shape({
       onHoverRow: React.PropTypes.func.isRequired,
       onHoverColumn: React.PropTypes.func.isRequired,
-      onHoverPoint:React.PropTypes.func.isRequired,
       onHoverOff: React.PropTypes.func.isRequired,
       onClickPoint: React.PropTypes.func
     }),

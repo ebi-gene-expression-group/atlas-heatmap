@@ -131,58 +131,6 @@ class HeatmapWithControls extends React.Component {
     }
 
     render() {
-        const anatomogramCallbacks = (heatmapDataToPresent, highlightOntologyIds) =>
-            ({
-                onUserSelectsRow: rowLabel => {
-                    const y =
-                        heatmapDataToPresent
-                            .yAxisCategories
-                            .findIndex(e => e.label === rowLabel);
-
-                    highlightOntologyIds(
-                        [].concat.apply([],
-                            [].concat.apply([],
-                                heatmapDataToPresent
-                                .dataSeries
-                                .map(series => series.data)
-                            )
-                            .filter(point => point.y === y)
-                            .map(point => point.info.xId || heatmapDataToPresent.xAxisCategories[point.x].id)
-                            .map(e => Array.isArray(e) ? e : [e])
-                        )
-                        .filter((e,ix,self) => self.indexOf(e) === ix)
-                    )
-                },
-
-                onUserSelectsColumn: columnLabel => {
-                    highlightOntologyIds(
-                        heatmapDataToPresent
-                            .xAxisCategories
-                            .filter(e => e.label === columnLabel)
-                            .map(e => e.id)
-                            .concat([``])
-                            [0]
-                    )
-                },
-
-                onUserSelectsPoint: columnId => {
-                    //Column ids are, in fact, factorValueOntologyTermId's
-                    highlightOntologyIds(columnId || ``);
-                }
-            });
-
-        const dummyAnatomogramCallbacks = {
-            onUserSelectsRow: () => {
-                console.log(`Anatomogram callback: Select row`)
-            },
-            onUserSelectsColumn: () => {
-                console.log(`Anatomogram callback: Select column`)
-            },
-            onUserSelectsPoint: () => {
-                console.log(`Anatomogram callback: Select point`)
-            }
-        };
-
         const heatmapDataToPresent = this._heatmapDataToPresent();
         const {yAxisStyle, yAxisFormatter, xAxisStyle, xAxisFormatter} = axesFormatters(this.props.heatmapConfig);
 
@@ -195,9 +143,10 @@ class HeatmapWithControls extends React.Component {
             xAxisStyle: xAxisStyle,
             xAxisFormatter: xAxisFormatter,
             onZoom: this.props.onZoom,
+            ontologyIdsToHighlight: this.props.ontologyIdsToHighlight,
             events: makeEvents({
               heatmapData: heatmapDataToPresent,
-              onSelectOntologyIds : console.log,
+              onSelectOntologyIds : this.props.onOntologyIdIsUnderFocus,
               genomeBrowserTemplate: this.props.heatmapConfig.genomeBrowserTemplate
             })
         };
@@ -285,8 +234,8 @@ HeatmapWithControls.propTypes = {
 
     zoom: React.PropTypes.bool.isRequired,
     onZoom: React.PropTypes.func,
-    // ontologyIdsToHighlight: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-    // onOntologyIdIsUnderFocus: React.PropTypes.func.isRequired,
+    ontologyIdsToHighlight: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+    onOntologyIdIsUnderFocus: React.PropTypes.func.isRequired,
 };
 
 export default HeatmapWithControls;

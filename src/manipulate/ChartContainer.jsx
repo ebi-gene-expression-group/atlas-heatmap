@@ -40,23 +40,6 @@ class ChartContainer extends React.Component {
         return this.state.chartType === `heatmap` ? `boxplot` : `heatmap`;
     }
 
-    _getChart() {
-        switch (this.state.chartType) {
-            case `heatmap`:
-                return (
-                    <Heatmap
-                      {...this.props.chartData}
-                      {...heatmapDefaults(this.props.chartData)}/>
-                );
-            case `boxplot`:
-                return (
-                    <Boxplot {...this.props.chartData.boxplotData} />
-                );
-            default:
-                return null;
-        }
-    }
-
     _handleClick(e) {
         e.preventDefault();
         this.setState({ chartType: this._theOtherChartType() });
@@ -65,10 +48,23 @@ class ChartContainer extends React.Component {
     render() {
         return (
             <div>
-                {this.props.chartData.boxplotData ?
-                    <a href="#" onClick={this.handleClick}>{`Switch to ${this._theOtherChartType()} view`}</a> :
-                    null}
-                {this._getChart()}
+              {this.props.chartData.boxplotData &&
+                  <a href="#" onClick={this.handleClick}>
+                    {`Switch to ${this._theOtherChartType()} view`}
+                  </a>
+              }
+              <div style={{display: this.state.chartType === 'heatmap' ? 'block' : 'none' }} >
+                <Heatmap
+                  ontologyIdsToHighlight={this.props.ontologyIdsToHighlight}
+                  onOntologyIdIsUnderFocus={this.props.onOntologyIdIsUnderFocus}
+                  {...this.props.chartData}
+                  {...heatmapDefaults(this.props.chartData)}/>
+              </div>
+              { this.props.chartData.boxplotData &&
+                <div style={{display: this.state.chartType === 'boxplot' ? 'block' : 'none' }} >
+                  <Boxplot {...this.props.chartData.boxplotData} />
+                </div>
+              }
             </div>
         );
     }

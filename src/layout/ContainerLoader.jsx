@@ -4,35 +4,49 @@ import URI from 'urijs';
 
 import Container from './Container.jsx';
 
-class ContainerLoader extends React.Component {
+const Loading = ({spinnerUrl}) => (
+  <div>
+      <img src={spinnerUrl}/>
+  </div>
+)
 
-    render () {
-        const {inProxy, atlasUrl, fail, sourceUrlFetch} = this.props;
+const failAndShowMessage = ({onFailure, request, message}) => {
+  !!onFailure && onFailure({
+    url: request.url,
+    method: request.method,
+    message: message
+  })
 
-        if (sourceUrlFetch.pending) {
-            return (
-                <div>
-                    <img src={inProxy + URI(`resources/images/loading.gif`).absoluteTo(atlasUrl)}/>
-                </div>
-            );
-        } else if (sourceUrlFetch.rejected) {
+  return (
+     <div><p>Error: {message}</p></div>
+  )
+}
 
-            const error = {
-                url: sourceUrlFetch.meta.request.url,
-                method: sourceUrlFetch.meta.request.method,
-                message: sourceUrlFetch.reason.message
-            };
-            if (fail) {
-                fail(error);
-            }
-            return <div><p>Error: {error.message}</p></div>;
-
-        } else if (sourceUrlFetch.fulfilled) {
-            return (
-              <Container {...this.props} data={sourceUrlFetch.value} />
-            )
-        }
+const ContainerLoader = (props) => {
+  const {inProxy, atlasUrl, fail, sourceUrlFetch} = props
+  if (sourceUrlFetch.pending) {
+    return(
+       <Loading spinnerUrl={inProxy + URI(`resources/images/loading.gif`).absoluteTo(atlasUrl)} />
+     )
+  } else if (sourceUrlFetch.rejected) {
+    return failAndShowMessage({
+      onFailure: fail,
+      request: sourceUrlFetch.meta.request,
+      message: sourceUrlFetch.reason.message
+    })
+  } else if (sourceUrlFetch.fulfilled) {
+    if(sourceUrlFetch.value.error){
+      return failAndShowMessage({
+        onFailure: fail,
+        request: sourceUrlFetch.meta.request,
+        message: sourceUrlFetch.value.error
+      })
+    } else {
+      return (
+        <Container {...props} data={sourceUrlFetch.value} />
+      )
     }
+  }
 }
 
 ContainerLoader.propTypes = {

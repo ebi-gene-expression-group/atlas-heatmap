@@ -32,17 +32,13 @@ const makeCallbacks = ({heatmapData,onSelectOntologyIds,genomeBrowserTemplate}) 
       onSelectOntologyIds(ontologyIdsForColumn(x))
     },
 
-    onHoverPoint: ({x,y}) => {
-      onSelectOntologyIds(ontologyIdsForColumn(x))
-    },
-
     onHoverOff: () => {
       onSelectOntologyIds([])
     },
 
     onClickPoint: genomeBrowserTemplate ? ({x, y}) => {
-      const xId = this.series.xAxis.categories[this.x].info.trackId;
-      const yId = this.series.yAxis.categories[this.y].info.trackId;
+      const xId = heatmapData.xAxisCategories[x].info.trackId;
+      const yId = heatmapData.yAxisCategories[y].info.trackId;
 
       window.open(genomeBrowserTemplate.replace(/_x_/g, xId).replace(/_y_/g, yId), "_blank");
     } : undefined
