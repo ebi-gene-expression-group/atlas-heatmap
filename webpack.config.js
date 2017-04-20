@@ -11,6 +11,14 @@ module.exports = {
         dependencies: ['color', 'downloadjs', 'he', 'highcharts', 'highcharts-custom-events', 'lodash', 'object-hash',
             'rc-slider', 'react', 'react-bootstrap', 'react-dom', 'react-highcharts', 'react-refetch', 'urijs']
     },
+
+    resolve: {
+        alias: {
+            "react": path.resolve('./node_modules/react'),
+            "react-dom": path.resolve('./node_modules/react-dom')
+        }
+    },
+
     output: {
         library: '[name]',
         path: path.resolve(__dirname, 'dist'),
