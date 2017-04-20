@@ -21,6 +21,7 @@ import ContainerLoader from './layout/ContainerLoader.jsx';
  * @param {string}                              options.query.species
  * @param {{value: string, category: string}[]} options.query.gene
  * @param {{value: string, category: string}[]} options.query.condition
+ * @param {string}                              options.query.source
  * @param {function}        options.onRender - Callback to run after each render
  */
 const DEFAULT_OPTIONS = {
@@ -86,8 +87,8 @@ function parseQuery(query) {
     return {
         geneQuery: stringifyIfNotString(query.gene),
         conditionQuery: stringifyIfNotString(query.condition),
-        species: stringifyIfNotString(query.species)
-
+        species: stringifyIfNotString(query.species),
+        source: stringifyIfNotString(query.source)
     }
 }
 
