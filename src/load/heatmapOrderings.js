@@ -119,9 +119,9 @@ const createOrderings = (expressions, columnHeaders, rows, experiment) => {
     } else {
         return {
             default: {
-                name: `Default`,
-                columns: noOrdering(columnHeaders),
-                rows: noOrdering(rows)
+                name: `Alphabetical order`,
+                columns: createAlphabeticalOrdering(`factorValue`, columnHeaders),
+                rows: createAlphabeticalOrdering(`name`, rows)
             }
         }
     }
