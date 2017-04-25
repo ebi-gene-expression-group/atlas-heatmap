@@ -67,7 +67,7 @@ const BoxplotCanvas = ({title, xAxisCategories, dataSeries, unit}) => {
             tickLength: 5,
             tickColor: `rgb(192, 192, 192)`,
             lineColor: `rgb(192, 192, 192)`,
-            xAxisCategories: xAxisCategories,
+            categories: xAxisCategories,
             labels: {
                 style: {
                     fontSize: `9px`
