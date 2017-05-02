@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import {isMultiExperiment, isDifferential} from './experimentTypeUtils.js';
+import {isMultiExperiment, isBaseline, isDifferential} from './experimentTypeUtils.js';
 
 //apply rank first, use comparator to resolve ties
 const createOrdering = (rank, comparator, arr) =>
@@ -120,7 +120,9 @@ const createOrderings = (expressions, columnHeaders, rows, experiment) => {
         return {
             default: {
                 name: `Default`,
-                columns: noOrdering(columnHeaders),
+                columns: isBaseline(experiment) ? createAlphabeticalOrdering(`factorValue`, columnHeaders) :
+                         isDifferential(experiment) ? createAlphabeticalOrdering(`displayName`, columnHeaders) :
+                             noOrdering(columnHeaders),
                 rows: noOrdering(rows)
             }
         }
