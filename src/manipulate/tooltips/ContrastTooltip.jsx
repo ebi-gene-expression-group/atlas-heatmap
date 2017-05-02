@@ -70,7 +70,7 @@ const ContrastTooltip = React.createClass({
   propTypes: Object.assign({
     resources: React.PropTypes.arrayOf(React.PropTypes.shape({
       type: React.PropTypes.oneOf(["gsea_go", "gsea_interpro", "gsea_reactome", "ma-plot"]).isRequired,
-      uri: React.PropTypes.string.isRequired
+      url: React.PropTypes.string.isRequired
     })).isRequired
   },contrastTablePropTypes ),
 
@@ -92,7 +92,7 @@ const ContrastTooltip = React.createClass({
             {this.props.resources.map(function(resource){
               return (
                 <a
-                href={resource.uri}
+                href={resource.url}
                 key={resource.type}
                 title={descriptions[resource.type]}
                 style={{textDecoration: "none"}}

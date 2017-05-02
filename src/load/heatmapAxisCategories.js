@@ -21,7 +21,7 @@ const getGroupsThatContainId = (columnGroupings, id) =>
         }
     });
 
-const getHeatmapXAxisCategories = (columnHeaders, columnGroupings, experiment, inProxy, atlasUrl, pathToResources) =>
+const getHeatmapXAxisCategories = ({columnHeaders, columnGroupings, experiment, inProxy, atlasUrl, pathToResources}) =>
     columnHeaders.map(
         isMultiExperiment(experiment) ?
             columnHeader => ({
@@ -43,7 +43,7 @@ const getHeatmapXAxisCategories = (columnHeaders, columnGroupings, experiment, i
                             resources:
                                 columnHeader.resources.map(resource => ({
                                     type: resource.type,
-                                    uri: Url.resolve(inProxy + atlasUrl, resource.uri),
+                                    url: Url.resolve(inProxy + atlasUrl, resource.uri),
                                     icon: Url.resolve(
                                         pathToResources,
                                         Path.basename(require(`../../assets/${resource.type}-icon.png`)))
@@ -63,25 +63,15 @@ const getHeatmapXAxisCategories = (columnHeaders, columnGroupings, experiment, i
                 })
     );
 
-const getHeatmapYAxisCategories = (rows, geneQuery, experiment) =>
+const getHeatmapYAxisCategories = ({rows, geneQuery, experiment, inProxy, atlasUrl}) =>
     rows.map(
-        isMultiExperiment(experiment) ?
             profile => ({
                 label: profile.name,
-                id : profile.uri || (profile.id + `?geneQuery=${geneQuery}`) +
-                (profile.serializedFilterFactors ?
-                    `&serializedFilterFactors=${encodeURIComponent(profile.serializedFilterFactors)}` : ``),
-                info: {
-                    trackId: ``,
-                    designElement: ``
-                }
-            }) :
-            profile => ({
-                label: profile.name,
-                id: profile.uri || profile.id,
+                id: profile.id,
                 info: {
                     trackId: profile.id,
-                    designElement: profile.designElement || ``
+                    designElement: profile.designElement || ``,
+                    url: Url.resolve(inProxy + atlasUrl, profile.uri)
                 }
             })
     );

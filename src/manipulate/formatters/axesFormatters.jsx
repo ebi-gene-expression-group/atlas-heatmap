@@ -21,17 +21,13 @@ const YAxisLabel = React.createClass({
         }).isRequired,
         labelText: React.PropTypes.string.isRequired,
         resourceId: React.PropTypes.string.isRequired,
+        url: React.PropTypes.string.isRequired,
         extra: React.PropTypes.string
     },
 
-    //TODO Always use resourceId as-is when production Atlas supplies URIs for labels
     render: function() {
         const geneNameWithLink =
-            <a href={this.props.config.outProxy +
-                        (this.props.resourceId.startsWith("http") ?
-                            this.props.resourceId :
-                            this.props.config.atlasUrl) +
-                        (this.props.config.experiment ? `genes/` : `experiments/`) + this.props.resourceId}>
+            <a href={this.props.url}>
                 {this.props.labelText}
             </a>;
         return (
@@ -55,6 +51,7 @@ export default config => ({
         <YAxisLabel config={config}
                     labelText={value.label}
                     resourceId={value.id}
+                    url={value.info.url}
                     extra={value.info.designElement || ``}
         />
     ),
