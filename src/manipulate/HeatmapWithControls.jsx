@@ -4,10 +4,8 @@ import OrderingsDropdown from './controls/OrderingsDropdown.jsx';
 import FiltersModal from './controls/filter/FiltersModal.jsx';
 import DownloadButton from './controls/download-button/DownloadButton.jsx';
 
-import TooltipStateManager from './tooltips/TooltipStateManager.jsx';
 import HeatmapCanvas from '../show/HeatmapCanvas.jsx';
 
-import tooltipsFactory from './tooltips/main.jsx';
 import cellTooltipFormatter from './formatters/heatmapCellTooltipFormatter.jsx';
 import axesFormatters from './formatters/axesFormatters.jsx';
 
@@ -153,34 +151,44 @@ class HeatmapWithControls extends React.Component {
 
         return (
             <div>
-                <div style={{float: `right`}}>
-                    <div style={{display: `inline-block`, padding: `5px`}}>
-                        {this._renderOrderings(heatmapDataToPresent)}
+                <div>
+                    <div style={{float: `left`, lineHeight: `2.5rem`, padding: `0.5rem 0`}}>
+                        {this.props.heatmapConfig.introductoryMessage}
                     </div>
-                    <div style={{display: `inline-block`, padding: `5px`}}>
-                        {this._renderFilters()}
-                    </div>
-                    <div style={{display: `inline-block`, padding: `5px`}}>
-                        {this._renderDownloadButton(heatmapDataToPresent)}
+                    <div style={{float: `right`, padding: `0.5rem 0`}}>
+                        <div style={{display: `inline-block`, padding: `5px`}}>
+                            {this._renderOrderings(heatmapDataToPresent)}
+                        </div>
+                        <div style={{display: `inline-block`, padding: `5px`}}>
+                            {this._renderFilters()}
+                        </div>
+                        <div style={{display: `inline-block`, padding: `5px`}}>
+                            {this._renderDownloadButton(heatmapDataToPresent)}
+                        </div>
                     </div>
                 </div>
                 <div style={{clear: `both`}}>
                 {heatmapProps.heatmapData.yAxisCategories < 1 ?
                     <div style={{padding: `50px 0`}}>No data match your filtering criteria or your original query. Please, change your query or your filters and try again.</div>
                     :
-                    <div>
-                        <div style={{padding: `10px 0`}}>
-                            {this.props.heatmapConfig.introductoryMessage}
+                    this.props.heatmapConfig.isMultiExperiment ?
+                        <div>
+                            <HeatmapCanvas {...heatmapProps}/>
+                            <HeatmapLegend heatmapConfig={this.props.heatmapConfig}
+                                           dataSeries={this.props.heatmapData.dataSeries}
+                                           selectedExpressionLevelFilters={this._getSelectedExpressionLevelFilters()}
+                                           colourAxis={this.props.colourAxis}
+                            />
+                        </div> :
+                        <div>
+                            <HeatmapLegend heatmapConfig={this.props.heatmapConfig}
+                                           dataSeries={this.props.heatmapData.dataSeries}
+                                           selectedExpressionLevelFilters={this._getSelectedExpressionLevelFilters()}
+                                           colourAxis={this.props.colourAxis}
+                            />
+                            <HeatmapCanvas {...heatmapProps}/>
                         </div>
-                        <HeatmapCanvas
-                          {...heatmapProps}/>
-                    </div>
                 }
-                <HeatmapLegend heatmapConfig={this.props.heatmapConfig}
-                               dataSeries={this.props.heatmapData.dataSeries}
-                               selectedExpressionLevelFilters={this._getSelectedExpressionLevelFilters()}
-                               colourAxis={this.props.colourAxis}
-                />
 
                 {this.props.heatmapConfig.coexpressionsAvailable && !this.props.heatmapConfig.isWidget ?
                     <CoexpressionOption geneName={this.props.heatmapData.yAxisCategories[0].label}

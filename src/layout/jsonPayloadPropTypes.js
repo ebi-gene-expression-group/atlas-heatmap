@@ -109,7 +109,6 @@ const differentialProfilesPropTypes = React.PropTypes.shape({
 
 const dataPropTypes = React.PropTypes.shape({
     config: React.PropTypes.shape({
-        atlasHost: React.PropTypes.string.isRequired,
         contextRoot: React.PropTypes.string.isRequired,
         geneQuery: React.PropTypes.string.isRequired,
         conditionQuery: React.PropTypes.string.isRequired,
