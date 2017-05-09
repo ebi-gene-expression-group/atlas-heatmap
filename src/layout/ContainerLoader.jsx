@@ -4,50 +4,57 @@ import URI from 'urijs';
 
 import Container from './Container.jsx';
 
-const Loading = ({spinnerUrl}) => (
-  <div>
-      <img src={spinnerUrl}/>
-  </div>
-)
+const Loading = ({spinnerUrl}) => <div><img src={spinnerUrl}/></div>;
 
 const failAndShowMessage = ({onFailure, request, message}) => {
-  !!onFailure && onFailure({
+  Boolean(onFailure) && onFailure({
     url: request.url,
     method: request.method,
     message: message
-  })
+  });
 
-  return (
-     <div><p>Error: {message}</p></div>
-  )
-}
+  return <div><p>{message}</p></div>;
+};
+
+const showMessage = message => failAndShowMessage({
+  onFailure: () => {},
+  request: {},
+  message
+});
 
 const ContainerLoader = (props) => {
-  const {inProxy, atlasUrl, fail, sourceUrlFetch} = props
+  const {inProxy, atlasUrl, fail, sourceUrlFetch} = props;
+
   if (sourceUrlFetch.pending) {
-    return(
-       <Loading spinnerUrl={inProxy + URI(`resources/images/loading.gif`).absoluteTo(atlasUrl)} />
-     )
+
+    return <Loading spinnerUrl={inProxy + URI(`resources/images/loading.gif`, atlasUrl).toString()} />;
+
   } else if (sourceUrlFetch.rejected) {
+
     return failAndShowMessage({
       onFailure: fail,
       request: sourceUrlFetch.meta.request,
-      message: sourceUrlFetch.reason.message
-    })
+      message: `Error: ${sourceUrlFetch.reason.message}`
+    });
+
   } else if (sourceUrlFetch.fulfilled) {
-    if(sourceUrlFetch.value.error){
+
+    if (sourceUrlFetch.value.error) {
+      console.log(`inner error`);
       return failAndShowMessage({
         onFailure: fail,
         request: sourceUrlFetch.meta.request,
-        message: sourceUrlFetch.value.error
-      })
-    } else {
-      return (
-        <Container {...props} data={sourceUrlFetch.value} />
-      )
+        message: `Error: ${sourceUrlFetch.reason.message}`
+      });
     }
+
+    if (!sourceUrlFetch.value.profiles) {
+      return showMessage(`Sorry, no results could be found matching your query.`);
+    }
+
+    return <Container {...props} data={sourceUrlFetch.value} />;
   }
-}
+};
 
 ContainerLoader.propTypes = {
     inProxy: React.PropTypes.string.isRequired,
