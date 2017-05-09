@@ -9,6 +9,7 @@ import ContainerLoader from './layout/ContainerLoader.jsx';
  * @param {string | Object} options.target - a <div> id or a DOM element, as returned by ReactDOM.findDOMNode()
  * @param {boolean}         options.disableGoogleAnalytics - Disable Google Analytics
  * @param {function}        options.fail - Callback to run if the AJAX request to the server fails. (jqXHR, textStatus)
+ * @param {function}        options.render - Callback to run after each render
  * @param {boolean}         options.showAnatomogram - optionally hide the anatomogram
  * @param {boolean}         options.isWidget
  * @param {string}          options.atlasUrl - Atlas host and path with protocol and port
@@ -22,7 +23,6 @@ import ContainerLoader from './layout/ContainerLoader.jsx';
  * @param {{value: string, category: string}[]} options.query.gene
  * @param {{value: string, category: string}[]} options.query.condition
  * @param {string}                              options.query.source
- * @param {function}        options.onRender - Callback to run after each render
  */
 const DEFAULT_OPTIONS = {
     showAnatomogram: true,
@@ -50,12 +50,12 @@ const ExpressionAtlasHeatmap = options => {
 };
 
 const render = options => {
-    const { disableGoogleAnalytics = false, onRender = () => {}, target } = options;
+    const { disableGoogleAnalytics = false, render = () => {}, target } = options;
 
     ReactDOM.render(
         <ExpressionAtlasHeatmap {...options} />,
         typeof target === `string` ? document.getElementById(target) : target,
-        onRender
+        render
     );
 
     if (!disableGoogleAnalytics) {
