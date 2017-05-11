@@ -37,7 +37,7 @@ class DownloadButton extends React.Component {
     }
 
     _commenceDownload() {
-        window.ga(`atlas-highcharts-widget.send`, `event`, `HeatmapHighcharts`, `downloadData`);
+        (window.ga || (() => {}))(`atlas-highcharts-widget.send`, `event`, `HeatmapHighcharts`, `downloadData`);
         Download(this.props.download)
     }
 
