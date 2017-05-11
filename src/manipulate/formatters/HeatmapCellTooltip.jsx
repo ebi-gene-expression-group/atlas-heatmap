@@ -123,10 +123,11 @@ const differentialNumbers = ({colour, foldChange, pValue, tStat}) => (
   ]
 )
 
-const baselineNumbers = ({colour, value, unit}) => (
+const baselineNumbers = ({colour, value, unit,replicates}) => (
   [
     _tinySquare(colour),
-    _span(`Expression level`, value ?`${value} ${unit}` : `Below cutoff`)
+    _span(`Expression level`, value ?`${value} ${unit}` : `Below cutoff`),
+    _div(`Number of biological replicates`, replicates || "?")
   ]
 )
 
@@ -178,6 +179,7 @@ HeatmapCellTooltip.propTypes = {
     yLabel: React.PropTypes.string.isRequired,
     value: React.PropTypes.number.isRequired,
     unit: React.PropTypes.string.isRequired,
+    replicates: React.PropTypes.number,
     foldChange: React.PropTypes.number,
     pValue: React.PropTypes.number,
     tStat: React.PropTypes.number,
