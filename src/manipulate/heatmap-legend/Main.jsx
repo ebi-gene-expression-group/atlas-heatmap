@@ -6,7 +6,7 @@ import GradientHeatmapLegend from './GradientHeatmapLegend.jsx';
 import {heatmapConfigPropTypes, dataSeriesPropTypes, colourAxisPropTypes}
 from '../../manipulate/chartDataPropTypes.js';
 
-function renderDataSeriesLegend(dataSeries, selectedExpressionLevelFilters) {
+const DataSeriesLegend = ({dataSeries, selectedExpressionLevelFilters}) => {
     const legendItems = dataSeries.map(series =>
             ({
                 key: series.info.name,
@@ -18,7 +18,12 @@ function renderDataSeriesLegend(dataSeries, selectedExpressionLevelFilters) {
     return <DataSeriesHeatmapLegend legendItems={legendItems} />;
 }
 
-function renderGradientLegend(colourAxis, experiment) {
+DataSeriesLegend.propTypes = {
+  dataSeries: dataSeriesPropTypes.isRequired,
+  selectedExpressionLevelFilters: React.PropTypes.array,
+}
+
+const GradientLegend = ({colourAxis, heatmapConfig}) => {
     const minDownRegulatedValue =
         Math.min(...colourAxis.dataClasses.filter(dataClass => dataClass.from <= 0).map(dataClass => dataClass.from));
     const maxDownRegulatedValue =
@@ -33,42 +38,28 @@ function renderGradientLegend(colourAxis, experiment) {
     const upRegulatedColours =
         colourAxis.dataClasses.filter(dataClass => dataClass.from >= 0).map(dataClass => dataClass.color);
 
-    // Baseline experiments will only have up-regulated values
-    const gradientLegendProps = ({
-        gradients: [
-            {
-                fromValue: minDownRegulatedValue,
-                toValue: maxDownRegulatedValue,
-                colours: downRegulatedColours
-            },
-            {
-                fromValue: minUpRegulatedValue,
-                toValue: maxUpRegulatedValue,
-                colours: upRegulatedColours
-            }
-        ],
-        experiment
-    });
-
-    return <GradientHeatmapLegend {...gradientLegendProps} />;
+    return (
+      <GradientHeatmapLegend
+        gradients={[
+          {
+              fromValue: minDownRegulatedValue,
+              toValue: maxDownRegulatedValue,
+              colours: downRegulatedColours
+          },
+          {
+              fromValue: minUpRegulatedValue,
+              toValue: maxUpRegulatedValue,
+              colours: upRegulatedColours
+          }
+        ]}
+        experiment={heatmapConfig.experiment}
+      />
+    )
 }
 
+GradientLegend.propTypes = {
+  heatmapConfig: heatmapConfigPropTypes.isRequired,
+  colourAxis: colourAxisPropTypes.isRequired
+}
 
-const HeatmapLegend = props => {
-        if (props.heatmapConfig.isMultiExperiment) {
-            return renderDataSeriesLegend(props.dataSeries, props.selectedExpressionLevelFilters);
-        } else if (props.heatmapConfig.experiment) {
-            return renderGradientLegend(props.colourAxis, props.heatmapConfig.experiment);
-        } else {
-            return null;
-        }
-};
-
-HeatmapLegend.propTypes = {
-    heatmapConfig: heatmapConfigPropTypes.isRequired,
-    dataSeries: dataSeriesPropTypes.isRequired,
-    selectedExpressionLevelFilters: React.PropTypes.array,
-    colourAxis: colourAxisPropTypes
-};
-
-export default HeatmapLegend;
+export {DataSeriesLegend, GradientLegend};

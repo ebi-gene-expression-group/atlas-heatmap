@@ -9,7 +9,7 @@ import HeatmapCanvas from '../show/HeatmapCanvas.jsx';
 import cellTooltipFormatter from './formatters/heatmapCellTooltipFormatter.jsx';
 import axesFormatters from './formatters/axesFormatters.jsx';
 
-import HeatmapLegend from './heatmap-legend/HeatmapLegend.jsx';
+import {DataSeriesLegend as MultiExperimentLegend , GradientLegend as SingleExperimentLegend} from './heatmap-legend/Main.jsx';
 import CoexpressionOption from './coexpression/CoexpressionOption.jsx';
 
 import makeEvents from './Events.js'
@@ -169,22 +169,22 @@ class HeatmapWithControls extends React.Component {
                 </div>
                 <div style={{clear: `both`}}>
                 {heatmapProps.heatmapData.yAxisCategories < 1 ?
-                    <div style={{padding: `50px 0`}}>No data match your filtering criteria or your original query. Please, change your query or your filters and try again.</div>
+                    <div style={{padding: `50px 0`}}>
+                      No data match your filtering criteria or your original query. Please, change your query or your filters and try again.
+                    </div>
                     :
                     this.props.heatmapConfig.isMultiExperiment ?
                         <div>
                             <HeatmapCanvas {...heatmapProps}/>
-                            <HeatmapLegend heatmapConfig={this.props.heatmapConfig}
-                                           dataSeries={this.props.heatmapData.dataSeries}
-                                           selectedExpressionLevelFilters={this._getSelectedExpressionLevelFilters()}
-                                           colourAxis={this.props.colourAxis}
+                            <MultiExperimentLegend
+                              dataSeries={this.props.heatmapData.dataSeries}
+                              selectedExpressionLevelFilters={this._getSelectedExpressionLevelFilters()}
                             />
                         </div> :
                         <div>
-                            <HeatmapLegend heatmapConfig={this.props.heatmapConfig}
-                                           dataSeries={this.props.heatmapData.dataSeries}
-                                           selectedExpressionLevelFilters={this._getSelectedExpressionLevelFilters()}
-                                           colourAxis={this.props.colourAxis}
+                            <SingleExperimentLegend
+                              heatmapConfig={this.props.heatmapConfig}
+                              colourAxis={this.props.colourAxis}
                             />
                             <HeatmapCanvas {...heatmapProps}/>
                         </div>
