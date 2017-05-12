@@ -57,7 +57,10 @@ const getHeatmapXAxisCategories = ({columnHeaders, columnGroupings, experiment, 
                     id : columnHeader.factorValueOntologyTermId || ``,
                     info: {
                         trackId: columnHeader.assayGroupId,
-                        tooltip: columnHeader.assayGroupSummary,
+                        tooltip: {
+                          properties: columnHeader.assayGroupSummary.properties,
+                          replicates: columnHeader.assayGroupSummary.replicates,
+                        },
                         groupings: getGroupsThatContainId(columnGroupings, columnHeader.factorValueOntologyTermId || ``)
                     }
                 })

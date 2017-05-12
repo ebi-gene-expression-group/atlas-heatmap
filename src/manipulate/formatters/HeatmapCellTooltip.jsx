@@ -126,9 +126,8 @@ const differentialNumbers = ({colour, foldChange, pValue, tStat}) => (
 const baselineNumbers = ({colour, value, unit,replicates}) => (
   [
     _tinySquare(colour),
-    _span(`Expression level`, value ?`${value} ${unit}` : `Below cutoff`),
-    _div(`Number of biological replicates`, replicates || "?")
-  ]
+    _span(`Expression level`, value ?`${value} ${unit}` : `Below cutoff`)
+  ].concat(replicates ? _div(`Number of biological replicates`, replicates) : [])
 )
 
 const extraBottomInfo = ({config}) => (
