@@ -27,7 +27,7 @@ const YAxisLabel = React.createClass({
 
     render: function() {
         const geneNameWithLink =
-            <a href={this.props.url}>
+            <a href={this.props.config.outProxy + this.props.url}>
                 {this.props.labelText}
             </a>;
         return (
