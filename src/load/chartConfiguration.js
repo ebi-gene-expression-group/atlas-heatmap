@@ -1,5 +1,6 @@
 import {isMultiExperiment, isBaseline, isDifferential} from './experimentTypeUtils.js';
 import {capitalizeFirstLetter, numberWithCommas} from '../utils';
+import URI from 'urijs';
 
 // Message on top of the chart: “Showing 3 experiments:”, “Showing 12 genes of 432 found:”, “Showing 32 genes:”...
 const introductoryMessage = (experiment, profiles) => {
@@ -14,7 +15,9 @@ const introductoryMessage = (experiment, profiles) => {
 // _x_ and _y_ are placeholders to be replaced when clicking on a heatmap cell (see HeatmapCanvas.jsx)
 // TODO User URI.js to build URL (?)
 const genomeBrowserPath = (experiment, atlasUrl) => {
-    const trackFileUrl = `${atlasUrl}/experiments/${experiment.accession}/tracks/${experiment.accession}._x_`;
+    const fullyQualifiedAtlasUrl = atlasUrl.startsWith(`http`) ? atlasUrl :
+      URI(atlasUrl, `${window.location.protocol}//${window.location.hostname}`).toString();
+    const trackFileUrl = `${fullyQualifiedAtlasUrl}/experiments/${experiment.accession}/tracks/${experiment.accession}._x_`;
 
     const contigViewBottom =
         `contigviewbottom=url:${trackFileUrl}.genes.${isDifferential ? `log2foldchange` : `expressions`}.bedGraph`;
