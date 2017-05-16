@@ -19,7 +19,7 @@ const genomeBrowserPath = (experiment, atlasUrl) => {
     const trackFileUrl = URI(`experiments/${experiment.accession}/tracks/${experiment.accession}._x_`, fullyQualifiedAtlasUrl).toString();
 
     const contigViewBottom =
-        `contigviewbottom=url:${trackFileUrl}.genes.${isDifferential ? `log2foldchange` : `expressions`}.bedGraph`;
+        `contigviewbottom=url:${trackFileUrl}.genes.${isDifferential(experiment) ? `log2foldchange` : `expressions`}.bedGraph`;
 
     const tiling = isDifferential(experiment) ? `=tiling,url:${trackFileUrl}.genes.pval.bedGraph=pvalue;` : ``;
 
