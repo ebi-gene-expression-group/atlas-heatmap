@@ -20,7 +20,8 @@ const DataSeriesHeatmapLegend = props =>
         {props.legendItems.map(legendItemProps => <DataSeriesHeatmapLegendBox {...legendItemProps} />)}
 
         <div className="legend-item">
-            <span className="icon icon-generic" data-icon="i" data-toggle="tooltip" data-placement="bottom"
+            <span className="icon icon-generic gxaInfoIcon"
+                  data-icon="i" data-toggle="tooltip" data-placement="bottom"
                   title="Baseline expression levels in RNA-seq experiments are in FPKM or TPM. Low: 0.5-10,
                          Medium: 11-1,000,  High: >1,000. Proteomics expression levels are mapped to low, medium, high
                          per experiment basis.">
