@@ -67,7 +67,7 @@ class HeatmapCanvas extends React.Component {
         const marginRight = this._getAdjustedMarginRight();
         const height = this._getAdjustedHeight(marginTop, marginBottom);
 
-        const {cellTooltipFormatter, xAxisFormatter, yAxisFormatter, genomeBrowserTemplate, onZoom, events} = this.props;
+        const {cellTooltipFormatter, xAxisFormatter, yAxisFormatter, onZoom, events} = this.props;
 
         const highchartsConfig = {
             chart: {
@@ -112,8 +112,7 @@ class HeatmapCanvas extends React.Component {
                             click:
                               events.onClickPoint
                               ? function () {
-                                  debugger;
-                                    events.onClickPoint({x: this.x, y: this.y})
+                                  events.onClickPoint({x: this.x, y: this.y})
                                 }
                               : function () {}
                         }

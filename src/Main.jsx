@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import ReactGA from 'react-ga';
+
 import URI from 'urijs';
 
 import ContainerLoader from './layout/ContainerLoader.jsx';
@@ -59,7 +61,12 @@ const render = options => {
     );
 
     if (!disableGoogleAnalytics) {
-        googleAnalyticsCallback()
+      ReactGA.initialize(`UA-37676851-1`, {
+          gaOptions: {
+              name: 'atlas-highcharts-widget'
+          }
+      });
+      ReactGA.pageview(window.location.pathname);
     }
 };
 
@@ -96,11 +103,3 @@ function stringifyIfNotString(o) {
     return typeof o === `string` ? o : JSON.stringify(o);
 }
 
-function googleAnalyticsCallback() {
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-37676851-1', 'auto', 'atlas-highcharts-widget');
-  ga('atlas-highcharts-widget.send', 'pageview');
-}

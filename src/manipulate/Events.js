@@ -20,7 +20,7 @@ const _ontologyIdsForRow = (heatmapData, y) => (
 
 
 
-const makeCallbacks = ({heatmapData,onSelectOntologyIds,genomeBrowserTemplate}) => {
+const makeCallbacks = ({heatmapData, onSelectOntologyIds, genomeBrowserTemplate}) => {
   const ontologyIdsForRow = curry(_ontologyIdsForRow,2)(heatmapData)
   const ontologyIdsForColumn = curry(_ontologyIdsForColumn,2)(heatmapData)
   return {
