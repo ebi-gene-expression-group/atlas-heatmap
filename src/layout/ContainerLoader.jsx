@@ -34,25 +34,22 @@ const ContainerLoader = (props) => {
     return failAndShowMessage({
       onFailure: fail,
       request: sourceUrlFetch.meta.request,
-      message: `Error: ${sourceUrlFetch.reason.message}`
+      message: `Error: ${sourceUrlFetch.reason.message ? sourceUrlFetch.reason.message : `Unknown cause, please contact arrayexpress-atlas@ebi.ac.uk`}`
     });
 
   } else if (sourceUrlFetch.fulfilled) {
 
     if (sourceUrlFetch.value.error) {
-      console.log(`inner error`);
       return failAndShowMessage({
         onFailure: fail,
         request: sourceUrlFetch.meta.request,
-        message: `Error: ${sourceUrlFetch.reason.message}`
+        message: `${sourceUrlFetch.value.error}`
       });
-    }
-
-    if (!sourceUrlFetch.value.profiles) {
+    } else if (!sourceUrlFetch.value.profiles) {
       return showMessage(`Sorry, no results could be found matching your query.`);
+    } else {
+      return <Container {...props} data={sourceUrlFetch.value} />;
     }
-
-    return <Container {...props} data={sourceUrlFetch.value} />;
   }
 };
 
