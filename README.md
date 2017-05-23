@@ -14,7 +14,7 @@ Visualizations include, where available, an anatomogram to the left of the table
 ## Atlas Widget
 
 Our data can be included as a widget as part of your website.
-[Demo](https://gxa.github.io/atlas-heatmap/html/genePageZincFinger.html)
+[Demo](http://www.ebi.ac.uk/gxa/resources/test/widget/showcase/index.html)
 
 #### What you need
 You must add the following to your environment:
@@ -28,6 +28,14 @@ If you already use your own flavour of Bootstrap, then you
 can remove the styles link tags and the widget will integrate smoothly
 in your environment.
 
+Are you targetting es5 or IE11? Include these polyfills for babel-polyfill and whatwg-fetch:
+```
+<script language="JavaScript" type="text/javascript"
+src="${pageContext.request.contextPath}/resources/js/lib/babel-polyfill.min.js"></script>
+<script language="JavaScript" type="text/javascript"
+src="${pageContext.request.contextPath}/resources/js/lib/fetch-polyfill.min.js"></script>
+```
+
 Then include our widget and the vendor bundle:
 ```
 <script language="JavaScript" type="text/javascript"
@@ -36,6 +44,7 @@ src="http://www.ebi.ac.uk/gxa/resources/js-bundles/vendorCommons.bundle.js"></sc
 src="http://www.ebi.ac.uk/gxa/resources/js-bundles/expressionAtlasHeatmapHighcharts.bundle.js"></script>
 ```
 
+
 Tell us about any problems by raising an issue in this repository.
 
 #### Invoking the widget
@@ -43,11 +52,15 @@ Tell us about any problems by raising an issue in this repository.
 You need to call the render method on the exposed global variable:
 ```
 expressionAtlasHeatmapHighcharts.render({
-    params: "geneQuery=ASPM&species=mus%20musculus",
+    query: {
+      gene: "ASPM"
+    },
     isMultiExperiment: true,
     target: "heatmapContainer"
 });
 ```
+[Lots of examples](http://www.ebi.ac.uk/gxa/resources/test/widget/showcase/index.html)
+
 
 #### Building from source
 
@@ -58,10 +71,10 @@ import { ExpressionAtlasHeatmap } from 'expression-atlas-heatmap-highcharts'
 ```
 
 ##### Notes for developers
-`imports-loader`, although not strictly needed, is necessary to build the `anatomogram` package and therefore it is 
+`imports-loader`, although not strictly needed, is necessary to build the `anatomogram` package and therefore it is
 included in `devDependencies`.
 
-At the time of writing the docs are over the code: [here](https://github.com/gxa/atlas-heatmap/blob/master/src/Main.jsx)
+The authoritative docs are the code itself, here is the main function: [here](https://github.com/gxa/atlas-heatmap/blob/master/src/Main.jsx)
 
 #### Licence
 
