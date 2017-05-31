@@ -109,7 +109,6 @@ const differentialProfilesPropTypes = React.PropTypes.shape({
 
 const dataPropTypes = React.PropTypes.shape({
     config: React.PropTypes.shape({
-        contextRoot: React.PropTypes.string.isRequired,
         geneQuery: React.PropTypes.string.isRequired,
         conditionQuery: React.PropTypes.string.isRequired,
         species: React.PropTypes.string.isRequired,
@@ -117,8 +116,6 @@ const dataPropTypes = React.PropTypes.shape({
             genome_browser: React.PropTypes.arrayOf(React.PropTypes.string)
         }).isRequired,
         columnType: React.PropTypes.string.isRequired,
-        enableEnsemblLauncher: React.PropTypes.bool.isRequired,
-        downloadProfilesURL: React.PropTypes.string.isRequired,
         disclaimer: React.PropTypes.string.isRequired
     }).isRequired,
 
