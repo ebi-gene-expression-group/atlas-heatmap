@@ -19,7 +19,7 @@ const BoxplotCanvas = ({title, xAxisCategories, dataSeries, unit}) => {
         name: `Observations`,
         data: dataSeries,
         tooltip: {
-            headerFormat: '<em>Factor {point.key}</em><br/>'
+            headerFormat: '<em>Factor: {point.key}</em><br/>'
         }
     };
 
@@ -78,7 +78,7 @@ const BoxplotCanvas = ({title, xAxisCategories, dataSeries, unit}) => {
 
         yAxis: {
             title: {
-                text: `Expression (${unit})`
+                text: "Expression"+ (unit ? ` (${unit})`: "")
             },
             min: min,
             max: max,

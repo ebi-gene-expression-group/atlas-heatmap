@@ -21,11 +21,9 @@ export default function(data, inProxy, outProxy, atlasUrl, pathToResources, isWi
             allRows, data.config.geneQuery, data.columnHeaders, data.columnGroupings, data.experiment,
             inProxy, atlasUrl, pathToResources);
 
-    const boxplotData = getBoxplotData(data.profiles, data.columnHeaders, data.experiment, heatmapData);
-
     return {
         heatmapData,
-        boxplotData,
+        boxplotData: getBoxplotData(data),
         heatmapConfig: getChartConfiguration(data, inProxy, outProxy, atlasUrl, isWidget),
         colourAxis : getColourAxisFromDataSeries(data.experiment, heatmapData.dataSeries),
         orderings: createOrderingsForData(data.experiment, allRows, data.columnHeaders),

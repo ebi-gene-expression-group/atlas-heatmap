@@ -1,41 +1,38 @@
 import _ from 'lodash';
 
-import {isMultiExperiment, isBaseline, isDifferential, getUnits} from './experimentTypeUtils';
-
-const getRowInfo = experiment =>
-    ({
-        unit: getUnits(experiment)
-    });
+import {isMultiExperiment, isBaseline, isDifferential} from './experimentTypeUtils';
 
 // Returns an object with coordinates, expression value and other properties for each heat map cell
-const buildHeatMapDataPointFromExpression = function(rowInfo, rowIndex, expression, expressionIndex){
-    return (
-        expression.hasOwnProperty(`value`) ?
-            { x: expressionIndex, y: rowIndex, value: expression.value, info: {...rowInfo} } :
-            (
-                expression.hasOwnProperty(`foldChange`) ?
-                    {
-                        x: expressionIndex,
-                        y: rowIndex,
-                        value: expression.foldChange,
-                        info: {
-                            pValue: expression.pValue,
-                            foldChange: expression.foldChange,
-                            tStat: expression.tStat,
-                            ...rowInfo
-                        }
-                    } :
-                    null
-            )
-    );
-};
+const buildHeatMapDataPointFromExpression = ({rowInfo, rowIndex, expression, expressionIndex})=> (
+  expression.hasOwnProperty(`value`)
+  ? {
+      x: expressionIndex,
+      y: rowIndex,
+      value: expression.value,
+      info: rowInfo
+    }
+  : expression.hasOwnProperty(`foldChange`)
+    ? {
+        x: expressionIndex,
+        y: rowIndex,
+        value: expression.foldChange,
+        info: {
+          pValue: expression.pValue,
+          foldChange: expression.foldChange,
+          tStat: expression.tStat,
+          ...rowInfo
+        }
+      }
+    : null
+);
 
-const buildDataPointsFromRowExpressions = (experiment, row, rowIndex) =>
-    row.expressions
-        .map((expression, expressionIndex) =>
-            buildHeatMapDataPointFromExpression(getRowInfo(experiment), rowIndex, expression, expressionIndex))
-        // Because buildHeatmapDataPointFromExpression returns nulls we filter in the next line
-        .filter(el => el);
+const buildDataPointsFromRowExpressions = ({rowInfo, row: {expressions}, rowIndex}) => (
+  expressions
+  .map((expression, expressionIndex) => (
+    buildHeatMapDataPointFromExpression({rowInfo, rowIndex, expression, expressionIndex})
+  ))
+  .filter((el) => el)
+)
 
 // Returns lodash wrapper of an array with alternating entries of experiment type and an array of data points of that
 // type
@@ -43,7 +40,7 @@ const _createDataPointsAndGroupThemByExperimentType = profilesRowsChain => (
     profilesRowsChain
         .map((row, rowIndex) =>
             [ row.experimentType,
-                buildDataPointsFromRowExpressions({ type: row.experimentType, description: row.name }, row, rowIndex) ])
+                buildDataPointsFromRowExpressions({rowInfo: { type: row.experimentType, description: row.name , unit: row.expressionUnit}, row, rowIndex}) ])
         .groupBy(experimentTypeAndRow => experimentTypeAndRow[0])
         // Just leave the data points...
         .mapValues(rows => rows.map(experimentTypeAndRow => experimentTypeAndRow[1]))
@@ -100,7 +97,7 @@ const _splitDataSetByProportion = (data, names, colours) => {
 const splitGeneRowsIntoProportionalSeriesOfDataPoints = (profilesRows, experiment, filters, names, colours) => {
     const dataPoints =
         _.flatten(profilesRows.map(
-            (row, rowIndex) => buildDataPointsFromRowExpressions(experiment, row, rowIndex)));
+            (row, rowIndex) => buildDataPointsFromRowExpressions({rowInfo: {unit: row.expressionUnit}, row, rowIndex})));
 
     return _.flatten(
         _.range(filters.length).map(
