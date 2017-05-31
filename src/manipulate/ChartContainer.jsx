@@ -53,7 +53,7 @@ class ChartContainer extends React.Component {
                     {`Switch to ${this._theOtherChartType()} view`}
                   </a>
               }
-              <div style={{display: this.state.chartType === 'heatmap' ? 'block' : 'none' }} >
+              <div className={this.state.chartType === 'heatmap' ? '' : 'hidden' } >
                 <Heatmap
                   ontologyIdsToHighlight={this.props.ontologyIdsToHighlight}
                   onOntologyIdIsUnderFocus={this.props.onOntologyIdIsUnderFocus}
@@ -61,7 +61,7 @@ class ChartContainer extends React.Component {
                   {...heatmapDefaults(this.props.chartData)}/>
               </div>
               { this.props.chartData.boxplotData &&
-                <div style={{display: this.state.chartType === 'boxplot' ? 'block' : 'none' }} >
+                <div className={this.state.chartType === 'boxplot' ? '' : 'hidden' } >
                   <Boxplot {...this.props.chartData.boxplotData} />
                 </div>
               }
