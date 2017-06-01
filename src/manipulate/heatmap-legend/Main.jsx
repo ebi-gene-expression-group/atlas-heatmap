@@ -52,7 +52,7 @@ const GradientLegend = ({colourAxis, heatmapConfig}) => {
               colours: upRegulatedColours
           }
         ]}
-        experiment={heatmapConfig.experiment}
+        unit={colourAxis.unit}
       />
     )
 }

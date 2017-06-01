@@ -5,7 +5,7 @@ import {numberWithCommas} from '../../utils.js';
 
 import './GradientHeatmapLegend.less';
 
-const renderGradient = (fromValue, toValue, colours, experiment, index) => {
+const renderGradient = ({fromValue, toValue, colours}, index) => {
     const spanStyle = { backgroundImage: `linear-gradient(to right, ${colours.join(`, `)})` };
 
     return (
@@ -21,27 +21,29 @@ const renderGradient = (fromValue, toValue, colours, experiment, index) => {
     );
 };
 
-const GradientHeatmapLegend = props => {
-    const units = getUnits(props.experiment).toLowerCase();
-    const legendHeader = units.length === 0 ?
-        <span>Expression level</span> :
-        units === `log2-fold change` ?
-            <span>Log<sub>2</sub>-fold change</span> :
-            <span>Expression level in {getUnits(props.experiment)}</span>;
-
-    return (
-        <div className="gxaGradientLegend">
-            <div>
-                {legendHeader}
-            </div>
-            {props.gradients.map(
-                (gradientData, index) =>
-                    renderGradient(gradientData.fromValue, gradientData.toValue, gradientData.colours,
-                                   props.experiment, index))
-            }
-        </div>
-    );
-};
+const GradientHeatmapLegend = ({gradients, unit}) => (
+  <div className="gxaGradientLegend">
+    <div>
+      {
+        ! unit
+        ? <span>
+            Expression level
+          </span>
+        : unit.indexOf("fold change") > -1
+          ? <span>
+              Log<sub>2</sub>-fold change
+            </span>
+          : <span>
+              Expression level in {unit}
+            </span>
+      }
+    </div>
+    {
+      gradients
+      .map(renderGradient)
+    }
+  </div>
+)
 
 GradientHeatmapLegend.propTypes = {
     experiment: experimentPropTypes.isRequired,
@@ -49,8 +51,8 @@ GradientHeatmapLegend.propTypes = {
         fromValue: React.PropTypes.number,
         toValue: React.PropTypes.number,
         colours: React.PropTypes.arrayOf(React.PropTypes.string)
-    })).isRequired
+    })).isRequired,
+    unit: React.PropTypes.string.isRequired
 };
 
 export default GradientHeatmapLegend;
-

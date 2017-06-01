@@ -100,9 +100,24 @@ const dataClassesFromSeries = dataSeries => {
     );
 };
 
-const getColourAxisFromDataSeries = (experiment, dataSeries) =>
-    isMultiExperiment(experiment) ?
-        null :
-        { dataClasses: dataClassesFromSeries(dataSeries) };
+const unitsUsedInDataSeries = (dataSeries) => (
+  [].concat.apply([],
+    dataSeries
+    .map((series) => series.data)
+  )
+  .map((point) => point.info.unit)
+  .filter((el) => el)
+  .filter((el,ix,self) => self.indexOf(el)==ix)
+  .join()
+)
+
+const getColourAxisFromDataSeries = (experiment, dataSeries) => (
+  isMultiExperiment(experiment)
+    ? null
+    : {
+      dataClasses: dataClassesFromSeries(dataSeries),
+      unit: unitsUsedInDataSeries(dataSeries)
+      }
+)
 
 export default getColourAxisFromDataSeries;
