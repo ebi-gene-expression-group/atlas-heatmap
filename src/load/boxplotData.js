@@ -20,7 +20,7 @@ const tryCreateBoxplotData = ({dataRow, columnHeaders}) => {
         dataSeries,
         xAxisCategories: columnHeaders.map((header) => header.factorValue),
         title: dataRow.name + " - " + dataRow.id,
-        unit: dataRow.expressionUnit
+        unit: dataRow.expressionUnit || "" /*no need for this safeguard after master from June 2017 is released*/ 
     }
   } else {
     return null

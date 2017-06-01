@@ -40,7 +40,7 @@ const _createDataPointsAndGroupThemByExperimentType = profilesRowsChain => (
     profilesRowsChain
         .map((row, rowIndex) =>
             [ row.experimentType,
-                buildDataPointsFromRowExpressions({rowInfo: { type: row.experimentType, description: row.name , unit: row.expressionUnit}, row, rowIndex}) ])
+                buildDataPointsFromRowExpressions({rowInfo: { type: row.experimentType, description: row.name , unit: row.expressionUnit || "" /*no need for this safeguard after master from June 2017 is released*/}, row, rowIndex}) ])
         .groupBy(experimentTypeAndRow => experimentTypeAndRow[0])
         // Just leave the data points...
         .mapValues(rows => rows.map(experimentTypeAndRow => experimentTypeAndRow[1]))
@@ -97,7 +97,7 @@ const _splitDataSetByProportion = (data, names, colours) => {
 const splitGeneRowsIntoProportionalSeriesOfDataPoints = (profilesRows, experiment, filters, names, colours) => {
     const dataPoints =
         _.flatten(profilesRows.map(
-            (row, rowIndex) => buildDataPointsFromRowExpressions({rowInfo: {unit: row.expressionUnit}, row, rowIndex})));
+            (row, rowIndex) => buildDataPointsFromRowExpressions({rowInfo: {unit: row.expressionUnit || "" /*no need for this safeguard after master from June 2017 is released*/}, row, rowIndex})));
 
     return _.flatten(
         _.range(filters.length).map(
