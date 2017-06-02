@@ -83,14 +83,17 @@ class HeatmapWithControls extends React.Component {
     _renderOrderings(heatmapDataToPresent) {
         return (
             this.props.heatmapConfig.isMultiExperiment ?
-                <OrderingsDropdown orderings={Object.keys(this.props.orderings).map(
-                    orderingKey => this.props.orderings[orderingKey].name)}
-                                   selected={this.props.selectedOrderingName}
-                                   onSelect={this.props.onSelectOrdering}
-                                   zoom={this.props.zoom}
-                                   hasLessThanTwoRows={heatmapDataToPresent.yAxisCategories.length < 2}
-                />
-                :
+                <div style={{display: `inline-block`, padding: `5px`}}>
+                    <OrderingsDropdown
+                        orderings=
+                            {Object.keys(this.props.orderings)
+                                .map(orderingKey => this.props.orderings[orderingKey].name)}
+                        selected={this.props.selectedOrderingName}
+                        onSelect={this.props.onSelectOrdering}
+                        zoom={this.props.zoom}
+                        hasLessThanTwoRows={heatmapDataToPresent.yAxisCategories.length < 2}
+                    />
+                </div> :
                 null
         );
     }
@@ -98,11 +101,13 @@ class HeatmapWithControls extends React.Component {
     _renderFilters() {
         return (
             this.props.heatmapConfig.isMultiExperiment ?
-                <FiltersModal filters={[this.props.expressionLevelFilters, ...this.props.groupingFilters]}
-                              selectedFilters={this.props.selectedFilters}
-                              onSelectFilters={this.props.onSelectFilters}
-                              disabled={this.props.zoom}
-                /> :
+                <div style={{display: `inline-block`, padding: `5px`}}>
+                    <FiltersModal filters={[this.props.expressionLevelFilters, ...this.props.groupingFilters]}
+                                  selectedFilters={this.props.selectedFilters}
+                                  onSelectFilters={this.props.onSelectFilters}
+                                  disabled={this.props.zoom}
+                    />
+                </div> :
                 null
         );
     }
@@ -125,14 +130,22 @@ class HeatmapWithControls extends React.Component {
         };
 
         return (
-            <DownloadButton {...downloadOptions}/>
-        )
+          <div style={{display: `inline-block`, padding: `5px`}}>
+              <DownloadButton {...downloadOptions}/>
+          </div>
+        );
     }
 
     _renderGenomeBrowserSelect() {
-        return <GenomeBrowsersDropdown genomeBrowsers={this.props.heatmapConfig.genomeBrowsers}
-                                       selected={this.props.selectedGenomeBrowser}
-                                       onSelect={this.props.onSelectGenomeBrowser} />;
+        return (
+        this.props.heatmapConfig.genomeBrowsers.length ?
+            <div style={{display: `inline-block`, padding: `5px`}}>
+                <GenomeBrowsersDropdown genomeBrowsers={this.props.heatmapConfig.genomeBrowsers}
+                                        selected={this.props.selectedGenomeBrowser}
+                                        onSelect={this.props.onSelectGenomeBrowser} />
+            </div> :
+            null
+        );
     }
 
     render() {
@@ -163,18 +176,10 @@ class HeatmapWithControls extends React.Component {
                         {this.props.heatmapConfig.introductoryMessage}
                     </div>
                     <div style={{float: `right`, padding: `0.5rem 0`}}>
-                        <div style={{display: `inline-block`, padding: `5px`}}>
-                            {this._renderGenomeBrowserSelect()}
-                        </div>
-                        <div style={{display: `inline-block`, padding: `5px`}}>
-                            {this._renderOrderings(heatmapDataToPresent)}
-                        </div>
-                        <div style={{display: `inline-block`, padding: `5px`}}>
-                            {this._renderFilters()}
-                        </div>
-                        <div style={{display: `inline-block`, padding: `5px`}}>
-                            {this._renderDownloadButton(heatmapDataToPresent)}
-                        </div>
+                        {this._renderGenomeBrowserSelect()}
+                        {this._renderOrderings(heatmapDataToPresent)}
+                        {this._renderFilters()}
+                        {this._renderDownloadButton(heatmapDataToPresent)}
                     </div>
                 </div>
                 <div style={{clear: `both`}}>

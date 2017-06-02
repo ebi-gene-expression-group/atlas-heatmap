@@ -10,8 +10,8 @@ class GenomeBrowsersDropdown extends React.Component{
         this.props.onSelect(event.target.text);
     }
 
-    _genomeBrowserIcon(ordering) {
-        switch (ordering) {
+    _genomeBrowserIcon(genomeBrowser) {
+        switch (genomeBrowser) {
             case `No genome browser selected`:
                 return `eye-close`;
             default:
@@ -20,8 +20,7 @@ class GenomeBrowsersDropdown extends React.Component{
     }
 
     render() {
-        // this.props.selected will be undefined when no genome browsers are available, see defaultSelectedGenomeBrowser in ChartContainer.jsxhttps://www.youtube.com/watch?v=LeHEj_sEKnw
-        return this.props.selected ?
+        return (
             <div>
                 <Dropdown id="genome-browsers-dropdown"
                           onSelect={(key, e) => this.handleChange(key, e)}
@@ -39,10 +38,9 @@ class GenomeBrowsersDropdown extends React.Component{
                             </MenuItem>
                         )}
                     </Dropdown.Menu>
-
                 </Dropdown>
-            </div> :
-            null;
+            </div>
+        );
     }
 
 }
