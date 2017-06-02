@@ -1,6 +1,5 @@
 import {isMultiExperiment, isBaseline, isDifferential} from './experimentTypeUtils.js';
 import {capitalizeFirstLetter, numberWithCommas} from '../utils';
-import URI from 'urijs';
 
 // Message on top of the chart: “Showing 3 experiments:”, “Showing 12 genes of 432 found:”, “Showing 32 genes:”...
 const introductoryMessage = (experiment, profiles) => {
@@ -10,20 +9,6 @@ const introductoryMessage = (experiment, profiles) => {
     const what = (experiment ? `gene` : `experiment`) + (totalRows > 1 ? `s` : ``);
 
     return `Showing ${numberWithCommas(shownRows)} ` + (totalRows === shownRows ? what + `:` : `of ${numberWithCommas(totalRows)} ${what} found:`);
-};
-
-// _x_ and _y_ are placeholders to be replaced when clicking on a heatmap cell (see HeatmapCanvas.jsx)
-// TODO User URI.js to build URL (?)
-const genomeBrowserPath = (experiment, atlasUrl) => {
-    const fullyQualifiedAtlasUrl = atlasUrl.startsWith(`http`) ? atlasUrl : URI(atlasUrl, `${window.location.protocol}//${window.location.hostname}`).toString();
-    const trackFileUrl = URI(`experiments/${experiment.accession}/tracks/${experiment.accession}._x_`, fullyQualifiedAtlasUrl).toString();
-
-    const contigViewBottom =
-        `contigviewbottom=url:${trackFileUrl}.genes.${isDifferential(experiment) ? `log2foldchange` : `expressions`}.bedGraph`;
-
-    const tiling = isDifferential(experiment) ? `=tiling,url:${trackFileUrl}.genes.pval.bedGraph=pvalue;` : ``;
-
-    return `/Location/View?g=_y_;${contigViewBottom}${tiling};format=BEDGRAPH`;
 };
 
 const queryDescription = (geneQuery, conditionQuery, species) => {
@@ -62,11 +47,6 @@ const getChartConfiguration = (data, inProxy, outProxy, atlasUrl, isWidget) => {
             `expression_atlas-${species.replace(/ +/, `_`)}` :
             experiment.accession;
 
-    const genomeBrowserTemplate =
-        isMultiExperiment(experiment) ?
-            `` :
-            resources.genome_browser[0] + genomeBrowserPath(experiment, atlasUrl);
-
     return Object.freeze({
         inProxy,
         outProxy,
@@ -76,8 +56,8 @@ const getChartConfiguration = (data, inProxy, outProxy, atlasUrl, isWidget) => {
         description,
         shortDescription,
         disclaimer,
-        genomeBrowserTemplate,
         ...chartTextDecorations,
+        genomeBrowsers: data.config.genomeBrowsers.length ? [`No genome browser selected`, ...data.config.genomeBrowsers.map(name => `${name} genome browser`)] : [],
         coexpressionsAvailable: Boolean(data.coexpressions),
         isMultiExperiment: isMultiExperiment(experiment),
         isBaseline: isBaseline(experiment),

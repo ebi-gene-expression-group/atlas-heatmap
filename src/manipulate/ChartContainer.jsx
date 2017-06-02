@@ -6,13 +6,15 @@ import Boxplot from '../show/BoxplotCanvas.jsx'
 import {chartDataPropTypes} from './chartDataPropTypes.js'
 
 const Heatmap = uncontrollable(HeatmapWithControls, {
-  selectedOrderingName: 'onSelectOrdering',
-  selectedFilters: 'onSelectFilters',
-  coexpressionsShown: 'onCoexpressionOptionChange',
-  zoom: 'onZoom'
+  selectedGenomeBrowser: `onSelectGenomeBrowser`,
+  selectedOrderingName: `onSelectOrdering`,
+  selectedFilters: `onSelectFilters`,
+  coexpressionsShown: `onCoexpressionOptionChange`,
+  zoom: `onZoom`
 })
 //starting values on component creation, managed by uncontrollable later
-const heatmapDefaults = ({orderings, expressionLevelFilters, groupingFilters}) => ({
+const heatmapDefaults = ({orderings, expressionLevelFilters, groupingFilters, heatmapConfig}) => ({
+  defaultSelectedGenomeBrowser: heatmapConfig.genomeBrowsers[0],
   defaultSelectedOrderingName: orderings.default.name,
   defaultSelectedFilters:
     [expressionLevelFilters, ...groupingFilters].map(filter =>

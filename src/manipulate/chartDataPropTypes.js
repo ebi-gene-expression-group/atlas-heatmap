@@ -139,7 +139,7 @@ const heatmapConfigPropTypes = React.PropTypes.shape({
     outProxy: React.PropTypes.string.isRequired,
     atlasUrl: React.PropTypes.string.isRequired,
     description: React.PropTypes.string.isRequired,
-    genomeBrowserTemplate: React.PropTypes.string.isRequired,
+    genomeBrowsers: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
     introductoryMessage: React.PropTypes.string.isRequired,
     shortDescription: React.PropTypes.string.isRequired,
     xAxisLegendName: React.PropTypes.string.isRequired,

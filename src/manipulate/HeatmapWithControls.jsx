@@ -1,5 +1,6 @@
 import React from 'react';
 
+import GenomeBrowsersDropdown from './controls/GenomeBrowsersDropdown.jsx';
 import OrderingsDropdown from './controls/OrderingsDropdown.jsx';
 import FiltersModal from './controls/filter/FiltersModal.jsx';
 import DownloadButton from './controls/download-button/DownloadButton.jsx';
@@ -128,6 +129,12 @@ class HeatmapWithControls extends React.Component {
         )
     }
 
+    _renderGenomeBrowserSelect() {
+        return <GenomeBrowsersDropdown genomeBrowsers={this.props.heatmapConfig.genomeBrowsers}
+                                       selected={this.props.selectedGenomeBrowser}
+                                       onSelect={this.props.onSelectGenomeBrowser} />;
+    }
+
     render() {
         const heatmapDataToPresent = this._heatmapDataToPresent();
         const {yAxisStyle, yAxisFormatter, xAxisStyle, xAxisFormatter} = axesFormatters(this.props.heatmapConfig);
@@ -156,6 +163,9 @@ class HeatmapWithControls extends React.Component {
                         {this.props.heatmapConfig.introductoryMessage}
                     </div>
                     <div style={{float: `right`, padding: `0.5rem 0`}}>
+                        <div style={{display: `inline-block`, padding: `5px`}}>
+                            {this._renderGenomeBrowserSelect()}
+                        </div>
                         <div style={{display: `inline-block`, padding: `5px`}}>
                             {this._renderOrderings(heatmapDataToPresent)}
                         </div>
@@ -220,6 +230,9 @@ HeatmapWithControls.propTypes = {
         valueNames: React.PropTypes.arrayOf(React.PropTypes.string).isRequired
     })).isRequired,
     onSelectFilters: React.PropTypes.func.isRequired,
+
+    selectedGenomeBrowser: React.PropTypes.string,
+    onSelectGenomeBrowser: React.PropTypes.func,
 
     legendItems: React.PropTypes.arrayOf(React.PropTypes.shape({
         key: React.PropTypes.string.isRequired,

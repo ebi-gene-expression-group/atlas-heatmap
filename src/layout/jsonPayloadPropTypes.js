@@ -42,7 +42,7 @@ const differentialColumnHeadersPropTypes = React.PropTypes.shape({
     }).isRequired,
     resources: React.PropTypes.arrayOf(React.PropTypes.shape({
         type: React.PropTypes.string.isRequired,
-        uri: React.PropTypes.string.isRequired
+        name: React.PropTypes.string.isRequired
     })).isRequired
 });
 
@@ -112,9 +112,7 @@ const dataPropTypes = React.PropTypes.shape({
         geneQuery: React.PropTypes.string.isRequired,
         conditionQuery: React.PropTypes.string.isRequired,
         species: React.PropTypes.string.isRequired,
-        resources: React.PropTypes.shape({
-            genome_browser: React.PropTypes.arrayOf(React.PropTypes.string)
-        }).isRequired,
+        genomeBrowsers: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
         columnType: React.PropTypes.string.isRequired,
         disclaimer: React.PropTypes.string.isRequired
     }).isRequired,
