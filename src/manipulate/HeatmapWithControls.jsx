@@ -166,7 +166,7 @@ class HeatmapWithControls extends React.Component {
               heatmapData: heatmapDataToPresent,
               onSelectOntologyIds: this.props.onOntologyIdIsUnderFocus,
               genomeBrowser: this.props.selectedGenomeBrowser,
-              experimentAccession: this.props.heatmapConfig.experiment.accession,
+              experimentAccession: this.props.heatmapConfig.experiment && this.props.heatmapConfig.experiment.accession,
               atlasUrl: this.props.heatmapConfig.atlasUrl
             })
         };
