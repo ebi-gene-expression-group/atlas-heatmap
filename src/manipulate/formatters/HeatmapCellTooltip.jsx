@@ -130,11 +130,6 @@ const baselineNumbers = ({colour, value, unit,replicates}) => (
   ].concat(replicates ? _div(`Number of biological replicates`, replicates) : [])
 )
 
-const extraBottomInfo = ({config}) => (
-  !! config.genomeBrowserTemplate &&
-      _info(`Click on the cell to show expression in the Genome Browser`)
-)
-
 const HeatmapCellTooltip = (props) => (
   <div style={{
       whiteSpace: `pre`,background: `rgba(255, 255, 255, .85)`,
@@ -153,7 +148,6 @@ const HeatmapCellTooltip = (props) => (
         :
           baselineNumbers(props)
       }
-      { extraBottomInfo(props)}
   </div>
 )
 
@@ -163,8 +157,7 @@ HeatmapCellTooltip.propTypes = {
         isDifferential: React.PropTypes.bool.isRequired,
         isMultiExperiment: React.PropTypes.bool.isRequired,
         xAxisLegendName: React.PropTypes.string.isRequired,
-        yAxisLegendName: React.PropTypes.string.isRequired,
-        genomeBrowserTemplate:React.PropTypes.string.isRequired
+        yAxisLegendName: React.PropTypes.string.isRequired
     }).isRequired,
     colour: React.PropTypes.string.isRequired,
     xLabel: React.PropTypes.string.isRequired,
