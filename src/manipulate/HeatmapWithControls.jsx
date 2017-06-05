@@ -13,7 +13,7 @@ import axesFormatters from './formatters/axesFormatters.jsx';
 import {DataSeriesLegend as MultiExperimentLegend , GradientLegend as SingleExperimentLegend} from './heatmap-legend/Main.jsx';
 import CoexpressionOption from './coexpression/CoexpressionOption.jsx';
 
-import makeEvents from './Events.js'
+import makeEventCallbacks from './Events.js'
 
 import {manipulate} from './Manipulators.js';
 
@@ -23,6 +23,8 @@ from '../manipulate/chartDataPropTypes.js';
 class HeatmapWithControls extends React.Component {
     constructor(props) {
         super(props);
+
+        this.onClick = this._onClick.bind(this);
     }
 
     _getSelectedExpressionLevelFilters() {
@@ -162,10 +164,12 @@ class HeatmapWithControls extends React.Component {
             xAxisFormatter: xAxisFormatter,
             onZoom: this.props.onZoom,
             ontologyIdsToHighlight: this.props.ontologyIdsToHighlight,
-            events: makeEvents({
+            events: makeEventCallbacks({
               heatmapData: heatmapDataToPresent,
-              onSelectOntologyIds : this.props.onOntologyIdIsUnderFocus,
-              genomeBrowserTemplate: this.props.heatmapConfig.genomeBrowserTemplate
+              onSelectOntologyIds: this.props.onOntologyIdIsUnderFocus,
+              genomeBrowser: this.props.selectedGenomeBrowser,
+              experimentAccession: this.props.heatmapConfig.experiment.accession,
+              atlasUrl: this.props.heatmapConfig.atlasUrl
             })
         };
 

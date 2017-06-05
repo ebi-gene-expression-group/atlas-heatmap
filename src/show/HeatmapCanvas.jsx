@@ -24,7 +24,8 @@ class HeatmapCanvas extends React.Component {
     shouldComponentUpdate(nextProps) {
         // Callback that does setState fails: https://github.com/kirjs/react-highcharts/issues/245
         // Don’t call render again after zoom happens
-        return hash.MD5(nextProps.heatmapData) !== hash.MD5(this.props.heatmapData);
+        return hash.MD5([nextProps.heatmapData, nextProps.events.onClick]) !==
+               hash.MD5([this.props.heatmapData, this.props.events.onClick]);
     }
 
     _countColumns() {
@@ -67,7 +68,7 @@ class HeatmapCanvas extends React.Component {
         const marginRight = this._getAdjustedMarginRight();
         const height = this._getAdjustedHeight(marginTop, marginBottom);
 
-        const {cellTooltipFormatter, xAxisFormatter, yAxisFormatter, onZoom, events} = this.props;
+        const {cellTooltipFormatter, xAxisFormatter, yAxisFormatter, events, onZoom} = this.props;
 
         const highchartsConfig = {
             chart: {
@@ -75,7 +76,7 @@ class HeatmapCanvas extends React.Component {
                 marginBottom,
                 marginRight,
                 height,
-                type: 'heatmap',
+                type: `heatmap`,
                 spacingTop: 0,
                 plotBorderWidth: 1,
                 events: {
@@ -89,7 +90,7 @@ class HeatmapCanvas extends React.Component {
                        });
                    },
                    handleGxaAnatomogramTissueMouseLeave: function (e) {
-                       var points = this.getSelectedPoints();
+                       const points = this.getSelectedPoints();
                        if (points.length > 0) {
                            Highcharts.each(points, function (point) {
                                point.select(false);
@@ -97,7 +98,7 @@ class HeatmapCanvas extends React.Component {
                        }
                    }
                 },
-                zoomType: 'x'
+                zoomType: `x`
             },
 
             plotOptions: {
@@ -106,15 +107,10 @@ class HeatmapCanvas extends React.Component {
                 },
 
                 series: {
-                    cursor: Boolean(events.onClickPoint) ? "pointer" : undefined,
+                    cursor: events.onClick ? `pointer` : undefined,
                     point: {
                         events: {
-                            click:
-                              events.onClickPoint
-                              ? function () {
-                                  events.onClickPoint({x: this.x, y: this.y})
-                                }
-                              : function () {}
+                            click: events.onClick ? function() { events.onClick(this.x, this.y) } : function() {}
                         }
                     },
 
@@ -150,7 +146,7 @@ class HeatmapCanvas extends React.Component {
                     // Events in labels enabled by 'highcharts-custom-events'
                     events: {
                         mouseover: function() {
-                          events.onHoverColumn({x: this.value})
+                          events.onHoverColumn(this.value)
                         },
                         mouseout: function() {
                           events.onHoverOff()
@@ -181,10 +177,10 @@ class HeatmapCanvas extends React.Component {
                     style: this.props.yAxisStyle,
                     events: {
                         mouseover: function() {
-                            events.onHoverRow({y: this.value})
+                          events.onHoverRow(this.value)
                         },
                         mouseout: function() {
-                            events.onHoverOff()
+                          events.onHoverOff()
                         }
                     },
                     formatter: function() {
@@ -235,8 +231,8 @@ class HeatmapCanvas extends React.Component {
       const chart = this.refs.chart.getChart();
       const forEachXNotInYsEmit = (xs, ys, eventName) => {
         xs
-        .filter((id) => (ys.indexOf(id)==-1))
-        .filter((id,ix,self) => (ix==self.indexOf(id)))
+        .filter((id) => (ys.indexOf(id)===-1))
+        .filter((id,ix,self) => (ix===self.indexOf(id)))
         .forEach((id) => {
           Highcharts.fireEvent(chart, eventName, {svgPathId: id})
         })
@@ -258,7 +254,7 @@ HeatmapCanvas.propTypes = {
       onHoverRow: React.PropTypes.func.isRequired,
       onHoverColumn: React.PropTypes.func.isRequired,
       onHoverOff: React.PropTypes.func.isRequired,
-      onClickPoint: React.PropTypes.func
+      onClick: React.PropTypes.func
     }),
     onZoom: React.PropTypes.func.isRequired
 };
