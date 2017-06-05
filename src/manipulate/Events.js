@@ -1,4 +1,4 @@
-import {curry} from 'lodash'
+import URI from 'urijs'
 
 const _ontologyIdsForColumn = (heatmapData, x) => (
   heatmapData.xAxisCategories[x].id
@@ -20,29 +20,31 @@ const _ontologyIdsForRow = (heatmapData, y) => (
 
 
 
-const makeCallbacks = ({heatmapData, onSelectOntologyIds, genomeBrowserTemplate}) => {
-  const ontologyIdsForRow = curry(_ontologyIdsForRow,2)(heatmapData)
-  const ontologyIdsForColumn = curry(_ontologyIdsForColumn,2)(heatmapData)
+const makeEventCallbacks = ({heatmapData, onSelectOntologyIds, genomeBrowser, experimentAccession, atlasUrl}) => {
   return {
-    onHoverRow: ({y}) => {
-      onSelectOntologyIds(ontologyIdsForRow(y))
+    onHoverRow: (y) => {
+      onSelectOntologyIds(_ontologyIdsForRow(heatmapData, y))
     },
 
-    onHoverColumn: ({x}) => {
-      onSelectOntologyIds(ontologyIdsForColumn(x))
+    onHoverColumn: (x) => {
+      onSelectOntologyIds(_ontologyIdsForColumn(heatmapData, x))
     },
 
     onHoverOff: () => {
       onSelectOntologyIds([])
     },
 
-    onClickPoint: genomeBrowserTemplate ? ({x, y}) => {
-      const xId = heatmapData.xAxisCategories[x].info.trackId;
-      const yId = heatmapData.yAxisCategories[y].info.trackId;
-
-      window.open(genomeBrowserTemplate.replace(/_x_/g, xId).replace(/_y_/g, yId), "_blank");
-    } : undefined
+    // For this to work genomeBrowser needs to be included in the props that cause a re-render in HeatmapCanvas.jsx
+    onClick: genomeBrowser !== `none` ?
+      (x, y) => {
+        window.open(URI(`external-services/genome-browser/${genomeBrowser}`, atlasUrl).search({
+          experimentAccession: experimentAccession,
+          geneId: heatmapData.xAxisCategories[x].info.trackId,
+          trackId: heatmapData.yAxisCategories[y].info.trackId
+        }).toString(), `_blank`);
+      } :
+      undefined
   }
 }
 
-export default makeCallbacks
+export default makeEventCallbacks
