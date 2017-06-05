@@ -23,8 +23,6 @@ from '../manipulate/chartDataPropTypes.js';
 class HeatmapWithControls extends React.Component {
     constructor(props) {
         super(props);
-
-        this.onClick = this._onClick.bind(this);
     }
 
     _getSelectedExpressionLevelFilters() {
@@ -173,6 +171,9 @@ class HeatmapWithControls extends React.Component {
             })
         };
 
+        const infoMessages = this.props.selectedGenomeBrowser === `none` ? [`hoo`] : [`Click on a cell to open the selected genome browser with attached tracks if available`];
+      const info = infoMessages.map(item => <p key={item} style={{clear: `both`, float: `right`, fontSize: `small`, margin: `0`}}>{item}</p>);
+
         return (
             <div>
                 <div>
@@ -185,6 +186,10 @@ class HeatmapWithControls extends React.Component {
                         {this._renderFilters()}
                         {this._renderDownloadButton(heatmapDataToPresent)}
                     </div>
+                    <p style={{clear: `both`, float: `right`, fontSize: `small`, margin: `0`,
+                               visibility: this.props.selectedGenomeBrowser === `none` ? `hidden` : ` visible`}}>
+                      Click on a cell to open the selected genome browser with attached tracks if available
+                    </p>
                 </div>
                 <div style={{clear: `both`}}>
                 {heatmapProps.heatmapData.yAxisCategories < 1 ?
