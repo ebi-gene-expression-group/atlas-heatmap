@@ -57,7 +57,7 @@ const getChartConfiguration = (data, inProxy, outProxy, atlasUrl, isWidget) => {
         shortDescription,
         disclaimer,
         ...chartTextDecorations,
-        genomeBrowsers: data.config.genomeBrowsers.length ? [`No genome browser selected`, ...data.config.genomeBrowsers.map(name => `${name} genome browser`)] : [],
+        genomeBrowsers: data.config.genomeBrowsers,
         coexpressionsAvailable: Boolean(data.coexpressions),
         isMultiExperiment: isMultiExperiment(experiment),
         isBaseline: isBaseline(experiment),

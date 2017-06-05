@@ -14,7 +14,7 @@ const Heatmap = uncontrollable(HeatmapWithControls, {
 })
 //starting values on component creation, managed by uncontrollable later
 const heatmapDefaults = ({orderings, expressionLevelFilters, groupingFilters, heatmapConfig}) => ({
-  defaultSelectedGenomeBrowser: heatmapConfig.genomeBrowsers[0],
+  defaultSelectedGenomeBrowser: `none`,
   defaultSelectedOrderingName: orderings.default.name,
   defaultSelectedFilters:
     [expressionLevelFilters, ...groupingFilters].map(filter =>
