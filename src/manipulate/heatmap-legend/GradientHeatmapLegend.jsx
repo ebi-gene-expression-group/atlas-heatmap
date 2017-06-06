@@ -1,6 +1,5 @@
 import React from 'react';
 
-import {getUnits, experimentPropTypes} from '../../load/experimentTypeUtils';
 import {numberWithCommas} from '../../utils.js';
 
 import './GradientHeatmapLegend.less';
@@ -46,7 +45,6 @@ const GradientHeatmapLegend = ({gradients, unit}) => (
 )
 
 GradientHeatmapLegend.propTypes = {
-    experiment: experimentPropTypes.isRequired,
     gradients: React.PropTypes.arrayOf(React.PropTypes.shape({
         fromValue: React.PropTypes.number,
         toValue: React.PropTypes.number,
