@@ -40,7 +40,7 @@ const ExpressionAtlasHeatmap = options => {
     const parsedQuery = parseQuery(options.query);
     const sourceUrl = typeof parsedQuery === `string` ?
         parsedQuery :
-        URI(resolveEndpoint(options.experiment)).search(parsedQuery);
+        URI(resolveEndpoint(options.experiment)).addSearch(parsedQuery);
 
     return (
         <ContainerLoader

@@ -5,7 +5,8 @@ const experimentPropTypes = React.PropTypes.shape({
     type: React.PropTypes.string.isRequired,
     relUrl: React.PropTypes.string.isRequired,
     description: React.PropTypes.string.isRequired,
-    species: React.PropTypes.string.isRequired
+    species: React.PropTypes.string.isRequired,
+    accessKey: React.PropTypes.string.isRequired
 });
 
 const isMultiExperiment = experiment => !Boolean(experiment);

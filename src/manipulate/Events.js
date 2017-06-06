@@ -20,7 +20,7 @@ const _ontologyIdsForRow = (heatmapData, y) => (
 
 
 
-const makeEventCallbacks = ({heatmapData, onSelectOntologyIds, genomeBrowser, experimentAccession, atlasUrl}) => {
+const makeEventCallbacks = ({heatmapData, onSelectOntologyIds, genomeBrowser, experimentAccession, accessKey, atlasUrl}) => {
   return {
     onHoverRow: (y) => {
       onSelectOntologyIds(_ontologyIdsForRow(heatmapData, y))
@@ -40,7 +40,8 @@ const makeEventCallbacks = ({heatmapData, onSelectOntologyIds, genomeBrowser, ex
         window.open(URI(`external-services/genome-browser/${genomeBrowser}`, atlasUrl).search({
           experimentAccession: experimentAccession,
           geneId: heatmapData.xAxisCategories[x].info.trackId,
-          trackId: heatmapData.yAxisCategories[y].info.trackId
+          trackId: heatmapData.yAxisCategories[y].info.trackId,
+          accessKey: accessKey
         }).toString(), `_blank`);
       } :
       undefined
