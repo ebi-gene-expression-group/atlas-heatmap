@@ -49,8 +49,8 @@ const makeEventCallbacks = ({heatmapData, onSelectOntologyIds, genomeBrowser, ex
       (x, y) => {
         window.open(URI(`external-services/genome-browser/${genomeBrowser}`, atlasUrl).search({
           experimentAccession: experimentAccession,
-          geneId: heatmapData.yAxisCategories[x].info.trackId,
-          trackId: heatmapData.xAxisCategories[y].info.trackId,
+          geneId: heatmapData.yAxisCategories[y].info.trackId,
+          trackId: heatmapData.xAxisCategories[x].info.trackId,
           accessKey: accessKey
         }).toString(), `_blank`);
       } :
