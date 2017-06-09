@@ -34,10 +34,19 @@ const getColumnGroupingFilters = xAxisCategories => {
 
     const groupingNames = _.uniq(groupingTriplets.map(groupingTriplet => groupingTriplet.name));
 
+    console.log(groupingTriplets[0]);
+
     return groupingNames.map(groupingName => {
             const columnLabels = _.uniq(groupingTriplets
                 .filter(groupingTriplet => groupingTriplet.name === groupingName)
                 .map(groupingTriplet => groupingTriplet.columnLabel));
+
+            const groupingLabels =
+              _.uniq(groupingTriplets.map(groupingTriplet => groupingTriplet.groupingLabel))
+              .sort();
+
+            const groupingLabelsWithUnmappedLast =
+              groupingLabels.filter(l => l !== `Unmapped`).concat(groupingLabels.find(l => l === `Unmapped`) || []);
 
             return {
                 name: groupingName,
@@ -47,19 +56,17 @@ const getColumnGroupingFilters = xAxisCategories => {
                         disabled: false     // Guaranteed because values are extracted from xAxisCategories
                     })
                 ),
-                valueGroupings:
-                    _.uniq(groupingTriplets.map(groupingTriplet => groupingTriplet.groupingLabel))
-                        .sort()
-                        .map(groupingLabel => [
-                            groupingLabel,
-                            _.sortedUniq(
-                                groupingTriplets
-                                    .filter(groupingTriplet =>
-                                        groupingTriplet.name === groupingName && groupingTriplet.groupingLabel === groupingLabel
-                                    )
-                                    .map(groupingTriplet => groupingTriplet.columnLabel)
-                            )
-                        ])
+                valueGroupings: groupingLabelsWithUnmappedLast
+                  .map(groupingLabel => [
+                    groupingLabel,
+                    _.sortedUniq(
+                      groupingTriplets
+                        .filter(groupingTriplet =>
+                          groupingTriplet.name === groupingName && groupingTriplet.groupingLabel === groupingLabel
+                        )
+                        .map(groupingTriplet => groupingTriplet.columnLabel)
+                    )
+                  ])
             };
         }
     );
