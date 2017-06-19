@@ -27,7 +27,7 @@ class GenomeBrowsersDropdown extends React.Component {
             [
                 {
                     id: `none`,
-                    label: `No genome browser selected`
+                    label: `Select genome browser to view tracks`
                 },
                 ...this.props.genomeBrowsers.map(genomeBrowserName => ({
                     id: genomeBrowserName.replace(/\s+/g, ``).toLowerCase(),
