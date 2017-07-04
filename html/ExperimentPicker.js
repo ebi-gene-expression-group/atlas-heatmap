@@ -1,5 +1,5 @@
 import React from 'react'
-import {ExpressionAtlasHeatmap} from '../src/Main.js'
+import ExpressionAtlasHeatmap from '../src/Main.js'
 
 class ExperimentPicker extends React.Component {
     constructor(props) {
