@@ -1,6 +1,6 @@
-import _ from 'lodash';
+import _ from 'lodash'
 
-import {isMultiExperiment, isDifferential} from './experimentTypeUtils.js';
+import {isMultiExperiment, isDifferential} from './experimentTypeUtils.js'
 
 //apply rank first, use comparator to resolve ties
 const createOrdering = (rank, comparator, arr) =>
@@ -9,13 +9,13 @@ const createOrdering = (rank, comparator, arr) =>
             //lower ranks go to the beginning of series
             .sort((e_ixLeft, e_ixRight) =>
                 rank[e_ixLeft[1]] - rank[e_ixRight[1]] || comparator(e_ixLeft[0], e_ixRight[0]))
-            .map(e_ix => e_ix[1]);
+            .map(e_ix => e_ix[1])
 
 const createAlphabeticalOrdering = (property, arr) =>
-    createOrdering(arr.map(_.constant(0)), comparatorByProperty(property), arr);
+    createOrdering(arr.map(_.constant(0)), comparatorByProperty(property), arr)
 
 const comparatorByProperty = _.curry(
-    (property, e1, e2) => e1[property].localeCompare(e2[property]));
+    (property, e1, e2) => e1[property].localeCompare(e2[property]))
 
 const rankColumnsByWhereTheyAppearFirst = expressions => {
     return (
@@ -28,48 +28,48 @@ const rankColumnsByWhereTheyAppearFirst = expressions => {
                         .filter(_.identity))
             .map(_.min)
             .value()
-    );
-};
+    )
+}
 
-const highestColumnRankPossible = expressions => expressions.length ? expressions[0].length : Number.MAX_VALUE;
+const highestColumnRankPossible = expressions => expressions.length ? expressions[0].length : Number.MAX_VALUE
 
 const thresholdColumnsByExpressionAboveCutoff = expressions =>
     rankColumnsByExpression(expressions, 0)
         //check if the function assigned the rank value corresponding to everything filtered off
-        .map(e => e === highestColumnRankPossible(expressions) ? 1 : 0);
+        .map(e => e === highestColumnRankPossible(expressions) ? 1 : 0)
 
 const rankColumnsByExpression = (expressions, minimalExpression) => {
     const includeInRanking =
         typeof minimalExpression === `number` ?
             e => e.hasOwnProperty(`value`) && !isNaN(e.value) && Math.abs(e.value) > minimalExpression :
-            e => e.hasOwnProperty(`value`) && !isNaN(e.value);
+            e => e.hasOwnProperty(`value`) && !isNaN(e.value)
 
     return (
         _.chain(expressions)
             .map(row => {
                 const valuesInRow = _.uniq(row.filter(includeInRanking)
                                               .map(e => e.value)
-                                              .sort((l, r) => r - l));
+                                              .sort((l, r) => r - l))
 
-                return ( row.map(e => includeInRanking(e) ? valuesInRow.indexOf(e.value) : `missing`) );
+                return ( row.map(e => includeInRanking(e) ? valuesInRow.indexOf(e.value) : `missing`) )
             })
             .thru(_.spread(_.zip))
             .map(ranks => ranks.filter(_.negate(isNaN)))
             .map(ranks => ranks.length ? _.sum(ranks) / ranks.length : highestColumnRankPossible(expressions))
             .value()
-    );
-};
+    )
+}
 
 const rankColumnsByThreshold = (threshold, expressions) =>
     expressions
         .map(row => row.map(point => +(point.hasOwnProperty(`value`) && point.value !== 0)))
         .reduce(function (r1, r2) {
-            return r1.map((el, ix) => el + r2[ix], _.fill(Array(expressions.length ? expressions[0].length : 0), 0));
+            return r1.map((el, ix) => el + r2[ix], _.fill(Array(expressions.length ? expressions[0].length : 0), 0))
         })
         .map(countOfExperimentsWhereTissueExpressedAboveCutoff =>
-            countOfExperimentsWhereTissueExpressedAboveCutoff > expressions.length * threshold ? 0 : 1);
+            countOfExperimentsWhereTissueExpressedAboveCutoff > expressions.length * threshold ? 0 : 1)
 
-const noOrdering = arr => arr.map((el, ix) => ix);
+const noOrdering = arr => arr.map((el, ix) => ix)
 
 const combineRanks = ranksAndWeights => {
     return (
@@ -78,11 +78,11 @@ const combineRanks = ranksAndWeights => {
          .thru(_.spread(_.zip))
          .map(_.sum)
          .value()
-    );
-};
+    )
+}
 
 const createOrderings = (expressions, columnHeaders, rows, experiment) => {
-    const transposed = _.zip.apply(_, expressions);
+    const transposed = _.zip.apply(_, expressions)
 
     if (isMultiExperiment(experiment)) {
         return {
@@ -125,17 +125,17 @@ const createOrderings = (expressions, columnHeaders, rows, experiment) => {
             }
         }
     }
-};
+}
 
 const extractExpressionValues = (rows, experiment) => {
     const _valueFieldExtractor = valueField =>
-        expression => expression.hasOwnProperty(valueField) ? {value: expression[valueField]} : {};
+        expression => expression.hasOwnProperty(valueField) ? {value: expression[valueField]} : {}
 
     return rows.map(
-        row => row.expressions.map(_valueFieldExtractor(isDifferential(experiment) ? `foldChange`: `value`)));
-};
+        row => row.expressions.map(_valueFieldExtractor(isDifferential(experiment) ? `foldChange`: `value`)))
+}
 
 const createOrderingsForData = (experiment, rows, columnHeaders) =>
-    createOrderings(extractExpressionValues(rows, experiment), columnHeaders, rows, experiment);
+    createOrderings(extractExpressionValues(rows, experiment), columnHeaders, rows, experiment)
 
-export default createOrderingsForData;
+export default createOrderingsForData

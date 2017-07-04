@@ -1,12 +1,12 @@
 import React from 'react';
 
-const experimentPropTypes = React.PropTypes.shape({
-    accession: React.PropTypes.string.isRequired,   // Is it worth to enumerate the experiment types?
-    type: React.PropTypes.string.isRequired,
-    relUrl: React.PropTypes.string.isRequired,
-    description: React.PropTypes.string.isRequired,
-    species: React.PropTypes.string.isRequired,
-    accessKey: React.PropTypes.string.isRequired
+const experimentPropTypes = PropTypes.shape({
+    accession: PropTypes.string.isRequired,   // Is it worth to enumerate the experiment types?
+    type: PropTypes.string.isRequired,
+    relUrl: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    species: PropTypes.string.isRequired,
+    accessKey: PropTypes.string.isRequired
 });
 
 const isMultiExperiment = experiment => !Boolean(experiment);

@@ -6,8 +6,8 @@ process.traceDeprecation = true;
 
 module.exports = {
     entry: {
-        heatmapHighcharts: ['babel-polyfill', 'whatwg-fetch', './src/Main.jsx'],
-        experimentPicker: ['babel-polyfill', 'whatwg-fetch', 'react-hot-loader/patch', './html/index.jsx'],
+        heatmapHighcharts: ['babel-polyfill', 'whatwg-fetch', './src/Main.js'],
+        experimentPicker: ['babel-polyfill', 'whatwg-fetch', 'react-hot-loader/patch', './html/index.js'],
         dependencies: ['color', 'downloadjs', 'he', 'highcharts', 'highcharts-custom-events', 'lodash', 'object-hash',
             'rc-slider', 'react', 'react-bootstrap', 'react-dom', 'react-highcharts', 'react-refetch', 'urijs']
     },
@@ -131,8 +131,8 @@ module.exports = {
                     {
                         loader: 'babel-loader',
                         options: {
-                            presets: [['env', {modules: false}]],
-                            plugins: ['transform-object-rest-spread']
+                            presets: ['react', ['env', {modules: false}]],
+                            plugins: ['transform-object-rest-spread', 'react-hot-loader/babel']
                         }
                     }
                 ]

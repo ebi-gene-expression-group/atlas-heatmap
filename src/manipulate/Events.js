@@ -52,7 +52,7 @@ const makeEventCallbacks = ({heatmapData, onSelectOntologyIds, genomeBrowser, ex
           geneId: heatmapData.yAxisCategories[y].info.trackId,
           trackId: heatmapData.xAxisCategories[x].info.trackId,
           accessKey: accessKey
-        }).toString(), `_blank`);
+        }).toString(), `_blank`)
       } :
       undefined
   }

@@ -23,34 +23,34 @@ import {experimentPropTypes} from '../load/experimentTypeUtils';
 //     }
 // };
 
-const differentialTooltipPropTypes = React.PropTypes.shape({
-    contrastDescription: React.PropTypes.string.isRequired,
-    experimentDescription: React.PropTypes.string.isRequired,
-    properties: React.PropTypes.arrayOf(React.PropTypes.shape({
-        contrastPropertyType: React.PropTypes.oneOf([`FACTOR`, `SAMPLE`]),
-        propertyName: React.PropTypes.string.isRequired,
-        referenceValue: React.PropTypes.string.isRequired,
-        testValue: React.PropTypes.string.isRequired
+const differentialTooltipPropTypes = PropTypes.shape({
+    contrastDescription: PropTypes.string.isRequired,
+    experimentDescription: PropTypes.string.isRequired,
+    properties: PropTypes.arrayOf(PropTypes.shape({
+        contrastPropertyType: PropTypes.oneOf([`FACTOR`, `SAMPLE`]),
+        propertyName: PropTypes.string.isRequired,
+        referenceValue: PropTypes.string.isRequired,
+        testValue: PropTypes.string.isRequired
     })).isRequired,
-    referenceReplicates: React.PropTypes.number.isRequired,
-    resources: React.PropTypes.arrayOf(React.PropTypes.shape({
-        icon: React.PropTypes.string.isRequired,
-        type: React.PropTypes.string.isRequired,
-        url: React.PropTypes.string.isRequired
+    referenceReplicates: PropTypes.number.isRequired,
+    resources: PropTypes.arrayOf(PropTypes.shape({
+        icon: PropTypes.string.isRequired,
+        type: PropTypes.string.isRequired,
+        url: PropTypes.string.isRequired
     })).isRequired,
-    testReplicates: React.PropTypes.number.isRequired
+    testReplicates: PropTypes.number.isRequired
 });
 
-const baselineTooltipPropTypes = React.PropTypes.shape({
-    properties: React.PropTypes.arrayOf(React.PropTypes.shape({
-        contrastPropertyType: React.PropTypes.oneOf([`FACTOR`, `SAMPLE`]),
-        propertyName: React.PropTypes.string.isRequired,
-        testValue: React.PropTypes.string.isRequired
+const baselineTooltipPropTypes = PropTypes.shape({
+    properties: PropTypes.arrayOf(PropTypes.shape({
+        contrastPropertyType: PropTypes.oneOf([`FACTOR`, `SAMPLE`]),
+        propertyName: PropTypes.string.isRequired,
+        testValue: PropTypes.string.isRequired
     })).isRequired,
-    replicates: React.PropTypes.number.isRequired
+    replicates: PropTypes.number.isRequired
 });
 
-const baselineExperimentsTooltipPropTypes = React.PropTypes.shape({});
+const baselineExperimentsTooltipPropTypes = PropTypes.shape({});
 
 const orderingsPropTypesValidator = (props, propName, componentName) => {
     const orderings = props[propName];
@@ -77,110 +77,110 @@ const orderingsPropTypesValidator = (props, propName, componentName) => {
     });
 };
 
-const dataSeriesPropTypes = React.PropTypes.arrayOf(React.PropTypes.shape({
-    data: React.PropTypes.arrayOf(React.PropTypes.shape({
-        info: React.PropTypes.shape({
-            unit: React.PropTypes.string.isRequired,
-            foldChange: React.PropTypes.number, // These three only in diff experiments
-            pValue: React.PropTypes.number,
-            tStat: React.PropTypes.number
+const dataSeriesPropTypes = PropTypes.arrayOf(PropTypes.shape({
+    data: PropTypes.arrayOf(PropTypes.shape({
+        info: PropTypes.shape({
+            unit: PropTypes.string.isRequired,
+            foldChange: PropTypes.number, // These three only in diff experiments
+            pValue: PropTypes.number,
+            tStat: PropTypes.number
         }).isRequired,
-        value: React.PropTypes.number.isRequired,
-        x: React.PropTypes.number.isRequired,
-        y: React.PropTypes.number.isRequired
+        value: PropTypes.number.isRequired,
+        x: PropTypes.number.isRequired,
+        y: PropTypes.number.isRequired
     })).isRequired,
-    info: React.PropTypes.shape({
-        colour: React.PropTypes.string.isRequired,
-        name: React.PropTypes.string.isRequired
+    info: PropTypes.shape({
+        colour: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired
     }).isRequired
 }));
 
-const heatmapDataPropTypes = React.PropTypes.shape({
+const heatmapDataPropTypes = PropTypes.shape({
     dataSeries: dataSeriesPropTypes.isRequired,
-    xAxisCategories: React.PropTypes.arrayOf(React.PropTypes.shape({
-        id: React.PropTypes.string.isRequired,
-        info: React.PropTypes.shape({
-            groupings: React.PropTypes.arrayOf(React.PropTypes.shape({
-                memberName: React.PropTypes.string.isRequired,
-                name: React.PropTypes.string.isRequired,
-                values: React.PropTypes.arrayOf(React.PropTypes.shape({
-                    id: React.PropTypes.string.isRequired,
-                    label: React.PropTypes.string.isRequired
+    xAxisCategories: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        info: PropTypes.shape({
+            groupings: PropTypes.arrayOf(PropTypes.shape({
+                memberName: PropTypes.string.isRequired,
+                name: PropTypes.string.isRequired,
+                values: PropTypes.arrayOf(PropTypes.shape({
+                    id: PropTypes.string.isRequired,
+                    label: PropTypes.string.isRequired
                 })).isRequired,
             })).isRequired,
-            tooltip: React.PropTypes.oneOfType([
+            tooltip: PropTypes.oneOfType([
                 differentialTooltipPropTypes,
                 baselineTooltipPropTypes,
                 baselineExperimentsTooltipPropTypes
             ]).isRequired,
-            trackId: React.PropTypes.string.isRequired
+            trackId: PropTypes.string.isRequired
         }).isRequired,
-        label: React.PropTypes.string.isRequired
+        label: PropTypes.string.isRequired
     })).isRequired,
-    yAxisCategories: React.PropTypes.arrayOf(React.PropTypes.shape({
-        id: React.PropTypes.string.isRequired,
-        info: React.PropTypes.shape({
-            designElement: React.PropTypes.string.isRequired,
-            trackId: React.PropTypes.string.isRequired
+    yAxisCategories: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        info: PropTypes.shape({
+            designElement: PropTypes.string.isRequired,
+            trackId: PropTypes.string.isRequired
         }).isRequired,
-        label: React.PropTypes.string.isRequired
+        label: PropTypes.string.isRequired
     })).isRequired
 });
 
-const boxplotDataPropTypes = React.PropTypes.shape({
-    dataSeries: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.number)).isRequired,
-    xAxisCategories: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-    title: React.PropTypes.string.isRequired,
-    unit: React.PropTypes.string.isRequired
+const boxplotDataPropTypes = PropTypes.shape({
+    dataSeries: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
+    xAxisCategories: PropTypes.arrayOf(PropTypes.string).isRequired,
+    title: PropTypes.string.isRequired,
+    unit: PropTypes.string.isRequired
 });
 
-const heatmapConfigPropTypes = React.PropTypes.shape({
-    inProxy: React.PropTypes.string.isRequired,
-    outProxy: React.PropTypes.string.isRequired,
-    atlasUrl: React.PropTypes.string.isRequired,
-    description: React.PropTypes.string.isRequired,
-    genomeBrowsers: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
-    introductoryMessage: React.PropTypes.string.isRequired,
-    shortDescription: React.PropTypes.string.isRequired,
-    xAxisLegendName: React.PropTypes.string.isRequired,
-    yAxisLegendName: React.PropTypes.string.isRequired,
+const heatmapConfigPropTypes = PropTypes.shape({
+    inProxy: PropTypes.string.isRequired,
+    outProxy: PropTypes.string.isRequired,
+    atlasUrl: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    genomeBrowsers: PropTypes.arrayOf(PropTypes.string).isRequired,
+    introductoryMessage: PropTypes.string.isRequired,
+    shortDescription: PropTypes.string.isRequired,
+    xAxisLegendName: PropTypes.string.isRequired,
+    yAxisLegendName: PropTypes.string.isRequired,
 
     experiment: experimentPropTypes,
 
-    disclaimer: React.PropTypes.string.isRequired,
-    coexpressionsAvailable: React.PropTypes.bool.isRequired,
-    isMultiExperiment: React.PropTypes.bool.isRequired,
-    isBaseline: React.PropTypes.bool.isRequired,
-    isDifferential: React.PropTypes.bool.isRequired
+    disclaimer: PropTypes.string.isRequired,
+    coexpressionsAvailable: PropTypes.bool.isRequired,
+    isMultiExperiment: PropTypes.bool.isRequired,
+    isBaseline: PropTypes.bool.isRequired,
+    isDifferential: PropTypes.bool.isRequired
 
 });
 
-const filterPropTypes = React.PropTypes.shape({
-    name: React.PropTypes.string.isRequired,
-    values: React.PropTypes.arrayOf(React.PropTypes.shape({
-        name: React.PropTypes.string.isRequired,
-        disabled: React.PropTypes.bool.isRequired
+const filterPropTypes = PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    values: PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        disabled: PropTypes.bool.isRequired
     })).isRequired,
-    valueGroupings: React.PropTypes.array // Indirectly validated as [string, array of strings] in FilterOption
+    valueGroupings: PropTypes.array // Indirectly validated as [string, array of strings] in FilterOption
 });
 
-const colourAxisPropTypes = React.PropTypes.shape({
-    unit: React.PropTypes.string.isRequired,
-    dataClasses: React.PropTypes.arrayOf(React.PropTypes.shape({
-        color: React.PropTypes.string.isRequired,
-        from: React.PropTypes.number.isRequired,
-        to: React.PropTypes.number.isRequired
+const colourAxisPropTypes = PropTypes.shape({
+    unit: PropTypes.string.isRequired,
+    dataClasses: PropTypes.arrayOf(PropTypes.shape({
+        color: PropTypes.string.isRequired,
+        from: PropTypes.number.isRequired,
+        to: PropTypes.number.isRequired
     })).isRequired
 });
 
-const chartDataPropTypes = React.PropTypes.shape({
+const chartDataPropTypes = PropTypes.shape({
     heatmapConfig: heatmapConfigPropTypes.isRequired,
     colourAxis: colourAxisPropTypes,
     orderings: orderingsPropTypesValidator,
     heatmapData: heatmapDataPropTypes.isRequired,
     boxplotData: boxplotDataPropTypes,
     expressionLevelFilters: filterPropTypes.isRequired,
-    groupingFilters: React.PropTypes.arrayOf(filterPropTypes)
+    groupingFilters: PropTypes.arrayOf(filterPropTypes)
 });
 
 export {heatmapConfigPropTypes, heatmapDataPropTypes, chartDataPropTypes, orderingsPropTypesValidator, filterPropTypes, dataSeriesPropTypes, colourAxisPropTypes};

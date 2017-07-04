@@ -1,11 +1,11 @@
-import Colour from 'color';
+import Colour from 'color'
 
-import {isMultiExperiment} from './experimentTypeUtils.js';
+import {isMultiExperiment} from './experimentTypeUtils.js'
 
 const highlightColour = c =>
     c.light() ?
         c.clone().lighten(0.5)
-        : c.clone().saturate(0.3).darken(0.5);
+        : c.clone().saturate(0.3).darken(0.5)
 
 const dataClassesFromSeries = dataSeries => {
     // No need to validate here, as it’s already been done in Container.jsx (cf. with previous version of ColorAxis.js)
@@ -22,12 +22,12 @@ const dataClassesFromSeries = dataSeries => {
                             data: series.data,
                             colour: series.info.colour
                         }
-                );
+                )
             })
             .filter(series => series.data.length > 0)
             .map((series, ix, self) => {
-                    const theseSeriesValuesSorted = series.data.map(point => point.value);
-                    theseSeriesValuesSorted.sort((l,r) => l - r);
+                    const theseSeriesValuesSorted = series.data.map(point => point.value)
+                    theseSeriesValuesSorted.sort((l,r) => l - r)
 
                     return {
                         min: theseSeriesValuesSorted[0],
@@ -45,12 +45,12 @@ const dataClassesFromSeries = dataSeries => {
                         sortedValues: theseSeriesValuesSorted
                     }
                 }
-            );
+            )
 
     const needToSplit = x =>
     x.sortedValues.length > 3 &&
     x.sortedValues[0] !== x.sortedValues[x.sortedValues.length - 1] &&
-    x.minColour.rgbString() !== x.maxColour.rgbString();
+    x.minColour.rgbString() !== x.maxColour.rgbString()
 
     const splitInHalf = x =>
         [
@@ -72,20 +72,20 @@ const dataClassesFromSeries = dataSeries => {
                 medianColour: x.medianColour.clone().mix(x.maxColour),
                 sortedValues: x.sortedValues.slice(Math.floor(x.sortedValues.length/2))
             }
-        ];
+        ]
 
-    let l = Number.MIN_VALUE;
-    let L = xs.length;
+    let l = Number.MIN_VALUE
+    let L = xs.length
     while (l < L) {
         xs = [].concat.apply([], xs.map(function(x){
             if (needToSplit(x)) {
-                return splitInHalf(x);
+                return splitInHalf(x)
             } else {
-                return [x];
+                return [x]
             }
-        }));
-        l = L;
-        L = xs.length;
+        }))
+        l = L
+        L = xs.length
     }
 
     // The format of dataClasses is defined in http://api.highcharts.com/highmaps/colorAxis.dataClasses
@@ -97,8 +97,8 @@ const dataClassesFromSeries = dataSeries => {
                 color: x.medianColour.hexString()
             })
         )
-    );
-};
+    )
+}
 
 const unitsUsedInDataSeries = (dataSeries) => (
   [].concat.apply([],
@@ -107,7 +107,7 @@ const unitsUsedInDataSeries = (dataSeries) => (
   )
   .map((point) => point.info.unit)
   .filter((el) => el)
-  .filter((el,ix,self) => self.indexOf(el)==ix)
+  .filter((el,ix,self) => self.indexOf(el) === ix)
   .join()
 )
 
@@ -115,9 +115,9 @@ const getColourAxisFromDataSeries = (experiment, dataSeries) => (
   isMultiExperiment(experiment)
     ? null
     : {
-      dataClasses: dataClassesFromSeries(dataSeries),
-      unit: unitsUsedInDataSeries(dataSeries)
+        dataClasses: dataClassesFromSeries(dataSeries),
+        unit: unitsUsedInDataSeries(dataSeries)
       }
 )
 
-export default getColourAxisFromDataSeries;
+export default getColourAxisFromDataSeries

@@ -1,11 +1,11 @@
-import getChartConfiguration from './chartConfiguration.js';
+import getChartConfiguration from './chartConfiguration.js'
 
-import getHeatmapData from './heatmapData.js';
-import getBoxplotData from './boxplotData.js';
+import getHeatmapData from './heatmapData.js'
+import getBoxplotData from './boxplotData.js'
 
-import createOrderingsForData from './heatmapOrderings.js';
-import getColourAxisFromDataSeries from './heatmapColourAxis.js';
-import {getExpressionLevelFilters, getColumnGroupingFilters} from './heatmapFilters.js';
+import createOrderingsForData from './heatmapOrderings.js'
+import getColourAxisFromDataSeries from './heatmapColourAxis.js'
+import {getExpressionLevelFilters, getColumnGroupingFilters} from './heatmapFilters.js'
 
 export default function(data, inProxy, outProxy, atlasUrl, pathToResources, isWidget) {
 
@@ -14,12 +14,12 @@ export default function(data, inProxy, outProxy, atlasUrl, pathToResources, isWi
     // coexpressions is an array because at first it was envisioned that the JSON payload could carry coexpressions of
     // more than one gene, but that’s not the case, and ended up being a single item array.
     const allRows =
-        data.coexpressions ? data.profiles.rows.concat(data.coexpressions[0].jsonProfiles.rows) : data.profiles.rows;
+        data.coexpressions ? data.profiles.rows.concat(data.coexpressions[0].jsonProfiles.rows) : data.profiles.rows
 
     const heatmapData =
         getHeatmapData(
             allRows, data.config.geneQuery, data.columnHeaders, data.columnGroupings, data.experiment,
-            inProxy, atlasUrl, pathToResources);
+            inProxy, atlasUrl, pathToResources)
 
     return {
         heatmapData,
@@ -31,4 +31,4 @@ export default function(data, inProxy, outProxy, atlasUrl, pathToResources, isWi
         groupingFilters: getColumnGroupingFilters(heatmapData.xAxisCategories)
     }
 
-};
+}

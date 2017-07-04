@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from 'lodash'
 
 const getExpressionLevelFilters = (experiment, dataSeries) => {
     return (
@@ -12,7 +12,7 @@ const getExpressionLevelFilters = (experiment, dataSeries) => {
             )
         }
     )
-};
+}
 
 const getColumnGroupingFilters = xAxisCategories => {
     const groupingTriplets = _.flattenDeep(xAxisCategories.reduce((acc, columnHeader) => {
@@ -24,29 +24,29 @@ const getColumnGroupingFilters = xAxisCategories => {
                         columnLabel: columnHeader.label
                     })
                 )
-            );
-            acc.push(groupingTriplets);
+            )
+            acc.push(groupingTriplets)
 
-            return acc;
+            return acc
         },
         []
-    ));
+    ))
 
-    const groupingNames = _.uniq(groupingTriplets.map(groupingTriplet => groupingTriplet.name));
+    const groupingNames = _.uniq(groupingTriplets.map(groupingTriplet => groupingTriplet.name))
 
-    console.log(groupingTriplets[0]);
+    console.log(groupingTriplets[0])
 
     return groupingNames.map(groupingName => {
             const columnLabels = _.uniq(groupingTriplets
                 .filter(groupingTriplet => groupingTriplet.name === groupingName)
-                .map(groupingTriplet => groupingTriplet.columnLabel));
+                .map(groupingTriplet => groupingTriplet.columnLabel))
 
             const groupingLabels =
               _.uniq(groupingTriplets.map(groupingTriplet => groupingTriplet.groupingLabel))
-              .sort();
+              .sort()
 
             const groupingLabelsWithUnmappedLast =
-              groupingLabels.filter(l => l !== `Unmapped`).concat(groupingLabels.find(l => l === `Unmapped`) || []);
+              groupingLabels.filter(l => l !== `Unmapped`).concat(groupingLabels.find(l => l === `Unmapped`) || [])
 
             return {
                 name: groupingName,
@@ -67,9 +67,9 @@ const getColumnGroupingFilters = xAxisCategories => {
                         .map(groupingTriplet => groupingTriplet.columnLabel)
                     )
                   ])
-            };
+            }
         }
-    );
-};
+    )
+}
 
-export {getExpressionLevelFilters, getColumnGroupingFilters};
+export {getExpressionLevelFilters, getColumnGroupingFilters}

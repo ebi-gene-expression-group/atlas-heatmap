@@ -19,8 +19,8 @@ const tryCreateBoxplotData = ({dataRow, columnHeaders}) => {
     return {
         dataSeries,
         xAxisCategories: columnHeaders.map((header) => header.factorValue),
-        title: dataRow.name + " - " + dataRow.id,
-        unit: dataRow.expressionUnit || "" /*no need for this safeguard after master from June 2017 is released*/ 
+        title: `${dataRow.name} - ${dataRow.id}`,
+        unit: dataRow.expressionUnit
     }
   } else {
     return null

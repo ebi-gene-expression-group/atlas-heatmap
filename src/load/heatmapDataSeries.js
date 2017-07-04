@@ -1,6 +1,6 @@
-import _ from 'lodash';
+import _ from 'lodash'
 
-import {isMultiExperiment, isBaseline, isDifferential} from './experimentTypeUtils';
+import {isMultiExperiment, isBaseline, isDifferential} from './experimentTypeUtils'
 
 // Returns an object with coordinates, expression value and other properties for each heat map cell
 const buildHeatMapDataPointFromExpression = ({rowInfo, rowIndex, expression, expressionIndex})=> (
@@ -24,7 +24,7 @@ const buildHeatMapDataPointFromExpression = ({rowInfo, rowIndex, expression, exp
         }
       }
     : null
-);
+)
 
 const buildDataPointsFromRowExpressions = ({rowInfo, row: {expressions}, rowIndex}) => (
   expressions
@@ -51,7 +51,7 @@ const _createDataPointsAndGroupThemByExperimentType = profilesRowsChain => (
         // {'rnaseq_mrna_baeline': [...], 'proteomics_baseline': [...]} =>
         //    [['rnaseq_mrna_baseline, [...]], ['proteomics_baseline', [...]]]
         .toPairs()
-);
+)
 
 
 // Returns a function that, when passed an experimentType and an array of dataPoints, maps the array to pairs where the
@@ -62,9 +62,9 @@ const dataPointsToThresholdCategoriesMapper = thresholds =>
         return dataPoints.map(
             dataPoint => [_.sortedIndex(thresholds[experimentType] || thresholds.DEFAULT, dataPoint.value), dataPoint]
         )
-    };
+    }
 
-// Produces an array with as many thresholds/seriesNames/seriesColours; each array entry contains an object with an
+// Produces an array with as many thresholds/seriesNames/seriesColours each array entry contains an object with an
 // info field (an object composed of the series/threshold name and colour) and a data array with the data points that
 // correspond to that threshold
 const experimentProfilesRowsAsDataPointsSplitByThresholds = (thresholds, seriesNames, seriesColours, profilesRows) =>
@@ -75,13 +75,13 @@ const experimentProfilesRowsAsDataPointsSplitByThresholds = (thresholds, seriesN
             .map(_.spread(dataPointsToThresholdCategoriesMapper(thresholds)))
             // After this flatten we have all the data points categorised by threshold in a single array... hooray!
             .flatten()
-    ).value();
+    ).value()
 
 // Create the array of pairs in a single experiment to be passed to _bucketsIntoSeries
 const _splitDataSetByProportion = (data, names, colours) => {
-    const sortedValues = data.map(point => point.value).sort((l, r) => l - r);
-    const howManyPointsInTotal = data.length;
-    const howManyDataSetsToSplitIn = names.length;
+    const sortedValues = data.map(point => point.value).sort((l, r) => l - r)
+    const howManyPointsInTotal = data.length
+    const howManyDataSetsToSplitIn = names.length
     return (
         _bucketsIntoSeries(names, colours)(
             _.chain(data)
@@ -91,18 +91,18 @@ const _splitDataSetByProportion = (data, names, colours) => {
                         point ]
                 )
         ).value()
-    );
-};
+    )
+}
 
 const splitGeneRowsIntoProportionalSeriesOfDataPoints = (profilesRows, experiment, filters, names, colours) => {
     const dataPoints =
         _.flatten(profilesRows.map(
-            (row, rowIndex) => buildDataPointsFromRowExpressions({rowInfo: {unit: row.expressionUnit || "" /*no need for this safeguard after master from June 2017 is released*/}, row, rowIndex})));
+            (row, rowIndex) => buildDataPointsFromRowExpressions({rowInfo: {unit: row.expressionUnit || "" /*no need for this safeguard after master from June 2017 is released*/}, row, rowIndex})))
 
     return _.flatten(
         _.range(filters.length).map(
-            i => _splitDataSetByProportion(dataPoints.filter(filters[i]), names[i], colours[i])));
-};
+            i => _splitDataSetByProportion(dataPoints.filter(filters[i]), names[i], colours[i])))
+}
 
 // chain is a lodash wrapper of an array of pairs: [[0, dataPoint1], [0, dataPoint2], ... [3, dataPointN]]
 // The first entry is the number of the category (i.e. “Below cutoff”, ”Low”...) and the second entry is the data point
@@ -126,23 +126,23 @@ const _bucketsIntoSeries = _.curry((seriesNames, seriesColours, pairsOfCategoryA
                     })
                 )
             )
-    );
-});
+    )
+})
 
 const getDataSeries = (profilesRows, experiment) => {
-    const _fns = [_.lt, _.eq, _.gt].map(f => (point => f(point.value, 0)));
-    const _belowCutoff = _fns[1];
+    const _fns = [_.lt, _.eq, _.gt].map(f => (point => f(point.value, 0)))
+    const _belowCutoff = _fns[1]
 
     if (isDifferential(experiment)) {
         return splitGeneRowsIntoProportionalSeriesOfDataPoints(profilesRows, experiment,
             _fns,
             [[`High down`, `Down`], [`Below cutoff`], [`Up`, `High up`]],
-            [[`#0000ff`, `#8cc6ff`], [`gainsboro`], [`#e9967a`, `#b22222`]]);
+            [[`#0000ff`, `#8cc6ff`], [`gainsboro`], [`#e9967a`, `#b22222`]])
     } else if (isBaseline(experiment)) {
         return splitGeneRowsIntoProportionalSeriesOfDataPoints(profilesRows, experiment,
             [_belowCutoff, _.negate(_belowCutoff)],
             [[`Below cutoff`], [`Low`, `Medium`, `High`]],
-            [[`gainsboro`], [`#8cc6ff`, `#0000ff`, `#0000b3`]]);
+            [[`gainsboro`], [`#8cc6ff`, `#0000ff`, `#0000b3`]])
     } else if (isMultiExperiment(experiment)) {
         return experimentProfilesRowsAsDataPointsSplitByThresholds(
             {
@@ -152,10 +152,10 @@ const getDataSeries = (profilesRows, experiment) => {
             },
             [`Below cutoff`, `Low`, `Medium`, `High`],
             [`#eaeaea`, `#45affd`, `#1E74CA`, `#024990`],
-            profilesRows);
+            profilesRows)
     } else {
-        return null;
+        return null
     }
-};
+}
 
-export default getDataSeries;
+export default getDataSeries
