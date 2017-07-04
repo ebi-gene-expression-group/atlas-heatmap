@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import PropTypes from 'prop-types'
 import uncontrollable from 'uncontrollable'
 
@@ -34,18 +34,18 @@ class ChartContainer extends React.Component {
 
         this.state = {
             chartType: `heatmap`
-        };
+        }
 
-        this.handleClick = this._handleClick.bind(this);
+        this.handleClick = this._handleClick.bind(this)
     }
 
     _theOtherChartType() {
-        return this.state.chartType === `heatmap` ? `boxplot` : `heatmap`;
+        return this.state.chartType === `heatmap` ? `boxplot` : `heatmap`
     }
 
     _handleClick(e) {
-        e.preventDefault();
-        this.setState({ chartType: this._theOtherChartType() });
+        e.preventDefault()
+        this.setState({ chartType: this._theOtherChartType() })
     }
 
     render() {
@@ -69,7 +69,7 @@ class ChartContainer extends React.Component {
                 </div>
               }
             </div>
-        );
+        )
     }
 
 }
@@ -78,6 +78,6 @@ ChartContainer.propTypes = {
     chartData: chartDataPropTypes.isRequired,
     ontologyIdsToHighlight: PropTypes.arrayOf(PropTypes.string).isRequired,
     onOntologyIdIsUnderFocus: PropTypes.func.isRequired
-};
+}
 
-export default ChartContainer;
+export default ChartContainer

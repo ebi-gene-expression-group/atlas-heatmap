@@ -67,8 +67,6 @@ const render = options => {
     }
 }
 
-export {ExpressionAtlasHeatmap, render}
-
 function resolveEndpoint(experiment) {
     return (
         !experiment ?
@@ -100,3 +98,5 @@ function stringifyIfNotString(o) {
     return typeof o === `string` ? o : JSON.stringify(o)
 }
 
+
+export {ExpressionAtlasHeatmap as default, render}

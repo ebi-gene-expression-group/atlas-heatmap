@@ -1,27 +1,28 @@
-import React from 'react';
-import {experimentPropTypes} from '../load/experimentTypeUtils';
+import React from 'react'
+import PropTypes from 'prop-types'
+import {experimentPropTypes} from '../load/experimentTypeUtils'
 
 // const heatmapDataPropTypes = (props, propName) => {
-//     const heatmapData = props[propName];
-//     // const possiblyError = ValidateDataSeries(heatmapData.dataSeries);
+//     const heatmapData = props[propName]
+//     // const possiblyError = ValidateDataSeries(heatmapData.dataSeries)
 //     // if (possiblyError !== undefined) {
-//     //     return possiblyError;
+//     //     return possiblyError
 //     // }
 //
-//     const width = heatmapData.xAxisCategories.length;
-//     const height = heatmapData.yAxisCategories.length;
+//     const width = heatmapData.xAxisCategories.length
+//     const height = heatmapData.yAxisCategories.length
 //
-//     for (let i = 0; i < heatmapData.dataSeries.length; i++) {
-//         for (let j = 0; j < heatmapData.dataSeries[i].data.length; j++) {
-//             const point = heatmapData.dataSeries[i].data[j];
-//             const x = point.x;
-//             const y = point.y;
+//     for (let i = 0 i < heatmapData.dataSeries.length i++) {
+//         for (let j = 0 j < heatmapData.dataSeries[i].data.length j++) {
+//             const point = heatmapData.dataSeries[i].data[j]
+//             const x = point.x
+//             const y = point.y
 //             if (x < 0 || y < 0 || x >= width || y >= height) {
-//                 return new Error(`Point with coordinates outside range: ${x}, ${y}`);
+//                 return new Error(`Point with coordinates outside range: ${x}, ${y}`)
 //             }
 //         }
 //     }
-// };
+// }
 
 const differentialTooltipPropTypes = PropTypes.shape({
     contrastDescription: PropTypes.string.isRequired,
@@ -39,7 +40,7 @@ const differentialTooltipPropTypes = PropTypes.shape({
         url: PropTypes.string.isRequired
     })).isRequired,
     testReplicates: PropTypes.number.isRequired
-});
+})
 
 const baselineTooltipPropTypes = PropTypes.shape({
     properties: PropTypes.arrayOf(PropTypes.shape({
@@ -48,34 +49,34 @@ const baselineTooltipPropTypes = PropTypes.shape({
         testValue: PropTypes.string.isRequired
     })).isRequired,
     replicates: PropTypes.number.isRequired
-});
+})
 
-const baselineExperimentsTooltipPropTypes = PropTypes.shape({});
+const baselineExperimentsTooltipPropTypes = PropTypes.shape({})
 
 const orderingsPropTypesValidator = (props, propName, componentName) => {
-    const orderings = props[propName];
+    const orderings = props[propName]
 
     const isPermutation = (arr) =>
         [].concat(arr)
             .sort((a, b) => a - b)
             .map((el, ix) => el === ix)
-            .reduce((l, r) => l && r);
+            .reduce((l, r) => l && r)
 
     if (!orderings.hasOwnProperty(`default`)) {
-        return new Error(`Default ordering missing in '${componentName}'`);
+        return new Error(`Default ordering missing in '${componentName}'`)
     }
 
     Object.keys(orderings).forEach(orderingName => {
-        const ordering = orderings[orderingName];
+        const ordering = orderings[orderingName]
 
         if (!isPermutation(ordering.columns)) {
-            return new Error(`Column ordering invalid: '${orderingName}' in '${componentName}'`);
+            return new Error(`Column ordering invalid: '${orderingName}' in '${componentName}'`)
         }
         if (!isPermutation(ordering.rows)) {
-            return new Error(`Row ordering invalid: '${orderingName}' in '${componentName}'`);
+            return new Error(`Row ordering invalid: '${orderingName}' in '${componentName}'`)
         }
-    });
-};
+    })
+}
 
 const dataSeriesPropTypes = PropTypes.arrayOf(PropTypes.shape({
     data: PropTypes.arrayOf(PropTypes.shape({
@@ -93,7 +94,7 @@ const dataSeriesPropTypes = PropTypes.arrayOf(PropTypes.shape({
         colour: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired
     }).isRequired
-}));
+}))
 
 const heatmapDataPropTypes = PropTypes.shape({
     dataSeries: dataSeriesPropTypes.isRequired,
@@ -125,14 +126,14 @@ const heatmapDataPropTypes = PropTypes.shape({
         }).isRequired,
         label: PropTypes.string.isRequired
     })).isRequired
-});
+})
 
 const boxplotDataPropTypes = PropTypes.shape({
     dataSeries: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
     xAxisCategories: PropTypes.arrayOf(PropTypes.string).isRequired,
     title: PropTypes.string.isRequired,
     unit: PropTypes.string.isRequired
-});
+})
 
 const heatmapConfigPropTypes = PropTypes.shape({
     inProxy: PropTypes.string.isRequired,
@@ -153,7 +154,7 @@ const heatmapConfigPropTypes = PropTypes.shape({
     isBaseline: PropTypes.bool.isRequired,
     isDifferential: PropTypes.bool.isRequired
 
-});
+})
 
 const filterPropTypes = PropTypes.shape({
     name: PropTypes.string.isRequired,
@@ -162,7 +163,7 @@ const filterPropTypes = PropTypes.shape({
         disabled: PropTypes.bool.isRequired
     })).isRequired,
     valueGroupings: PropTypes.array // Indirectly validated as [string, array of strings] in FilterOption
-});
+})
 
 const colourAxisPropTypes = PropTypes.shape({
     unit: PropTypes.string.isRequired,
@@ -171,7 +172,7 @@ const colourAxisPropTypes = PropTypes.shape({
         from: PropTypes.number.isRequired,
         to: PropTypes.number.isRequired
     })).isRequired
-});
+})
 
 const chartDataPropTypes = PropTypes.shape({
     heatmapConfig: heatmapConfigPropTypes.isRequired,
@@ -181,6 +182,6 @@ const chartDataPropTypes = PropTypes.shape({
     boxplotData: boxplotDataPropTypes,
     expressionLevelFilters: filterPropTypes.isRequired,
     groupingFilters: PropTypes.arrayOf(filterPropTypes)
-});
+})
 
-export {heatmapConfigPropTypes, heatmapDataPropTypes, chartDataPropTypes, orderingsPropTypesValidator, filterPropTypes, dataSeriesPropTypes, colourAxisPropTypes};
+export {heatmapConfigPropTypes, heatmapDataPropTypes, chartDataPropTypes, orderingsPropTypesValidator, filterPropTypes, dataSeriesPropTypes, colourAxisPropTypes}

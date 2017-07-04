@@ -1,5 +1,6 @@
-import React from 'react';
-import {experimentPropTypes} from '../load/experimentTypeUtils';
+import React from 'react'
+import PropTypes from 'prop-types'
+import {experimentPropTypes} from '../load/experimentTypeUtils'
 
 
 const baselineColumnHeadersPropTypes = PropTypes.shape({
@@ -14,13 +15,13 @@ const baselineColumnHeadersPropTypes = PropTypes.shape({
             contrastPropertyType: PropTypes.oneOf([`FACTOR`, `SAMPLE`]).isRequired
         })).isRequired
     })
-});
+})
 
 const assayGroupPropTypes = PropTypes.shape({
     id: PropTypes.string.isRequired,
     assayAccessions: PropTypes.arrayOf(PropTypes.string).isRequired,
     replicates: PropTypes.number.isRequired
-});
+})
 
 const differentialColumnHeadersPropTypes = PropTypes.shape({
     id: PropTypes.string.isRequired,
@@ -44,7 +45,7 @@ const differentialColumnHeadersPropTypes = PropTypes.shape({
         type: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired
     })).isRequired
-});
+})
 
 
 
@@ -56,7 +57,7 @@ const baselineExperimentProfilesRowsPropTypes = PropTypes.shape({
         value: PropTypes.number,
     })).isRequired,
     uri: PropTypes.string.isRequired
-});
+})
 
 const baselineGeneProfilesRowsExpressionsPropTypes = PropTypes.shape({
     value: PropTypes.number,
@@ -67,14 +68,14 @@ const baselineGeneProfilesRowsExpressionsPropTypes = PropTypes.shape({
         upper: PropTypes.number.isRequired,
         max: PropTypes.number.isRequired
     })
-});
+})
 
 const baselineGeneProfilesRowsPropTypes = PropTypes.shape({
     id: PropTypes.string.isRequired,              // Gene ID
     name: PropTypes.string.isRequired,            // Gene name
     expressions: PropTypes.arrayOf(baselineGeneProfilesRowsExpressionsPropTypes).isRequired,
     uri: PropTypes.string.isRequired
-});
+})
 
 
 const baselineProfilesPropTypes = PropTypes.shape({
@@ -83,7 +84,7 @@ const baselineProfilesPropTypes = PropTypes.shape({
         baselineExperimentProfilesRowsPropTypes,
         baselineGeneProfilesRowsPropTypes
     ]))
-});
+})
 
 const differentialProfilesPropTypes = PropTypes.shape({
     maxDownLevel: PropTypes.number,
@@ -103,7 +104,7 @@ const differentialProfilesPropTypes = PropTypes.shape({
         })).isRequired
     })).isRequired,
     searchResultTotal: PropTypes.number
-});
+})
 
 
 
@@ -150,6 +151,6 @@ const dataPropTypes = PropTypes.shape({
 
     experiment: experimentPropTypes
 
-});
+})
 
-export default dataPropTypes;
+export default dataPropTypes

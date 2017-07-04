@@ -1,4 +1,5 @@
-import React from 'react';
+import React from 'react'
+import PropTypes from 'prop-types'
 
 const experimentPropTypes = PropTypes.shape({
     accession: PropTypes.string.isRequired,   // Is it worth to enumerate the experiment types?
@@ -7,9 +8,9 @@ const experimentPropTypes = PropTypes.shape({
     description: PropTypes.string.isRequired,
     species: PropTypes.string.isRequired,
     accessKey: PropTypes.string.isRequired
-});
+})
 
-const isMultiExperiment = experiment => !Boolean(experiment);
+const isMultiExperiment = experiment => !Boolean(experiment)
 
 // From ExperimentType.java:
 // RNASEQ_MRNA_BASELINE("rnaseq_mrna_baseline")
@@ -21,22 +22,22 @@ const isMultiExperiment = experiment => !Boolean(experiment);
 // PROTEOMICS_BASELINE("proteomics_baseline")
 // SINGLE_CELL_RNASEQ_MRNA_BASELINE("scrnaseq_mrna_baseline")
 const isDifferential = experiment =>
-!isMultiExperiment(experiment) && experiment.type.toUpperCase().endsWith(`DIFFERENTIAL`);
+!isMultiExperiment(experiment) && experiment.type.toUpperCase().endsWith(`DIFFERENTIAL`)
 
 const isBaseline = experiment =>
-!isMultiExperiment(experiment) && experiment.type.toUpperCase().endsWith(`BASELINE`);
+!isMultiExperiment(experiment) && experiment.type.toUpperCase().endsWith(`BASELINE`)
 
 const isRnaSeqBaseline = experiment =>
-!isMultiExperiment(experiment) && experiment.type.toUpperCase() === `RNASEQ_MRNA_BASELINE`;
+!isMultiExperiment(experiment) && experiment.type.toUpperCase() === `RNASEQ_MRNA_BASELINE`
 
 const getUnits = experiment => {
     if (isDifferential(experiment)) {
-        return `Log2-fold change`;  // What we use for point.value, we don't use it for display. See Formatters.jsx.
+        return `Log2-fold change`  // What we use for point.value, we don't use it for display. See Formatters.jsx.
     } else if (isRnaSeqBaseline(experiment)) {
-        return experiment.description.toUpperCase().includes(`FANTOM`) ? `TPM` : `FPKM`;
+        return experiment.description.toUpperCase().includes(`FANTOM`) ? `TPM` : `FPKM`
     } else {
-        return ``;
+        return ``
     }
-};
+}
 
 export {experimentPropTypes, isMultiExperiment, isDifferential, isBaseline, isRnaSeqBaseline, getUnits}

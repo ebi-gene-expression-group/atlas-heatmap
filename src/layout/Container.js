@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import URI from 'urijs'
 
 import Anatomogram from 'anatomogram'
