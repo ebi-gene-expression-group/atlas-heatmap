@@ -1,0 +1,30 @@
+.gxaFilter {
+  padding-bottom: 1.25rem;
+  .filterBody {
+    input {
+      margin: 0.2rem;
+    }
+    .groupName {
+      display: inline-block;
+      cursor:pointer;
+      &:first-letter{
+        text-transform: capitalize;
+      }
+      &:hover {
+        text-decoration: underline;
+      }
+      &:indeterminate {
+        opacity: 0.75;
+      }
+    }
+    .options {
+
+      padding-left: 15px;
+      font-size: 85%;
+
+      -webkit-column-width: 180px;
+      -moz-column-width: 180px;
+      column-width: 180px;
+    }
+  }
+}
