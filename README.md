@@ -1,7 +1,7 @@
 # Expression Atlas Heatmap
 
-Heatmap visualization of baseline, proteomics baseline and differential gene expression experiments for [Expression
-Atlas](http://www.ebi.ac.uk/gxa).
+Visualization of baseline, proteomics baseline and differential gene expression experiments for [Expression
+Atlas](https://www.ebi.ac.uk/gxa).
 
 It has four basic visualizations:
 * Multiexperiment: collapses several baseline tissue experiments into a single table
@@ -9,14 +9,14 @@ It has four basic visualizations:
 * Proteomics baseline: displays a single proteomics baseline expression experiment
 * Differential: displays a single differential expression experiment
 
-Visualizations include, where available, an anatomogram to the left of the table.
+Visualizations optionally include, where available, an anatomogram to the left of the table.
 
 ## Atlas Widget
 
-Our data can be included as a widget as part of your website.
-[Demo](http://www.ebi.ac.uk/gxa/resources/test/widget/showcase/index.html)
+The heatmap can be included as a widget in your website.
+[Demo](https://www.ebi.ac.uk/gxa/resources/test/widget/showcase/index.html)
 
-#### What you need
+### What you need
 You must add the following to your environment:
 
 ```
@@ -44,10 +44,7 @@ src="https://www.ebi.ac.uk/gxa/resources/js-bundles/vendorCommons.bundle.js"></s
 src="https://www.ebi.ac.uk/gxa/resources/js-bundles/expressionAtlasHeatmapHighcharts.bundle.js"></script>
 ```
 
-
-Tell us about any problems by raising an issue in this repository.
-
-#### Invoking the widget
+### Invoking the widget
 
 You need to call the render method on the exposed global variable:
 ```
@@ -59,16 +56,29 @@ expressionAtlasHeatmapHighcharts.render({
     target: "heatmapContainer"
 });
 ```
-[Lots of examples](http://www.ebi.ac.uk/gxa/resources/test/widget/showcase/index.html)
+[Lots of examples](https://www.ebi.ac.uk/gxa/resources/test/widget/showcase/index.html)
 
+Tell us about any problems by raising an issue in this repository.
 
-#### Building from source
-
-You can also use us as a React component:
+## Building from source
 ```
-npm install expression-atlas-heatmap-highcharts
+npm install expression-atlas-heatmap-highcharts --save
+```
+You can use it as a React component:
+```
 import ExpressionAtlasHeatmap from 'expression-atlas-heatmap-highcharts'
+...
+ReactDom.render(<ExpressionAtlasHeatmap .../>, 'id-of-dom-element')
 ```
+
+Or mount it on a DOM node if you’re not using the React framework:
+```
+import {render as expressionAtlasHeatmapRender} from 'expression-atlas-heatmap-highcharts'
+...
+expressionAtlasHeatmapRender({...})
+```
+
+For all the options available visit the [examples showcase](http://www.ebi.ac.uk/gxa/resources/test/widget/showcase/index.html).
 
 ##### Notes for developers
 `imports-loader`, although not strictly needed, is necessary to build the `anatomogram` package and therefore it is
