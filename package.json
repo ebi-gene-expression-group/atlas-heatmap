@@ -10,7 +10,7 @@
     "prepublish": "npm run build",
     "test": "mocha test"
   },
-  "repository": "github.com/gxa/atlas-heatmap",
+  "repository": "https://github.com/gxa/atlas-heatmap",
   "dependencies": {
     "anatomogram": "latest",
     "color": "0.11.3",
