@@ -16,7 +16,7 @@ const getExpressionLevelFilters = (experiment, dataSeries) => {
 
 const getColumnGroupingFilters = xAxisCategories => {
     const groupingTriplets = _.flattenDeep(xAxisCategories.reduce((acc, columnHeader) => {
-            const groupingTriplets = columnHeader.info.groupings.map(grouping =>
+            const _groupingTriplets = columnHeader.info.groupings.map(grouping =>
                 grouping.values.map(groupingValue =>
                     ({
                         name: grouping.name,
@@ -25,7 +25,7 @@ const getColumnGroupingFilters = xAxisCategories => {
                     })
                 )
             )
-            acc.push(groupingTriplets)
+            acc.push(_groupingTriplets)
 
             return acc
         },
@@ -33,8 +33,6 @@ const getColumnGroupingFilters = xAxisCategories => {
     ))
 
     const groupingNames = _.uniq(groupingTriplets.map(groupingTriplet => groupingTriplet.name))
-
-    console.log(groupingTriplets[0])
 
     return groupingNames.map(groupingName => {
             const columnLabels = _.uniq(groupingTriplets
