@@ -4311,9 +4311,9 @@ react-ga@^2.2.0:
     object-assign "^4.0.1"
     prop-types "^15.5.6"
 
-react-highcharts@^11.5.0:
-  version "11.5.0"
-  resolved "https://registry.yarnpkg.com/react-highcharts/-/react-highcharts-11.5.0.tgz#2812cdc56ef1057e59cbc9c4dbed79b72d8505ae"
+react-highcharts@^12.0.0:
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/react-highcharts/-/react-highcharts-12.0.0.tgz#a7c8b5f5b56b37afe8e7fe02ec8bee72e376158a"
   dependencies:
     highcharts "^5.0.0"
 
