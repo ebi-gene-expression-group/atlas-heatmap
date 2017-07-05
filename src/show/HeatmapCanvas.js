@@ -223,13 +223,13 @@ class HeatmapCanvas extends React.Component {
         const maxWidthFraction = this._countColumns() > 6 ? 1 : Math.max(0.5, 1 - Math.exp(-(1 + 0.05 * Math.pow(1 + this._countColumns(), 2))))
         return (
             <div style={{maxWidth: `${maxWidthFraction * 100}%`, minWidth: `600px`}}>
-                <ReactHighcharts ref="chart" config={highchartsConfig}/>
+                <ReactHighcharts ref={(ref) => this.highchartsRef = ref} config={highchartsConfig}/>
             </div>
         )
     }
 
     componentWillReceiveProps(nextProps){
-      const chart = this.refs.chart.getChart()
+      const chart = this.highchartsRef.getChart()
       const forEachXNotInYsEmit = (xs, ys, eventName) => {
         xs
         .filter((id) => (ys.indexOf(id)===-1))
