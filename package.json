@@ -24,7 +24,7 @@
     "prop-types": "^15.5.10",
     "rc-slider": "4.0.1",
     "react": "^15.6.1",
-    "react-bootstrap": "0.30.7",
+    "react-bootstrap": "0.31.0",
     "react-dom": "^15.6.1",
     "react-ga": "^2.2.0",
     "react-highcharts": "^12.0.0",
