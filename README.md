@@ -5,7 +5,7 @@ Atlas](http://www.ebi.ac.uk/gxa).
 
 It has four basic visualizations:
 * Multiexperiment: collapses several baseline tissue experiments into a single table
-* Baseline: displays a single baseline expression experiment
+* Baseline: displays a single RNA-seq baseline expression experiment
 * Proteomics baseline: displays a single proteomics baseline expression experiment
 * Differential: displays a single differential expression experiment
 
@@ -21,27 +21,27 @@ You must add the following to your environment:
 
 ```
 <link rel="stylesheet" type="text/css"
-href="http://www.ebi.ac.uk/gxa/resources/css/customized-bootstrap-3.3.5.css"/>
+href="https://www.ebi.ac.uk/gxa/resources/css/customized-bootstrap-3.3.5.css"/>
 ```
 
 If you already use your own flavour of Bootstrap, then you
 can remove the styles link tags and the widget will integrate smoothly
 in your environment.
 
-Are you targetting es5 or IE11? Include these polyfills for babel-polyfill and whatwg-fetch:
+Are you targetting ES5, IE11 or Safari? Include these polyfills for babel-polyfill and whatwg-fetch:
 ```
 <script language="JavaScript" type="text/javascript"
-src="${pageContext.request.contextPath}/resources/js/lib/babel-polyfill.min.js"></script>
+src="https://www.ebi.ac.uk/gxa/resources/js/lib/babel-polyfill.min.js"></script>
 <script language="JavaScript" type="text/javascript"
-src="${pageContext.request.contextPath}/resources/js/lib/fetch-polyfill.min.js"></script>
+src="https://www.ebi.ac.uk/gxa/resources/js/lib/fetch-polyfill.min.js"></script>
 ```
 
 Then include our widget and the vendor bundle:
 ```
 <script language="JavaScript" type="text/javascript"
-src="http://www.ebi.ac.uk/gxa/resources/js-bundles/vendorCommons.bundle.js"></script>
+src="https://www.ebi.ac.uk/gxa/resources/js-bundles/vendorCommons.bundle.js"></script>
 <script language="JavaScript" type="text/javascript"
-src="http://www.ebi.ac.uk/gxa/resources/js-bundles/expressionAtlasHeatmapHighcharts.bundle.js"></script>
+src="https://www.ebi.ac.uk/gxa/resources/js-bundles/expressionAtlasHeatmapHighcharts.bundle.js"></script>
 ```
 
 
@@ -67,14 +67,14 @@ expressionAtlasHeatmapHighcharts.render({
 You can also use us as a React component:
 ```
 npm install expression-atlas-heatmap-highcharts
-import { ExpressionAtlasHeatmap } from 'expression-atlas-heatmap-highcharts'
+import ExpressionAtlasHeatmap from 'expression-atlas-heatmap-highcharts'
 ```
 
 ##### Notes for developers
 `imports-loader`, although not strictly needed, is necessary to build the `anatomogram` package and therefore it is
 included in `devDependencies`.
 
-The authoritative docs are the code itself, here is the main function: [here](https://github.com/gxa/atlas-heatmap/blob/master/src/Main.jsx)
+The authoritative docs are the code itself, here is the main function: [here](https://github.com/gxa/atlas-heatmap/blob/master/src/Main.js)
 
 #### Licence
 
