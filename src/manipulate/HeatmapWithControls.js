@@ -18,6 +18,8 @@ import makeEventCallbacks from './Events.js'
 
 import {manipulate} from './Manipulators.js'
 
+import {spread, intersection} from 'lodash';
+
 import {heatmapDataPropTypes, heatmapConfigPropTypes, orderingsPropTypesValidator, filterPropTypes, colourAxisPropTypes}
 from '../manipulate/chartDataPropTypes.js'
 
@@ -75,10 +77,13 @@ class HeatmapWithControls extends React.Component {
                 .filter(filter => filter.valueGroupings.length > 0)
                 .map(groupingFilter => groupingFilter.name)
 
-        return this.props.selectedFilters
-            .filter(selectedFilter => groupingFilterNames.includes(selectedFilter.name))
-            .reduce((acc, selectedGroupingFilter) => [...acc, ...selectedGroupingFilter.valueNames], [])
-
+        return (
+            spread(intersection)(
+                this.props.selectedFilters
+                .filter(selectedFilter => groupingFilterNames.includes(selectedFilter.name))
+                .map(selectedFilter => selectedFilter.valueNames)
+            )
+        )
     }
 
     _renderOrderings(heatmapDataToPresent) {
