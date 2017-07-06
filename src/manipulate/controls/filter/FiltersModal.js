@@ -23,18 +23,6 @@ class FiltersModal extends React.Component {
         this.onSelectFilterValue = this._onSelectFilterValue.bind(this)
     }
 
-    _filtersSelectionBeforeModalOpen() {
-        // Deep copy to avoid modifying props
-        return (
-            this.props.selectedFilters.map(selectedFilter =>
-                ({
-                    name: selectedFilter.name,
-                    valueNames: selectedFilter.valueNames.map(valueName => valueName)
-                })
-            )
-        )
-    }
-
     _close() {
         this.setState({
             showModal: false
@@ -71,7 +59,7 @@ class FiltersModal extends React.Component {
     _renderGroupingFilter(filter) {
         return (
             <GroupingFilter key={filter.name}
-                            selected={this.state.selectedFilters.find(selectedFilter => selectedFilter.name === filter.name).valueNames}
+                            selected={this.props.selectedFilters.find(selectedFilter => selectedFilter.name === filter.name).valueNames}
                             onSelectFilterValue={this.onSelectFilterValue}
                             {...filter}
             />

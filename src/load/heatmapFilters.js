@@ -32,6 +32,8 @@ const getColumnGroupingFilters = xAxisCategories => {
         []
     ))
 
+    const groupingNames = _.uniq(groupingTriplets.map(groupingTriplet => groupingTriplet.name))
+
     return groupingNames.map(groupingName => {
             const columnLabels = _.uniq(groupingTriplets
                 .filter(groupingTriplet => groupingTriplet.name === groupingName)
