@@ -23,9 +23,10 @@ class FilterOption extends React.Component {
         const allChecked = this.props.values.every(v => this.props.selected.includes(v))
         const allUnchecked = this.props.values.every(v => !this.props.selected.includes(v))
 
+        const openable = this.props.values.length !== 1 || this.props.values[0] !==this.props.name
         // Indeterminate is only a visual state, logically they are unchecked
         return (
-            <div className="filterBody">
+            <div className="filterBody large-6 columns">
                 <input type="checkbox"
                        value={this.props.name}
                        onChange={() => this.toggleAll()}
@@ -36,10 +37,10 @@ class FilterOption extends React.Component {
                 <div className="groupName"
                      onClick={() => this.toggleOpen()}
                      href="#">
-                    {this.props.name} {<Glyphicon style={{fontSize: `x-small`, paddingLeft: `5px`}} glyph={this.props.isOpen ? `menu-up` : `menu-down`}/>}
+                    {this.props.name} {openable && <Glyphicon style={{fontSize: `x-small`, paddingLeft: `5px`}} glyph={this.props.isOpen ? `menu-up` : `menu-down`}/>}
                 </div>
 
-                {this.props.isOpen &&
+                {openable && this.props.isOpen &&
                 <div className="options">
                     {this.props.values.map(value => (
                         <div className="option" key={value}>
@@ -106,8 +107,6 @@ class GroupingFilter extends React.Component {
     render() {
         return (
             <div className="gxaFilter">
-                <h5>{this.props.name}</h5>
-
                 <ButtonGroup>
                     <Button bsSize="xsmall"
                             onClick={() => {this.props.onSelectFilterValue(this.props.name, this.props.values.map(value => value.name))}}
@@ -123,9 +122,11 @@ class GroupingFilter extends React.Component {
                         <span style={{verticalAlign: `middle`}}> Remove all</span>
                     </Button>
                 </ButtonGroup>
-
+                <div className="row">
                 {this.props.valueGroupings.map(a => this._renderValueGrouping(a[0], a[1]))}
-            </div>
+
+                </div>
+        </div>
         )
     }
 }

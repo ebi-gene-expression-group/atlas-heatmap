@@ -14,6 +14,7 @@ class FiltersModal extends React.Component {
         super(props)
 
         this.state = {
+            currentTab: this.props.filters[0].name,
             selectedFilters: this._filtersSelectionBeforeModalOpen(),
             showModal: false
         }
@@ -54,7 +55,7 @@ class FiltersModal extends React.Component {
             selectedFilters: this._filtersSelectionBeforeModalOpen()
         })
     }
-    
+
     _onSelectFilterValue(filterName, newFilterValues) {
         this.setState(previousState =>
             ({
@@ -102,11 +103,24 @@ class FiltersModal extends React.Component {
 
                 <Modal show={this.state.showModal} onHide={this.close} bsSize="large">
                     <Modal.Header closeButton>
-                        <Modal.Title>Filters</Modal.Title>
+                    <ul className="nav nav-tabs">
+                    {
+                        this.props.filters.map(f => (
+                            <li key={f.name}
+                                className={f.name==this.state.currentTab ? "active" : ""}>
+                                <a href="#" onClick={()=>{this.setState({currentTab: f.name})}}>
+                                    {f.name}
+                                </a>
+                            </li>
+                        ))
+                    }
+                    </ul>
                     </Modal.Header>
 
-                    <Modal.Body>
-                        {this.props.filters.map(filter => filter.valueGroupings ?
+                    <Modal.Body >
+                        {this.props.filters
+                            .filter(filter => filter.name==this.state.currentTab)
+                            .map(filter => filter.valueGroupings ?
                             this._renderGroupingFilter(filter) :
                             this._renderFlatFilter(filter))}
                     </Modal.Body>

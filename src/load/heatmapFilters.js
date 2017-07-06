@@ -32,19 +32,20 @@ const getColumnGroupingFilters = xAxisCategories => {
         []
     ))
 
-    const groupingNames = _.uniq(groupingTriplets.map(groupingTriplet => groupingTriplet.name))
-
     return groupingNames.map(groupingName => {
             const columnLabels = _.uniq(groupingTriplets
                 .filter(groupingTriplet => groupingTriplet.name === groupingName)
-                .map(groupingTriplet => groupingTriplet.columnLabel))
+                .map(groupingTriplet => groupingTriplet.columnLabel));
 
             const groupingLabels =
-              _.uniq(groupingTriplets.map(groupingTriplet => groupingTriplet.groupingLabel))
-              .sort()
+              _.uniq(groupingTriplets
+                  .filter(groupingTriplet => groupingTriplet.name === groupingName)
+                  .map(groupingTriplet => groupingTriplet.groupingLabel)
+              )
+              .sort();
 
             const groupingLabelsWithUnmappedLast =
-              groupingLabels.filter(l => l !== `Unmapped`).concat(groupingLabels.find(l => l === `Unmapped`) || [])
+              groupingLabels.filter(l => l !== `Unmapped`).concat(groupingLabels.find(l => l === `Unmapped`) || []);
 
             return {
                 name: groupingName,
