@@ -71,7 +71,7 @@ class FiltersModal extends React.Component {
     _renderGroupingFilter(filter) {
         return (
             <GroupingFilter key={filter.name}
-                            selected={this.props.selectedFilters.find(selectedFilter => selectedFilter.name === filter.name).valueNames}
+                            selected={this.state.selectedFilters.find(selectedFilter => selectedFilter.name === filter.name).valueNames}
                             onSelectFilterValue={this.onSelectFilterValue}
                             {...filter}
             />
@@ -90,18 +90,21 @@ class FiltersModal extends React.Component {
 
                 <Modal show={this.state.showModal} onHide={this.close} bsSize="large">
                     <Modal.Header closeButton>
-                    <ul className="nav nav-tabs">
-                    {
-                        this.props.filters.map(f => (
-                            <li key={f.name}
-                                className={f.name==this.state.currentTab ? "active" : ""}>
-                                <a href="#" onClick={()=>{this.setState({currentTab: f.name})}}>
-                                    {f.name}
-                                </a>
-                            </li>
-                        ))
+                    {this.props.filters.length > 1
+                     ? <ul className="nav nav-tabs">
+                        {
+                            this.props.filters.map(f => (
+                                <li key={f.name}
+                                    className={f.name==this.state.currentTab ? "active" : ""}>
+                                    <a href="#" onClick={()=>{this.setState({currentTab: f.name})}}>
+                                        {f.name}
+                                    </a>
+                                </li>
+                            ))
+                        }
+                        </ul>
+                     : <h4 className="modal-title"> Filters </h4>
                     }
-                    </ul>
                     </Modal.Header>
 
                     <Modal.Body >
