@@ -37,11 +37,11 @@
 <script src="../dist/heatmapHighcharts.bundle.js"></script>
 
 <script>
-    // https://localhost:8443/gxa/json/baseline_experiments?species=homo+sapiens&geneQuery=[{"value":"zinc+finger"}]
+    // http://www-test.ebi.ac.uk/gxa/json/baseline_experiments?species=homo+sapiens&geneQuery=[{"value":"zinc+finger"}]
     heatmapHighcharts.render(
         {
             target: 'highchartsContainer',
-            atlasUrl: 'https://localhost:8443/gxa/',
+            atlasUrl: 'http://www-test.ebi.ac.uk/gxa/',
             query: {
                 species: 'homo sapiens',
                 gene: [{value: 'zinc finger'}, {value: 'zinc'}],
