@@ -15,13 +15,11 @@ class FiltersModal extends React.Component {
 
         this.state = {
             currentTab: this.props.filters[0].name,
-            selectedFilters: this._filtersSelectionBeforeModalOpen(),
             showModal: false
         }
 
         this.open = this._open.bind(this)
         this.close = this._close.bind(this)
-        this.apply = this._apply.bind(this)
         this.onSelectFilterValue = this._onSelectFilterValue.bind(this)
     }
 
@@ -43,38 +41,27 @@ class FiltersModal extends React.Component {
         })
     }
 
-    _apply() {
-        // this.props.propagateChosenFilterSelection(this.state.filtersSelection)
-        this.props.onSelectFilters(this.state.selectedFilters)
-        this.setState({ showModal: false })
-    }
-
     _open() {
         this.setState({
-            showModal: true,
-            selectedFilters: this._filtersSelectionBeforeModalOpen()
-        })
+            showModal: true
+        });
     }
 
     _onSelectFilterValue(filterName, newFilterValues) {
-        this.setState(previousState =>
+        this.props.onSelectFilters(this.props.selectedFilters.map(previousSelectedFilter =>
             ({
-                selectedFilters: previousState.selectedFilters.map(previousSelectedFilter =>
-                    ({
-                        name: previousSelectedFilter.name,
-                        valueNames: previousSelectedFilter.name === filterName ?
-                            newFilterValues :
-                            previousSelectedFilter.valueNames.map(valueName => valueName)
-                    })
-                )
+                name: previousSelectedFilter.name,
+                valueNames: previousSelectedFilter.name === filterName ?
+                    newFilterValues :
+                    previousSelectedFilter.valueNames.map(valueName => valueName)
             })
-        )
+        ))
     }
 
     _renderFlatFilter(filter) {
         return (
             <FlatFilter key={filter.name}
-                        selected={this.state.selectedFilters.find(selectedFilter => selectedFilter.name === filter.name).valueNames}
+                        selected={this.props.selectedFilters.find(selectedFilter => selectedFilter.name === filter.name).valueNames}
                         onSelectFilterValue={this.onSelectFilterValue}
                         {...filter}
             />
@@ -84,7 +71,7 @@ class FiltersModal extends React.Component {
     _renderGroupingFilter(filter) {
         return (
             <GroupingFilter key={filter.name}
-                            selected={this.state.selectedFilters.find(selectedFilter => selectedFilter.name === filter.name).valueNames}
+                            selected={this.props.selectedFilters.find(selectedFilter => selectedFilter.name === filter.name).valueNames}
                             onSelectFilterValue={this.onSelectFilterValue}
                             {...filter}
             />
@@ -126,11 +113,6 @@ class FiltersModal extends React.Component {
                     </Modal.Body>
 
                     <Modal.Footer>
-                        <Button bsStyle="primary" onClick={this.apply}
-                                style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
-                            Apply
-                        </Button>
-
                         <Button onClick={this.close}
                                 style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
                             Close
