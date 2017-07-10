@@ -238,8 +238,8 @@ class HeatmapCanvas extends React.Component {
           Highcharts.fireEvent(chart, eventName, {svgPathId: id})
         })
       }
-      forEachXNotInYsEmit(nextProps.ontologyIdsToHighlight, this.props.ontologyIdsToHighlight,'handleGxaAnatomogramTissueMouseEnter')
       forEachXNotInYsEmit(this.props.ontologyIdsToHighlight, nextProps.ontologyIdsToHighlight,'handleGxaAnatomogramTissueMouseLeave')
+      forEachXNotInYsEmit(nextProps.ontologyIdsToHighlight, this.props.ontologyIdsToHighlight,'handleGxaAnatomogramTissueMouseEnter')
     }
 }
 
