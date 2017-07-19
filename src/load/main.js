@@ -6,8 +6,13 @@ import getBoxplotData from './boxplotData.js'
 import createOrderingsForData from './heatmapOrderings.js'
 import getColourAxisFromDataSeries from './heatmapColourAxis.js'
 import getColumnGroupingFilters from './heatmapFilters.js'
+import URI from 'urijs'
 
-export default function(data, inProxy, outProxy, atlasUrl, pathToResources, isWidget) {
+
+//({data, inProxy, outProxy, atlasUrl, showAnatomogram, isWidget})
+export default function({data, inProxy, outProxy, atlasUrl, showAnatomogram, isWidget}) {
+    const pathToResources = inProxy + URI(`resources/js-bundles/`, atlasUrl).toString()
+
 
     // This ensures that adding or removing coexpressed genes doesn’t change the colours in the heat map. Colours are
     // computed upfront and then we just add/remove rows with the coexpression slider.
@@ -21,7 +26,18 @@ export default function(data, inProxy, outProxy, atlasUrl, pathToResources, isWi
             allRows, data.config.geneQuery, data.columnHeaders, data.columnGroupings, data.experiment,
             inProxy, atlasUrl, pathToResources)
 
+    //misses: idsExpressedInExperiment
+    //show is extra
+    const anatomogramConfig = {
+        show: showAnatomogram,
+        anatomogramData: data.anatomogram,
+        pathToResources: inProxy + URI(`resources/js-bundles/`, atlasUrl).toString(),
+        expressedTissueColour: data.experiment ? `gray` : `red`,
+        hoveredTissueColour: data.experiment ? `red` : `purple`,
+    }
+
     return {
+        anatomogramConfig,
         heatmapData,
         boxplotData: getBoxplotData(data),
         heatmapConfig: getChartConfiguration(data, inProxy, outProxy, atlasUrl, isWidget),

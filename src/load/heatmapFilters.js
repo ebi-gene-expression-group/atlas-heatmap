@@ -40,6 +40,7 @@ filters: [{
 }]
 */
 
+//old
 const getExpressionLevelFilters = (experiment, dataSeries) => {
     return (
         {
@@ -54,6 +55,7 @@ const getExpressionLevelFilters = (experiment, dataSeries) => {
     )
 }
 
+//old, new function goes here
 const getColumnGroupingFilters = xAxisCategories => {
     const groupingTriplets = _.flattenDeep(xAxisCategories.reduce((acc, columnHeader) => {
             const _groupingTriplets = columnHeader.info.groupings.map(grouping =>

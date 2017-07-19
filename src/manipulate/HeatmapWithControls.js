@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import Anatomogram from 'anatomogram'
+
 import GenomeBrowsersDropdown from './controls/GenomeBrowsersDropdown.js'
 import OrderingsDropdown from './controls/OrderingsDropdown.js'
 import FiltersModal from './controls/filter/FiltersModal.js'
@@ -20,8 +22,7 @@ import {manipulate} from './Manipulators.js'
 
 import {spread, intersection} from 'lodash';
 
-import {heatmapDataPropTypes, heatmapConfigPropTypes, orderingsPropTypesValidator, filterPropTypes, colourAxisPropTypes}
-from '../manipulate/chartDataPropTypes.js'
+import {heatmapDataPropTypes, heatmapConfigPropTypes, orderingsPropTypesValidator, filterPropTypes, colourAxisPropTypes} from '../manipulate/chartDataPropTypes.js'
 
 class HeatmapWithControls extends React.Component {
     constructor(props) {
@@ -273,4 +274,21 @@ HeatmapWithControls.propTypes = {
     onOntologyIdIsUnderFocus: PropTypes.func.isRequired,
 }
 
-export default HeatmapWithControls
+class HeatmapWithControlsAndAnatomogram extends React.Component {
+    constructor(props) {
+        super(props)
+    }
+
+    render(){
+        const Component = this.props.anatomogramConfig.show
+        ? Anatomogram.wrapComponent( // not like that, not here! Needs to be lower!
+            Object.assign({}, this.props.anatomogramConfig, {idsExpressedInExperiment:[]}),
+            HeatmapWithControls, this.props
+        ) : HeatmapWithControls
+        return (
+            <Component {...this.props} />
+        )
+    }
+}
+
+export default HeatmapWithControlsAndAnatomogram
