@@ -43,6 +43,7 @@ class ChartContainer extends React.Component {
     }
 
     render() {
+
         return (
             <div>
               {this.props.chartData.boxplotData &&
@@ -52,8 +53,6 @@ class ChartContainer extends React.Component {
               }
               <div className={this.state.chartType === 'heatmap' ? '' : 'hidden' } >
                 <Heatmap
-                  ontologyIdsToHighlight={this.props.ontologyIdsToHighlight}
-                  onOntologyIdIsUnderFocus={this.props.onOntologyIdIsUnderFocus}
                   {...this.props.chartData}
                   {...heatmapDefaults(this.props.chartData)}/>
               </div>
