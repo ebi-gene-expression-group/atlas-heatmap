@@ -1,5 +1,45 @@
 import _ from 'lodash'
 
+/*
+- what I have by column:
+- [{
+    expression: ["Low", "Medium"],
+    groups: {
+        "Anatomical systems": ["nervous system"],
+        "Organs": ["brain"]
+    }
+}
+}]
+
+To display I need:
+- List of groups
+- List of categories
+- List of groupings per group
+- Each grouping in a group also has a category ()
+*/
+
+/*
+allValues: ["neocortex", "cerebellum", "liver"]
+filters: [{
+    name: "Anatomical systems",
+    memberName: "Anatomical system", //I do not remember what this is for :)
+    categories: [
+        {"name": "All"},
+        {"name": "High", disabled: true},
+        {"name": "Medium"},
+        {"name": "Low"},
+        {"name": "Below cutoff"}
+    ],
+    groupings: [
+        {
+        "name": "Brain",
+        "categories": ["All", "High"],
+        "values": ["neocortex", "cerebellum"]
+    }
+    ]
+}]
+*/
+
 const getExpressionLevelFilters = (experiment, dataSeries) => {
     return (
         {
@@ -73,4 +113,4 @@ const getColumnGroupingFilters = xAxisCategories => {
     )
 }
 
-export {getExpressionLevelFilters, getColumnGroupingFilters}
+export default getColumnGroupingFilters

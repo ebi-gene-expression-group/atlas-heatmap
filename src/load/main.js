@@ -5,7 +5,7 @@ import getBoxplotData from './boxplotData.js'
 
 import createOrderingsForData from './heatmapOrderings.js'
 import getColourAxisFromDataSeries from './heatmapColourAxis.js'
-import {getExpressionLevelFilters, getColumnGroupingFilters} from './heatmapFilters.js'
+import getColumnGroupingFilters from './heatmapFilters.js'
 
 export default function(data, inProxy, outProxy, atlasUrl, pathToResources, isWidget) {
 
@@ -27,7 +27,6 @@ export default function(data, inProxy, outProxy, atlasUrl, pathToResources, isWi
         heatmapConfig: getChartConfiguration(data, inProxy, outProxy, atlasUrl, isWidget),
         colourAxis : getColourAxisFromDataSeries(data.experiment, heatmapData.dataSeries),
         orderings: createOrderingsForData(data.experiment, allRows, data.columnHeaders),
-        expressionLevelFilters: getExpressionLevelFilters(data.experiment, heatmapData.dataSeries),
         groupingFilters: getColumnGroupingFilters(heatmapData.xAxisCategories)
     }
 

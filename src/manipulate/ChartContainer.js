@@ -9,21 +9,15 @@ import {chartDataPropTypes} from './chartDataPropTypes.js'
 const Heatmap = uncontrollable(HeatmapWithControls, {
   selectedGenomeBrowser: `onSelectGenomeBrowser`,
   selectedOrderingName: `onSelectOrdering`,
-  selectedFilters: `onSelectFilters`,
+  selectedColumnLabels: `onSelectColumnLabels`,
   coexpressionsShown: `onCoexpressionOptionChange`,
   zoom: `onZoom`
 })
 //starting values on component creation, managed by uncontrollable later
-const heatmapDefaults = ({orderings, expressionLevelFilters, groupingFilters, heatmapConfig}) => ({
+const heatmapDefaults = ({heatmapData:{xAxisCategories}, orderings, groupingFilters, heatmapConfig}) => ({
   defaultSelectedGenomeBrowser: `none`,
   defaultSelectedOrderingName: orderings.default.name,
-  defaultSelectedFilters:
-    [expressionLevelFilters, ...groupingFilters].map(filter =>
-    ({
-        name: filter.name,
-        valueNames: filter.values.filter(fv => !fv.disabled).map(fv => fv.name) // Deep copy from props
-    })
-  ),
+  defaultSelectedColumnLabels: xAxisCategories.map((columnHeader)=> columnHeader.label),
   defaultCoexpressionsShown: 0,
   defaultZoom: false
 })

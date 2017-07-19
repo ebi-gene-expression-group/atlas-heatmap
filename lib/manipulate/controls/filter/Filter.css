@@ -24,3 +24,7 @@
   -moz-column-width: 180px;
   column-width: 180px;
 }
+
+.sr-only {
+    display: none;
+}

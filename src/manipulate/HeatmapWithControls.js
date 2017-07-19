@@ -29,7 +29,7 @@ class HeatmapWithControls extends React.Component {
     }
 
     _getSelectedExpressionLevelFilters() {
-        return this.props.selectedFilters
+        return [] || this.props.selectedFilters
             .find(selectedFilter => selectedFilter.name === this.props.expressionLevelFilters.name)
             .valueNames
     }
@@ -48,14 +48,12 @@ class HeatmapWithControls extends React.Component {
                 //this.state.selectedHeatmapFilters
                 //.find(selectedFilter => selectedFilter.name === this.props.chartData.expressionLevelFilters.name)
                 //.valueNames
-                keepSeries: series => this.props.selectedFilters[0].valueNames.includes(series.info.name),
+                keepSeries: series => true,//this.props.selectedFilters[0].valueNames.includes(series.info.name),
                 keepRow: this.props.heatmapConfig.coexpressionsAvailable ?
                     rowHeader => this._rowHeadersThatCoexpressionSliderSaysWeCanInclude().includes(rowHeader.label) :
                     () => true,
-                keepColumn: this.props.groupingFilters.length > 0 ?
-                    columnHeader =>
-                        this._columnHeadersThatColumnGroupingFiltersSayWeCanInclude().includes(columnHeader.label) :
-                    () => true,
+                keepColumn:
+                    columnHeader => this.props.selectedColumnLabels.includes(columnHeader.label),
                 ordering: this._getSelectedOrdering(),
                 allowEmptyColumns: Boolean(this.props.heatmapConfig.experiment)
             },
@@ -190,7 +188,7 @@ class HeatmapWithControls extends React.Component {
                     <div style={{float: `right`, padding: `0.5rem 0`}}>
                         {this._renderGenomeBrowserSelect()}
                         {this._renderOrderings(heatmapDataToPresent)}
-                        {this._renderFilters()}
+                        {false && this._renderFilters()}
                         {this._renderDownloadButton(heatmapDataToPresent)}
                     </div>
                     <p style={{clear: `both`, float: `right`, fontSize: `small`, margin: `0`,
@@ -244,13 +242,8 @@ HeatmapWithControls.propTypes = {
     selectedOrderingName: PropTypes.string.isRequired,
     onSelectOrdering: PropTypes.func.isRequired,
 
-    expressionLevelFilters: filterPropTypes.isRequired,
-    groupingFilters: PropTypes.arrayOf(filterPropTypes).isRequired,
-    selectedFilters: PropTypes.arrayOf(PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        valueNames: PropTypes.arrayOf(PropTypes.string).isRequired
-    })).isRequired,
-    onSelectFilters: PropTypes.func.isRequired,
+    selectedColumnLabels: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
+    onSelectColumnLabels: PropTypes.func.isRequired,
 
     selectedGenomeBrowser: PropTypes.string,
     onSelectGenomeBrowser: PropTypes.func,
