@@ -11,7 +11,7 @@ import DataPropTypes from './jsonPayloadPropTypes.js'
 import loadChartData from '../load/main.js'
 
 const Container = (props) => {
-    const {data, inProxy, outProxy, atlasUrl, showAnatomogram,isWidget} = props
+    const {data, outProxy, atlasUrl, isWidget} = props
     const {geneQuery, conditionQuery, species} = data.config
 
     const moreInformationUrl = data.experiment ?    // single experiment?

@@ -69,8 +69,7 @@ class ChartContainer extends React.Component {
 
 ChartContainer.propTypes = {
     chartData: chartDataPropTypes.isRequired,
-    ontologyIdsToHighlight: PropTypes.arrayOf(PropTypes.string).isRequired,
-    onOntologyIdIsUnderFocus: PropTypes.func.isRequired
+    // ontologyIdsToHighlight: PropTypes.arrayOf(PropTypes.string).isRequired
 }
 
 export default ChartContainer

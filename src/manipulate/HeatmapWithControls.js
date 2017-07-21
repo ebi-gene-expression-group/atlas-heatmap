@@ -118,88 +118,88 @@ const HeatmapWithControls = ({
     const {yAxisStyle, yAxisFormatter, xAxisStyle, xAxisFormatter} = axesFormatters(heatmapConfig)
 
     const heatmapProps = {
-    	heatmapData: heatmapData,
-    	colourAxis: colourAxis,
-    	cellTooltipFormatter: cellTooltipFormatter(heatmapConfig),
-    	yAxisStyle: yAxisStyle,
-    	yAxisFormatter: yAxisFormatter,
-    	xAxisStyle: xAxisStyle,
-    	xAxisFormatter: xAxisFormatter,
-    	onZoom: onZoom,
-    	ontologyIdsToHighlight: ontologyIdsToHighlight,
-    	events: makeEventCallbacks({
-    	  heatmapData: heatmapData,
-    	  onSelectOntologyIds: onOntologyIdIsUnderFocus,
-    	  genomeBrowser: selectedGenomeBrowser,
-    	  experimentAccession: heatmapConfig.experiment && heatmapConfig.experiment.accession,
-    	  accessKey: heatmapConfig.experiment && heatmapConfig.experiment.accessKey,
-    	  atlasUrl: heatmapConfig.atlasUrl
-    	})
+      heatmapData: heatmapData,
+      colourAxis: colourAxis,
+      cellTooltipFormatter: cellTooltipFormatter(heatmapConfig),
+      yAxisStyle: yAxisStyle,
+      yAxisFormatter: yAxisFormatter,
+      xAxisStyle: xAxisStyle,
+      xAxisFormatter: xAxisFormatter,
+      onZoom: onZoom,
+      ontologyIdsToHighlight: ontologyIdsToHighlight,
+      events: makeEventCallbacks({
+        heatmapData: heatmapData,
+        onSelectOntologyIds: onOntologyIdIsUnderFocus,
+        genomeBrowser: selectedGenomeBrowser,
+        experimentAccession: heatmapConfig.experiment && heatmapConfig.experiment.accession,
+        accessKey: heatmapConfig.experiment && heatmapConfig.experiment.accessKey,
+        atlasUrl: heatmapConfig.atlasUrl
+      })
     }
 
     return (
-    	<div>
-    		<div>
-    			<div style={{float: `left`, lineHeight: `2.5rem`, padding: `0.5rem 0`}}>
-    				{heatmapConfig.introductoryMessage}
-    			</div>
-    			<div style={{float: `right`, padding: `0.5rem 0`}}>
-    				{renderGenomeBrowserSelect({
+      <div>
+        <div>
+          <div style={{float: `left`, lineHeight: `2.5rem`, padding: `0.5rem 0`}}>
+            {heatmapConfig.introductoryMessage}
+          </div>
+          <div style={{float: `right`, padding: `0.5rem 0`}}>
+            {renderGenomeBrowserSelect({
                         heatmapConfig,
                         selectedGenomeBrowser,
                         onSelectGenomeBrowser})}
-    				{renderOrderings({
+            {renderOrderings({
                         heatmapData,
                         heatmapConfig,
                         orderings,
                         selectedOrderingName,
                         onSelectOrdering,
                         zoom})}
-    				{false && this._renderFilters()}
-    				{renderDownloadButton({
+            {false && this._renderFilters()}
+            {renderDownloadButton({
                         heatmapData,
                         heatmapConfig,
                         selectedOrderingName,
                         coexpressionsShown})}
-    			</div>
-    			<p style={{clear: `both`, float: `right`, fontSize: `small`, margin: `0`,
-    					   visibility: selectedGenomeBrowser === `none` ? `hidden` : ` visible`}}>
-    			  Click on a cell to open the selected genome browser with attached tracks if available
-    			</p>
-    		</div>
-    		<div style={{clear: `both`}}>
-    		{heatmapProps.heatmapData.yAxisCategories < 1 ?
-    			<div style={{padding: `50px 0`}}>
-    			  No data match your filtering criteria or your original query. Please, change your query or your filters and try again.
-    			</div>
-    			:
-    			heatmapConfig.isMultiExperiment ?
-    				<div>
-    					<HeatmapCanvas {...heatmapProps}/>
-    					<MultiExperimentLegend
-    					  dataSeries={heatmapData.dataSeries}
-    					  selectedExpressionLevelFilters={[]}
-    					/>
-    				</div> :
-    				<div>
-    					<SingleExperimentLegend
-    					  heatmapConfig={heatmapConfig}
-    					  colourAxis={colourAxis}
-    					/>
-    					<HeatmapCanvas {...heatmapProps}/>
-    				</div>
-    		}
+          </div>
+          <p style={{clear: `both`, float: `right`, fontSize: `small`, margin: `0`,
+                 visibility: selectedGenomeBrowser === `none` ? `hidden` : ` visible`}}>
+            Click on a cell to open the selected genome browser with attached tracks if available
+          </p>
+        </div>
+        <div style={{clear: `both`}}>
+        {heatmapProps.heatmapData.yAxisCategories < 1 ?
+          <div style={{padding: `50px 0`}}>
+            No data match your filtering criteria or your original query. Please, change your query or your filters and try again.
+          </div>
+          :
+          heatmapConfig.isMultiExperiment ?
+            <div>
+              <HeatmapCanvas {...heatmapProps}/>
+              <MultiExperimentLegend
+                dataSeries={heatmapData.dataSeries}
+                selectedExpressionLevelFilters={[]}
+              />
+            </div> :
+            <div>
+              <SingleExperimentLegend
+                heatmapConfig={heatmapConfig}
+                colourAxis={colourAxis}
+              />
+              <HeatmapCanvas {...heatmapProps}/>
+            </div>
+        }
 
-    		{heatmapConfig.coexpressionsAvailable && !heatmapConfig.isWidget ?
-    			<CoexpressionOption geneName={heatmapData.yAxisCategories[0].label}
-    								numCoexpressionsVisible={coexpressionsShown}
-    								numCoexpressionsAvailable={heatmapData.yAxisCategories.length - 1}
-    								showCoexpressionsCallback={e => onCoexpressionOptionChange(e)}
-    			/> :
-    			null
-    		}
-    		</div>
-    	</div>
+        {heatmapConfig.coexpressionsAvailable && !heatmapConfig.isWidget ?
+          <CoexpressionOption geneName={heatmapData.yAxisCategories[0].label}
+                    numCoexpressionsVisible={coexpressionsShown}
+                    numCoexpressionsAvailable={heatmapData.yAxisCategories.length - 1}
+                    showCoexpressionsCallback={e => onCoexpressionOptionChange(e)}
+          /> :
+          null
+        }
+        </div>
+      </div>
     )
 }
 
@@ -274,32 +274,68 @@ const heatmapDataToPresent = ({
 )
 
 class HeatmapWithControlsAndAnatomogram extends React.Component {
-    constructor(props) {
-        super(props)
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      highlightIds: []
     }
 
-    render(){
+    this._onOntologyIdIsUnderFocus = this._onOntologyIdIsUnderFocus.bind(this)
+  }
 
-        const heatmapData = heatmapDataToPresent(this.props)
+  _onOntologyIdIsUnderFocus(id) {
+    this.setState({
+      highlightIds: id
+    })
+  }
 
-        const props = Object.assign({}, this.props, {heatmapData})
+  render() {
+    const heatmapData = heatmapDataToPresent(this.props)
 
-        const Component =
-        this.props.anatomogramConfig.show
-            ? Anatomogram.wrapComponent(
-                Object.assign({}, this.props.anatomogramConfig,
-                { idsExpressedInExperiment:
-                    heatmapData
-                    .xAxisCategories
-                    .map(e => e.id)
-                    .filter((e, ix, self) => self.indexOf(e) == ix)
-                }),
-                HeatmapWithControls, props
-            ) : HeatmapWithControls
-        return (
-            <Component {...props} />
-        )
-    }
+    const props = Object.assign({}, this.props, {heatmapData})
+
+    // const Component =
+    // this.props.anatomogramConfig.show
+    //     ? Anatomogram.wrapComponent(
+    //         Object.assign({}, this.props.anatomogramConfig,
+    //         { idsExpressedInExperiment:
+    //             heatmapData
+    //             .xAxisCategories
+    //             .map(e => e.id)
+    //             .filter((e, ix, self) => self.indexOf(e) == ix)
+    //         }),
+    //         HeatmapWithControls, props
+    //     ) : HeatmapWithControls
+    return (
+      <div className="row">
+        {this.props.anatomogramConfig.show &&
+        <div className="small-3 columns">
+          <Anatomogram species={props.anatomogramConfig.anatomogramData.species}
+
+                       showIds={props.anatomogramConfig.anatomogramData.allSvgPathIds}
+                       highlightIds={this.state.highlightIds}
+                       selectIds={[]}
+
+                       showOpacity={0.3}
+            // showColour=""
+            // highlightColour=""
+            // selectColour=""
+            //
+            // onMouseOver=""
+            // onMouseOut=""
+            // onClick=""
+          />
+        </div>}
+
+        <div className={this.props.anatomogramConfig.show ? `small-9 columns` : `small-12 columns`}>
+          <HeatmapWithControls {...props}
+                               onOntologyIdIsUnderFocus={this._onOntologyIdIsUnderFocus} />
+        </div>
+
+      </div>
+    )
+  }
 }
 
 export default HeatmapWithControlsAndAnatomogram
