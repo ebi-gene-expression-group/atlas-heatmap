@@ -1,6 +1,7 @@
 var webpack = require('webpack');
 var path = require('path');
 var CleanWebpackPlugin = require('clean-webpack-plugin');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 process.traceDeprecation = true;
 
@@ -23,7 +24,7 @@ module.exports = {
         library: '[name]',
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].bundle.js',
-        publicPath: '/dist/'
+        publicPath: '/html/'
     },
 
     plugins: [
@@ -33,6 +34,11 @@ module.exports = {
             filename: 'vendorCommons.bundle.js',
             minChunks: Infinity     // Explicit definition-based split, see dependencies entry
         }),
+        new CopyWebpackPlugin([
+          { from: './node_modules/anatomogram/lib/svg', to: './svg' },
+          { from: './node_modules/anatomogram/lib/img', to: './img' },
+          { from: './node_modules/anatomogram/lib/json', to: './json' }
+        ]),
         new webpack.HotModuleReplacementPlugin(),
         // enable HMR globally, necessary along with devServer.hot: true (see below) for HMR to work as expected 🤔
         new webpack.NamedModulesPlugin()
@@ -126,7 +132,7 @@ module.exports = {
                 test: /\.js$/,
                 // Place after node_modules packages owned by Expression Atlas to be transpiled, as they aren’t
                 // distributed pre-bundled or with a dist kind of folder
-                exclude: /node_modules\/(?!(expression-atlas|anatomogram|react-ebi-species))/,
+                exclude: /node_modules\/(?!(expression-atlas))/,
                 use: [
                     {
                         loader: 'babel-loader',
