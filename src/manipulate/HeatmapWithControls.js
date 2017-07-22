@@ -5,7 +5,6 @@ import Anatomogram from 'anatomogram'
 
 import GenomeBrowsersDropdown from './controls/GenomeBrowsersDropdown.js'
 import OrderingsDropdown from './controls/OrderingsDropdown.js'
-import FiltersModal from './controls/filter/FiltersModal.js'
 import DownloadButton from './controls/download-button/DownloadButton.js'
 
 import HeatmapCanvas from '../show/HeatmapCanvas.js'
@@ -19,8 +18,6 @@ import CoexpressionOption from './coexpression/CoexpressionOption.js'
 import makeEventCallbacks from './Events.js'
 
 import {manipulate} from './Manipulators.js'
-
-import {spread, intersection} from 'lodash';
 
 import {heatmapDataPropTypes, heatmapConfigPropTypes, orderingsPropTypesValidator, filterPropTypes, colourAxisPropTypes} from '../manipulate/chartDataPropTypes.js'
 
@@ -163,7 +160,7 @@ const HeatmapWithControls = ({
                         coexpressionsShown})}
           </div>
           <p style={{clear: `both`, float: `right`, fontSize: `small`, margin: `0`,
-                 visibility: selectedGenomeBrowser === `none` ? `hidden` : ` visible`}}>
+                     visibility: selectedGenomeBrowser === `none` ? `hidden` : ` visible`}}>
             Click on a cell to open the selected genome browser with attached tracks if available
           </p>
         </div>
@@ -278,10 +275,13 @@ class HeatmapWithControlsAndAnatomogram extends React.Component {
     super(props)
 
     this.state = {
-      highlightIds: []
+      highlightIds: [],
+      highlightColumns: []
     }
 
     this._onOntologyIdIsUnderFocus = this._onOntologyIdIsUnderFocus.bind(this)
+    this._onTissueIdIsUnderFocus = this._onTissueIdIsUnderFocus.bind(this)
+    this._onTissueIdIsNotUnderFocus = this._onTissueIdIsNotUnderFocus.bind(this)
   }
 
   _onOntologyIdIsUnderFocus(id) {
@@ -290,47 +290,40 @@ class HeatmapWithControlsAndAnatomogram extends React.Component {
     })
   }
 
+  _onTissueIdIsUnderFocus(id) {
+    this.setState({
+      highlightColumns: [id]
+    })
+  }
+
+  _onTissueIdIsNotUnderFocus() {
+    this.setState({
+      highlightColumns: []
+    })
+  }
+
   render() {
     const heatmapData = heatmapDataToPresent(this.props)
 
     const props = Object.assign({}, this.props, {heatmapData})
 
-    // const Component =
-    // this.props.anatomogramConfig.show
-    //     ? Anatomogram.wrapComponent(
-    //         Object.assign({}, this.props.anatomogramConfig,
-    //         { idsExpressedInExperiment:
-    //             heatmapData
-    //             .xAxisCategories
-    //             .map(e => e.id)
-    //             .filter((e, ix, self) => self.indexOf(e) == ix)
-    //         }),
-    //         HeatmapWithControls, props
-    //     ) : HeatmapWithControls
     return (
       <div className="row">
         {this.props.anatomogramConfig.show &&
         <div className="small-3 columns">
           <Anatomogram species={props.anatomogramConfig.anatomogramData.species}
-
                        showIds={props.anatomogramConfig.anatomogramData.allSvgPathIds}
                        highlightIds={this.state.highlightIds}
                        selectIds={[]}
-
-                       showOpacity={0.3}
-            // showColour=""
-            // highlightColour=""
-            // selectColour=""
-            //
-            // onMouseOver=""
-            // onMouseOut=""
-            // onClick=""
+                       onMouseOver={this._onTissueIdIsUnderFocus}
+                       onMouseOut={this._onTissueIdIsNotUnderFocus}
           />
         </div>}
 
         <div className={this.props.anatomogramConfig.show ? `small-9 columns` : `small-12 columns`}>
           <HeatmapWithControls {...props}
-                               onOntologyIdIsUnderFocus={this._onOntologyIdIsUnderFocus} />
+                               onOntologyIdIsUnderFocus={this._onOntologyIdIsUnderFocus}
+                               ontologyIdsToHighlight={this.state.highlightColumns} />
         </div>
 
       </div>

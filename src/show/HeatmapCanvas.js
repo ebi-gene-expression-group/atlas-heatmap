@@ -82,21 +82,20 @@ class HeatmapCanvas extends React.Component {
                 plotBorderWidth: 1,
                 events: {
                    handleGxaAnatomogramTissueMouseEnter: function (e) {
-                       Highcharts.each(this.series, function (series) {
-                           Highcharts.each(series.points, function (point) {
-                               if (point.series.xAxis.categories[point.x].id === e.svgPathId) {
-                                   point.select(true, true)
-                               }
-                           })
+                     const selectedPoints = this.getSelectedPoints()
+                     if (selectedPoints.length > 0) {
+                       Highcharts.each(selectedPoints, function (point) {
+                         point.select(false)
                        })
-                   },
-                   handleGxaAnatomogramTissueMouseLeave: function (e) {
-                       const points = this.getSelectedPoints()
-                       if (points.length > 0) {
-                           Highcharts.each(points, function (point) {
-                               point.select(false)
-                           })
-                       }
+                     }
+
+                     Highcharts.each(this.series, function (series) {
+                       Highcharts.each(series.points, function (point) {
+                         if (e.svgPathIds.includes(point.series.xAxis.categories[point.x].id)) {
+                           point.select(true, true)
+                         }
+                       })
+                     })
                    }
                 },
                 zoomType: `x`
@@ -112,7 +111,7 @@ class HeatmapCanvas extends React.Component {
                     point: {
                         events: {
                             click: events.onClick ? function() { events.onClick(this.x, this.y) } : function() {},
-                            mouseOver: function() { events.onHoverColumn(this.x) },
+                            mouseOver: function() { events.onHoverPoint(this.x) },
                             mouseOut: function() { events.onHoverOff() }
                         }
                     },
@@ -149,7 +148,7 @@ class HeatmapCanvas extends React.Component {
                     // Events in labels enabled by 'highcharts-custom-events'
                     events: {
                         mouseover: function() {
-                          events.onHoverColumn(this.value)
+                          events.onHoverColumnLabel(this.value)
                         },
                         mouseout: function() {
                           events.onHoverOff()
@@ -180,7 +179,7 @@ class HeatmapCanvas extends React.Component {
                     style: this.props.yAxisStyle,
                     events: {
                         mouseover: function() {
-                          events.onHoverRow(this.value)
+                          events.onHoverRowLabel(this.value)
                         },
                         mouseout: function() {
                           events.onHoverOff()
@@ -230,18 +229,9 @@ class HeatmapCanvas extends React.Component {
         )
     }
 
-    componentWillReceiveProps(nextProps){
+    componentWillReceiveProps(nextProps) {
       const chart = this.highchartsRef.getChart()
-      // const forEachXNotInYsEmit = (xs, ys, eventName) => {
-      //   xs
-      //   .filter((id) => (ys.indexOf(id)===-1))
-      //   .filter((id,ix,self) => (ix===self.indexOf(id)))
-      //   .forEach((id) => {
-      //     Highcharts.fireEvent(chart, eventName, {svgPathId: id})
-      //   })
-      // }
-      // forEachXNotInYsEmit(this.props.ontologyIdsToHighlight, nextProps.ontologyIdsToHighlight,'handleGxaAnatomogramTissueMouseLeave')
-      // forEachXNotInYsEmit(nextProps.ontologyIdsToHighlight, this.props.ontologyIdsToHighlight,'handleGxaAnatomogramTissueMouseEnter')
+      Highcharts.fireEvent(chart, `handleGxaAnatomogramTissueMouseEnter`, {svgPathIds: nextProps.ontologyIdsToHighlight})
     }
 }
 
@@ -253,9 +243,11 @@ HeatmapCanvas.propTypes = {
     xAxisStyle: PropTypes.object.isRequired,
     yAxisFormatter: PropTypes.func.isRequired,
     yAxisStyle: PropTypes.object.isRequired,
+    ontologyIdsToHighlight: PropTypes.arrayOf(PropTypes.string).isRequired,
     events: PropTypes.shape({
-      onHoverRow: PropTypes.func.isRequired,
-      onHoverColumn: PropTypes.func.isRequired,
+      onHoverRowLabel: PropTypes.func.isRequired,
+      onHoverColumnLabel: PropTypes.func.isRequired,
+      onHoverPoint: PropTypes.func.isRequired,
       onHoverOff: PropTypes.func.isRequired,
       onClick: PropTypes.func
     }),

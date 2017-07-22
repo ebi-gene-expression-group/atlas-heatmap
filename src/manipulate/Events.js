@@ -6,6 +6,8 @@ const noTags = {
   allowedAttributes:[]
 }
 
+const onlyUnique = (e, i, arr) => arr.indexOf(e) === i
+
 const _ontologyIdsForColumnIndex = (heatmapData, x) => [heatmapData.xAxisCategories[x].id]
 
 const _ontologyIdsForColumnLabel = (heatmapData, lbl) => [heatmapData.xAxisCategories.find((cat) => cat.label === lbl).id]
@@ -21,26 +23,23 @@ const _ontologyIdsForRowIndex = (heatmapData, y) => (
       .map(point => _ontologyIdsForColumnIndex(heatmapData, point.x))
       .map(e => Array.isArray(e) ? e : [e])
   )
-  .filter((e,ix,self) => self.indexOf(e) === ix)
+  .filter(onlyUnique)
 )
-
-const _ontologyIdsForRowLabel = (heatmapData, lbl) => {
-  const rowIndex = heatmapData.yAxisCategories.findIndex((cat) => cat.label === lbl)
-  return _ontologyIdsForRowIndex(heatmapData, rowIndex)
-}
 
 const makeEventCallbacks = ({heatmapData, onSelectOntologyIds, genomeBrowser, experimentAccession, accessKey, atlasUrl}) => {
   return {
-    onHoverRow: (y) => {
-      typeof y === `number` ?
-        onSelectOntologyIds(_ontologyIdsForRowIndex(heatmapData, y)) :
-        onSelectOntologyIds(_ontologyIdsForRowLabel(heatmapData, sanitizeHtml(y, noTags)))
+    onHoverRowLabel: (yAxisLabel) => {
+      const rowIndex = heatmapData.yAxisCategories.findIndex((cat) => cat.label === sanitizeHtml(yAxisLabel, noTags))
+      onSelectOntologyIds(_ontologyIdsForRowIndex(heatmapData, rowIndex))
     },
 
-    onHoverColumn: (x) => {
-      typeof x === `number` ?
-        onSelectOntologyIds(_ontologyIdsForColumnIndex(heatmapData, x)) :
-        onSelectOntologyIds(_ontologyIdsForColumnLabel(heatmapData, x))
+    onHoverColumnLabel: (xAxisLabel) => {
+      const columnIndex = heatmapData.xAxisCategories.findIndex((cat) => cat.label === xAxisLabel)
+      onSelectOntologyIds(_ontologyIdsForColumnIndex(heatmapData, columnIndex))
+    },
+
+    onHoverPoint: (x) => {
+      onSelectOntologyIds(_ontologyIdsForColumnIndex(heatmapData, x))
     },
 
     onHoverOff: () => {
