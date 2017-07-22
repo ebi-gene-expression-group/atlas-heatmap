@@ -6,7 +6,7 @@
   "author": "Wojciech Bażant<wbazant@ebi.ac.uk>, Elisabet Barrera <barrera@ebi.ac.uk> and Alfonso Muñoz-Pomer Fuentes <amunoz@ebi.ac.uk>",
   "license": "Apache-2.0",
   "scripts": {
-    "build": "rm -rf lib && babel src -d lib --copy-files",
+    "build": "rm -rf lib && babel src -d lib --ignore '**/*.less' --copy-files",
     "prepublish": "npm run build",
     "test": "mocha test"
   },
@@ -18,7 +18,7 @@
     "expression-atlas-number-format": "latest",
     "he": "1.1.0",
     "highcharts": "git://github.com/gxa/highcharts-dist.git",
-    "highcharts-custom-events": "2.0.10",
+    "highcharts-custom-events": "^2.0.16",
     "lodash": "4.17.4",
     "object-hash": "1.1.4",
     "prop-types": "^15.5.10",
@@ -31,6 +31,7 @@
     "react-hot-loader": "^3.0.0-beta.6",
     "react-refetch": "^1.0.0",
     "react-tooltip": "https://github.com/gxa/react-tooltip/tarball/dist",
+    "sanitize-html": "^1.14.1",
     "uncontrollable": "^4.0.3",
     "urijs": "^1.18.7"
   },
@@ -38,13 +39,12 @@
     "babel-cli": "^6.24.1",
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.5.2",
     "babel-preset-react": "^6.24.1",
     "clean-webpack-plugin": "^0.1.16",
-    "webpack": "^2.6.0",
-    "webpack-dev-server": "^2.5.0",
-    "babel-plugin-transform-object-rest-spread": "^6.23.0",
-    "babel-polyfill": "^6.23.0",
+    "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.0",
     "file-loader": "^0.11.1",
     "image-webpack-loader": "^3.3.0",
@@ -53,6 +53,8 @@
     "less-loader": "^4.0.3",
     "react-hot-loader": "^3.0.0-beta.6",
     "style-loader": "^0.16.1",
+    "webpack": "^2.6.0",
+    "webpack-dev-server": "^2.5.0",
     "whatwg-fetch": "^2.0.3"
   }
 }
