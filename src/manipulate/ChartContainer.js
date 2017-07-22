@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import uncontrollable from 'uncontrollable'
 
 import HeatmapWithControls from './HeatmapWithControls.js'
@@ -43,7 +42,6 @@ class ChartContainer extends React.Component {
     }
 
     render() {
-
         return (
             <div>
               {this.props.chartData.boxplotData &&
@@ -64,12 +62,10 @@ class ChartContainer extends React.Component {
             </div>
         )
     }
-
 }
 
 ChartContainer.propTypes = {
-    chartData: chartDataPropTypes.isRequired,
-    // ontologyIdsToHighlight: PropTypes.arrayOf(PropTypes.string).isRequired
+    chartData: chartDataPropTypes.isRequired
 }
 
 export default ChartContainer
