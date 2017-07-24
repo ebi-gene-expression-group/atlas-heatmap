@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import NumberFormat from 'expression-atlas-number-format'
-const scientificNotation = value => NumberFormat.formatScientificNotation(value,4, {fontWeight: `bold`})
+import formatScientificNotation from 'expression-atlas-number-format'
+const scientificNotation = value => formatScientificNotation(value,4, {fontWeight: `bold`})
 
 const roundTStat = (n) => (
   n ? +n.toFixed(4) : ""
