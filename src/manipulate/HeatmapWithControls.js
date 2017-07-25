@@ -6,6 +6,7 @@ import Anatomogram from 'anatomogram'
 import GenomeBrowsersDropdown from './controls/GenomeBrowsersDropdown.js'
 import OrderingsDropdown from './controls/OrderingsDropdown.js'
 import DownloadButton from './controls/download-button/DownloadButton.js'
+import FiltersButton from './controls/filter/FiltersButton.js'
 
 import HeatmapCanvas from '../show/HeatmapCanvas.js'
 
@@ -19,7 +20,7 @@ import makeEventCallbacks from './Events.js'
 
 import {manipulate} from './Manipulators.js'
 
-import {heatmapDataPropTypes, heatmapConfigPropTypes, orderingsPropTypesValidator, filterPropTypes, colourAxisPropTypes} from '../manipulate/chartDataPropTypes.js'
+import {heatmapDataPropTypes, heatmapConfigPropTypes, orderingsPropTypesValidator, filterPropTypes, colourAxisPropTypes, columnGroupsPropTypes} from '../manipulate/chartDataPropTypes.js'
 
 const renderGenomeBrowserSelect = ({
     heatmapConfig: {
@@ -88,30 +89,54 @@ const renderDownloadButton = ({
     )
 }
 
+/*
+allOptions: groupedColumns,
+allCategories: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    disabled: PropTypes.bool.isRequired
+})).isRequired,
+selectedValues: PropTypes.arrayOf(PropTypes.string).isRequired,
+onChangeSelectedValues:PropTypes.func.isRequired
+*/
 
-const HeatmapWithControls = ({
-    chartData,
-    coexpressionsShown,
-    colourAxis,
-    expressionLevelFilters,
-    groupingFilters,
-    heatmapConfig,
-    heatmapData,
-    onCoexpressionOptionChange,
-    onOntologyIdIsUnderFocus,
-    onSelectFilters,
-    onSelectGenomeBrowser,
-    onSelectOrdering,
-    onZoom,
-    ontologyIdsToHighlight,
-    orderings,
-    selectedColumnLabels,
-    selectedFilters,
-    selectedGenomeBrowser,
-    selectedOrderingName,
-    zoom}) => {
+const renderFiltersButton = ({heatmapConfig,heatmapData: {xAxisCategories}, columnGroups: {groupingNames, categories, data}, zoom}) => (
+    heatmapConfig.isMultiExperiment &&
+        <div style={{display: `inline-block`, padding: `5px`}}>
+            <FiltersButton
+                tabNames={groupingNames}
+                allCategories={categories}
+                allValues={xAxisCategories.map(e=>e.label)}
+                onChangeSelectedValues={console.log.bind(this, "[onChangeSelectedValues]")}
+                disabled={zoom}/>
+        </div>
+)
+
+
+const HeatmapWithControls = args => {
     //TODO achieve me with Object.assign on the previous props
     //const heatmapDataToPresent = this._heatmapDataToPresent()
+
+    const {
+        chartData,
+        coexpressionsShown,
+        colourAxis,
+        expressionLevelFilters,
+        groupingFilters,
+        heatmapConfig,
+        heatmapData,
+        onCoexpressionOptionChange,
+        onOntologyIdIsUnderFocus,
+        onSelectFilters,
+        onSelectGenomeBrowser,
+        onSelectOrdering,
+        onZoom,
+        ontologyIdsToHighlight,
+        orderings,
+        selectedColumnLabels,
+        selectedFilters,
+        selectedGenomeBrowser,
+        selectedOrderingName,
+        zoom} = args
     const {yAxisStyle, yAxisFormatter, xAxisStyle, xAxisFormatter} = axesFormatters(heatmapConfig)
 
     const heatmapProps = {
@@ -142,22 +167,22 @@ const HeatmapWithControls = ({
           </div>
           <div style={{float: `right`, padding: `0.5rem 0`}}>
             {renderGenomeBrowserSelect({
-                        heatmapConfig,
-                        selectedGenomeBrowser,
-                        onSelectGenomeBrowser})}
+                heatmapConfig,
+                selectedGenomeBrowser,
+                onSelectGenomeBrowser})}
             {renderOrderings({
-                        heatmapData,
-                        heatmapConfig,
-                        orderings,
-                        selectedOrderingName,
-                        onSelectOrdering,
-                        zoom})}
-            {false && this._renderFilters()}
+                heatmapData,
+                heatmapConfig,
+                orderings,
+                selectedOrderingName,
+                onSelectOrdering,
+                zoom})}
+            {renderFiltersButton(args)}
             {renderDownloadButton({
-                        heatmapData,
-                        heatmapConfig,
-                        selectedOrderingName,
-                        coexpressionsShown})}
+                heatmapData,
+                heatmapConfig,
+                selectedOrderingName,
+                coexpressionsShown})}
           </div>
           <p style={{clear: `both`, float: `right`, fontSize: `small`, margin: `0`,
                      visibility: selectedGenomeBrowser === `none` ? `hidden` : ` visible`}}>
@@ -209,6 +234,8 @@ HeatmapWithControls.propTypes = {
     selectedOrderingName: PropTypes.string.isRequired,
     onSelectOrdering: PropTypes.func.isRequired,
 
+
+    columnGroups: columnGroupsPropTypes,
     selectedColumnLabels: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
     onSelectColumnLabels: PropTypes.func.isRequired,
 

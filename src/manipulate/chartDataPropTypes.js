@@ -96,19 +96,33 @@ const dataSeriesPropTypes = PropTypes.arrayOf(PropTypes.shape({
     }).isRequired
 }))
 
+const groupingPropType = PropTypes.shape({
+    memberName: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    values: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        label: PropTypes.string.isRequired
+    })).isRequired
+})
+
+const columnGroupsPropTypes = PropTypes.shape({
+    groupingNames:PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
+    categories:PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        disabled: PropTypes.bool.isRequired
+    })).isRequired,
+    data: PropTypes.arrayOf(PropTypes.shape({
+        value: PropTypes.string.isRequired,
+        categories: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
+        groupings: PropTypes.arrayOf(groupingPropType).isRequired
+    })).isRequired
+})
+
 const heatmapDataPropTypes = PropTypes.shape({
     dataSeries: dataSeriesPropTypes.isRequired,
     xAxisCategories: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
         info: PropTypes.shape({
-            groupings: PropTypes.arrayOf(PropTypes.shape({
-                memberName: PropTypes.string.isRequired,
-                name: PropTypes.string.isRequired,
-                values: PropTypes.arrayOf(PropTypes.shape({
-                    id: PropTypes.string.isRequired,
-                    label: PropTypes.string.isRequired
-                })).isRequired,
-            })).isRequired,
             tooltip: PropTypes.oneOfType([
                 differentialTooltipPropTypes,
                 baselineTooltipPropTypes,
@@ -180,8 +194,16 @@ const chartDataPropTypes = PropTypes.shape({
     orderings: orderingsPropTypesValidator,
     heatmapData: heatmapDataPropTypes.isRequired,
     boxplotData: boxplotDataPropTypes,
-    expressionLevelFilters: filterPropTypes.isRequired,
-    groupingFilters: PropTypes.arrayOf(filterPropTypes)
+    columnGroups: PropTypes.object.isRequired
 })
 
-export {heatmapConfigPropTypes, heatmapDataPropTypes, chartDataPropTypes, orderingsPropTypesValidator, filterPropTypes, dataSeriesPropTypes, colourAxisPropTypes}
+export {
+    heatmapConfigPropTypes,
+    columnGroupsPropTypes,
+    heatmapDataPropTypes,
+    chartDataPropTypes,
+    orderingsPropTypesValidator,
+    filterPropTypes,
+    dataSeriesPropTypes,
+    colourAxisPropTypes
+}

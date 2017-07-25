@@ -54,7 +54,6 @@ const getExpressionLevelFilters = (experiment, dataSeries) => {
         }
     )
 }
-
 //old, new function goes here
 const getColumnGroupingFilters = xAxisCategories => {
     const groupingTriplets = _.flattenDeep(xAxisCategories.reduce((acc, columnHeader) => {
@@ -115,4 +114,73 @@ const getColumnGroupingFilters = xAxisCategories => {
     )
 }
 
-export default getColumnGroupingFilters
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// For each column grouping get the groups that contain a specific ID, or the group Unmapped if it has no groups
+const getGroupsThatContainId = ({columnGroupings, id}) =>
+    columnGroupings.map(grouping => {
+        const values =
+            grouping.groups
+                .filter(group => group.values.includes(id))
+                .map(group => ({
+                    label: group.name,
+                    id: group.id
+                }))
+
+        return {
+            name: grouping.name,
+            memberName: grouping.memberName,
+            values: values.length ? values : [{label: `Unmapped`, id: ``}]
+        }
+    })
+
+const CATEGORY_ALL = {
+    name: "All",
+    disabled: false
+}
+
+const columnsWithGroupings = ({xAxisCategories, dataSeries, columnGroupings}) => (
+    xAxisCategories
+    .map((e,ix) => ({
+        value: e.label,
+        categories:
+            [].concat.apply([CATEGORY_ALL],
+                dataSeries
+                .filter(ds => ds.data.some(v => v.y == ix))
+                .map(ds => ds.info.name)
+            )
+        ,
+        groupings:
+            getGroupsThatContainId({columnGroupings, id: e.id})
+    }))
+)
+
+//columnGroupsPropTypes
+const main = ({heatmapData: {xAxisCategories, dataSeries}, columnGroupings}) => ({
+    groupingNames:
+        columnGroupings.map(e=> e.name),
+    categories:
+        [].concat.apply([CATEGORY_ALL],
+            dataSeries
+            .map(ds => ({
+                name: ds.info.name,
+                disabled: !!ds.data.length
+            }))
+            .reverse()
+        ),
+    data: columnsWithGroupings({xAxisCategories, dataSeries,columnGroupings}),
+})
+
+export default main

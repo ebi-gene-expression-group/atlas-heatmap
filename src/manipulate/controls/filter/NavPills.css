@@ -1,0 +1,41 @@
+/*
+Modify me massively brother
+Put me in the global CSS after you're finished
+
+*/
+.nav-pills > li {
+  float: left;
+}
+.nav-pills > li > a {
+  border-radius: 1px;
+}
+.nav-pills > li + li {
+  margin-left: 2px;
+}
+.nav-pills > li.active > a,
+.nav-pills > li.active > a:hover,
+/*.nav-pills > li.active > a:focus {
+  color: #fff;
+  background-color: #337ab7;
+}*/
+
+.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
+    color: #555;
+    cursor: default;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-bottom-color: transparent;
+    font-weight: bolder;
+}
+
+/*BOOTSTRAP addition*/
+.nav-pills li a:hover {
+    color: #777;
+}
+.nav-pills li a {
+    color: #207a7a;
+    text-decoration: none;
+}
+.nav-pills > li.active > a {
+    outline:0;
+}

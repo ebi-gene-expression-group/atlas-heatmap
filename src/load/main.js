@@ -5,7 +5,7 @@ import getBoxplotData from './boxplotData.js'
 
 import createOrderingsForData from './heatmapOrderings.js'
 import getColourAxisFromDataSeries from './heatmapColourAxis.js'
-import getColumnGroupingFilters from './heatmapFilters.js'
+import columnsWithGroupings from './heatmapFilters.js'
 import URI from 'urijs'
 
 
@@ -22,9 +22,7 @@ export default function({data, inProxy, outProxy, atlasUrl, showAnatomogram, isW
         data.coexpressions ? data.profiles.rows.concat(data.coexpressions[0].jsonProfiles.rows) : data.profiles.rows
 
     const heatmapData =
-        getHeatmapData(
-            allRows, data.config.geneQuery, data.columnHeaders, data.columnGroupings, data.experiment,
-            inProxy, atlasUrl, pathToResources)
+        getHeatmapData(Object.assign({}, data, {allRows,geneQuery: data.config.geneQuery,inProxy,atlasUrl,pathToResources}))
 
     //misses: idsExpressedInExperiment
     //show is extra
@@ -43,7 +41,7 @@ export default function({data, inProxy, outProxy, atlasUrl, showAnatomogram, isW
         heatmapConfig: getChartConfiguration(data, inProxy, outProxy, atlasUrl, isWidget),
         colourAxis : getColourAxisFromDataSeries(data.experiment, heatmapData.dataSeries),
         orderings: createOrderingsForData(data.experiment, allRows, data.columnHeaders),
-        groupingFilters: getColumnGroupingFilters(heatmapData.xAxisCategories)
+        columnGroups: columnsWithGroupings({heatmapData, columnGroupings: data.columnGroupings})
     }
 
 }
