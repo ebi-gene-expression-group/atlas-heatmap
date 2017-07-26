@@ -254,4 +254,12 @@ HeatmapCanvas.propTypes = {
     onZoom: PropTypes.func.isRequired
 }
 
-export default HeatmapCanvas
+const Main = props => (
+    props.heatmapData.yAxisCategories.length < 1
+    ? <div style={{padding: `50px 0`}}>
+        No data match your filtering criteria or your original query. Please, change your query or your filters and try again.
+      </div>
+    : <HeatmapCanvas {...props} />
+)
+
+export default Main

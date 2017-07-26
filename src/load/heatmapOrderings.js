@@ -85,18 +85,18 @@ const createOrderings = (expressions, columnHeaders, rows, experiment) => {
     const transposed = _.zip.apply(_, expressions)
 
     if (isMultiExperiment(experiment)) {
-        return {
-            default: {
+        return [
+            {
                 name: `By experiment type`,
                 columns: createAlphabeticalOrdering(`factorValue`, columnHeaders),
                 rows: noOrdering(rows)
             },
-            alphabetical: {
+            {
                 name: `Alphabetical order`,
                 columns: createAlphabeticalOrdering(`factorValue`, columnHeaders),
                 rows: createAlphabeticalOrdering(`name`, rows)
             },
-            geneExpression: {
+            {
                 name: `Gene expression rank`,
                 columns: createOrdering(
                     combineRanks([
@@ -115,15 +115,15 @@ const createOrderings = (expressions, columnHeaders, rows, experiment) => {
                     comparatorByProperty(`name`), rows
                 )
             }
-        }
+        ]
     } else {
-        return {
-            default: {
+        return [
+            {
                 name: `Default`,
                 columns: noOrdering(columnHeaders),
                 rows: noOrdering(rows)
             }
-        }
+        ]
     }
 }
 

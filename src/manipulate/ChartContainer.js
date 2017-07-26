@@ -1,25 +1,8 @@
 import React from 'react'
-import uncontrollable from 'uncontrollable'
 
-import HeatmapWithControls from './HeatmapWithControls.js'
+import Heatmap from './HeatmapWithControls.js'
 import Boxplot from '../show/BoxplotCanvas.js'
 import {chartDataPropTypes} from './chartDataPropTypes.js'
-
-const Heatmap = uncontrollable(HeatmapWithControls, {
-  selectedGenomeBrowser: `onSelectGenomeBrowser`,
-  selectedOrderingName: `onSelectOrdering`,
-  selectedColumnLabels: `onSelectColumnLabels`,
-  coexpressionsShown: `onCoexpressionOptionChange`,
-  zoom: `onZoom`
-})
-//starting values on component creation, managed by uncontrollable later
-const heatmapDefaults = ({heatmapData:{xAxisCategories}, orderings, groupingFilters, heatmapConfig}) => ({
-  defaultSelectedGenomeBrowser: `none`,
-  defaultSelectedOrderingName: orderings.default.name,
-  defaultSelectedColumnLabels: xAxisCategories.map((columnHeader)=> columnHeader.label),
-  defaultCoexpressionsShown: 0,
-  defaultZoom: false
-})
 
 class ChartContainer extends React.Component {
     constructor(props) {
@@ -51,8 +34,7 @@ class ChartContainer extends React.Component {
               }
               <div className={this.state.chartType === 'heatmap' ? '' : 'hidden' } >
                 <Heatmap
-                  {...this.props.chartData}
-                  {...heatmapDefaults(this.props.chartData)}/>
+                  {...this.props.chartData}/>
               </div>
               { this.props.chartData.boxplotData &&
                 <div className={this.state.chartType === 'boxplot' ? '' : 'hidden' } >

@@ -7,21 +7,20 @@ import GradientHeatmapLegend from './GradientHeatmapLegend.js'
 import {heatmapConfigPropTypes, dataSeriesPropTypes, colourAxisPropTypes}
 from '../../manipulate/chartDataPropTypes.js'
 
-const DataSeriesLegend = ({dataSeries, selectedExpressionLevelFilters}) => {
+const DataSeriesLegend = ({dataSeries}) => {
     const legendItems = dataSeries.map(series =>
             ({
                 key: series.info.name,
                 name: series.info.name,
                 colour: series.info.colour,
-                on: selectedExpressionLevelFilters.includes(series.info.name)
+                on: !!series.data.length
             }))
 
     return <DataSeriesHeatmapLegend legendItems={legendItems} />
 }
 
 DataSeriesLegend.propTypes = {
-  dataSeries: dataSeriesPropTypes.isRequired,
-  selectedExpressionLevelFilters: PropTypes.array,
+  dataSeries: dataSeriesPropTypes.isRequired
 }
 
 const GradientLegend = ({colourAxis}) => {

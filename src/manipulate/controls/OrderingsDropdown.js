@@ -4,60 +4,56 @@ import Dropdown from 'react-bootstrap/lib/Dropdown'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 
-class OrderingsDropdown extends React.Component{
-
-    handleChange(eventKey, event) {
+const callWithEventTargetText = (f) => (
+    (eventKey, event) => {
         event.preventDefault()
-        this.props.onSelect(event.target.text)
+        return f(event.target.text)
     }
+)
 
-    _orderingIcon(ordering) {
-        switch (ordering) {
-            case `Alphabetical order`:
-                return `sort-by-alphabet`
-            case `Gene expression rank`:
-                return `sort-by-attributes-alt`
-            case `By experiment type`:
-                return `sort-by-order`
-            default:
-                return `sort-by-order`
-        }
+const orderingIcon = (ordering) => {
+    switch (ordering) {
+        case `Alphabetical order`:
+            return `sort-by-alphabet`
+        case `Gene expression rank`:
+            return `sort-by-attributes-alt`
+        case `By experiment type`:
+            return `sort-by-order`
+        default:
+            return `sort-by-order`
     }
-
-    render() {
-        return (
-            <div>
-                <Dropdown id="orderings-dropdown"
-                          onSelect={(key, e) => this.handleChange(key, e)}
-                          title={this.props.zoom ? `Reset zoom to enable sorting options` : ``}
-                          disabled={this.props.zoom || this.props.hasLessThanTwoRows}>
-
-                    <Dropdown.Toggle bsSize="small"
-                                     style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
-                        <Glyphicon glyph={this._orderingIcon(this.props.selected)} /> {this.props.selected}
-                    </Dropdown.Toggle>
-
-                    <Dropdown.Menu bsSize="small">
-                        {this.props.orderings.map(orderingName =>
-                            <MenuItem style={{listStyleImage: `none`}} key={orderingName} href="#">
-                                {orderingName}
-                            </MenuItem>
-                        )}
-                    </Dropdown.Menu>
-
-                </Dropdown>
-            </div>
-        )
-    }
-
 }
 
+const OrderingsDropdown = ({allOptions,currentOption,onChangeCurrentOption,title,disabled}) => (
+    <div>
+        <Dropdown id="orderings-dropdown"
+                  onSelect={callWithEventTargetText(onChangeCurrentOption)}
+                  {...{title,disabled}}>
+
+            <Dropdown.Toggle bsSize="small"
+                             style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
+                <Glyphicon glyph={orderingIcon(currentOption)} />
+                {currentOption}
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu bsSize="small">
+                {allOptions.map(option =>
+                    <MenuItem style={{listStyleImage: `none`}} key={option} href="#" active={option===currentOption}>
+                        {option}
+                    </MenuItem>
+                )}
+            </Dropdown.Menu>
+
+        </Dropdown>
+    </div>
+)
+
 OrderingsDropdown.propTypes = {
-    orderings: PropTypes.arrayOf(PropTypes.string).isRequired,
-    selected: PropTypes.string.isRequired,
-    onSelect: PropTypes.func.isRequired,
-    zoom: PropTypes.bool.isRequired,
-    hasLessThanTwoRows: PropTypes.bool.isRequired
+    allOptions: PropTypes.arrayOf(PropTypes.string).isRequired,
+    currentOption: PropTypes.string.isRequired,
+    onChangeCurrentOption: PropTypes.func.isRequired,
+    title: PropTypes.string.isRequired,
+    disabled:PropTypes.bool.isRequired
 }
 
 export default OrderingsDropdown

@@ -30,17 +30,6 @@ const topRibbonTabs = tabs("nav nav-tabs")
 const categoryTabs = tabs("nav nav-pills",{fontSize:"medium"}, {border:"none"})
 
 
-/*
-GroupingFilter.propTypes = {
-    name: PropTypes.string.isRequired,
-    values: PropTypes.arrayOf(PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        disabled: PropTypes.bool.isRequired
-    })).isRequired,
-    valueGroupings: PropTypes.array,  // Indirectly validated as [string, array of strings] in FilterOption
-    onSelectFilterValue: PropTypes.func.isRequired
-}
-*/
 const _FiltersModal = ({
 	showModal,
 	onCloseModal,
@@ -83,7 +72,6 @@ const _FiltersModal = ({
 const FiltersModal = uncontrollable(_FiltersModal, {
 	currentTopTab : `onChangeCurrentTopTab`,
 	currentCategory: `onChangeCurrentCategory`,
-	currentSelectedValues:`onChangeCurrentSelectedValues`,
 })
 
 const FiltersButton = ({disabled,onClickButton}) => (
@@ -105,22 +93,22 @@ const _Main = props => (
 			onCloseModal={props.onChangeShowModal.bind(this, false)}
 			defaultCurrentTopTab={props.tabNames[0] || ""}
 			defaultCurrentCategory={(props.allCategories[0] || {name:""}).name}
-			defaultCurrentSelectedValues={props.allValues}
 			/>
 	</div>
 )
 
 _Main.propTypes = {
-	showModal: PropTypes.bool.isRequired,
-	onChangeShowModal: PropTypes.func.isRequired,
-	disabled : PropTypes.bool.isRequired,
-	tabNames: PropTypes.arrayOf(PropTypes.string).isRequired,
 	allCategories: PropTypes.arrayOf(PropTypes.shape({
 		name: PropTypes.string.isRequired,
 		disabled: PropTypes.bool.isRequired
 	})).isRequired,
 	allValues: PropTypes.arrayOf(PropTypes.string).isRequired,
-	onChangeSelectedValues:PropTypes.func.isRequired
+	currentValues: PropTypes.arrayOf(PropTypes.string).isRequired,
+	disabled : PropTypes.bool.isRequired,
+	onChangeCurrentValues:PropTypes.func.isRequired,
+	tabNames: PropTypes.arrayOf(PropTypes.string).isRequired,
+	onChangeShowModal: PropTypes.func.isRequired,
+	showModal: PropTypes.bool.isRequired,
 }
 
 const Main = uncontrollable(_Main, {

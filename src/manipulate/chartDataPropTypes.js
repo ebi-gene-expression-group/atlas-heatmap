@@ -53,29 +53,24 @@ const baselineTooltipPropTypes = PropTypes.shape({
 
 const baselineExperimentsTooltipPropTypes = PropTypes.shape({})
 
-const orderingsPropTypesValidator = (props, propName, componentName) => {
-    const orderings = props[propName]
+
+const orderingPropTypes = (props, propName, componentName) => {
+    const ordering = props[propName]
 
     const isPermutation = (arr) =>
         [].concat(arr)
             .sort((a, b) => a - b)
             .map((el, ix) => el === ix)
             .reduce((l, r) => l && r)
-
-    if (!orderings.hasOwnProperty(`default`)) {
-        return new Error(`Default ordering missing in '${componentName}'`)
+    if(!ordering.name){
+        return new Error(`Ordering with no name in '${componentName}'`)
     }
-
-    Object.keys(orderings).forEach(orderingName => {
-        const ordering = orderings[orderingName]
-
-        if (!isPermutation(ordering.columns)) {
-            return new Error(`Column ordering invalid: '${orderingName}' in '${componentName}'`)
-        }
-        if (!isPermutation(ordering.rows)) {
-            return new Error(`Row ordering invalid: '${orderingName}' in '${componentName}'`)
-        }
-    })
+    if (!isPermutation(ordering.columns)) {
+        return new Error(`Column ordering invalid: '${ordering.name}' in '${componentName}'`)
+    }
+    if (!isPermutation(ordering.rows)) {
+        return new Error(`Row ordering invalid: '${ordering.name}' in '${componentName}'`)
+    }
 }
 
 const dataSeriesPropTypes = PropTypes.arrayOf(PropTypes.shape({
@@ -191,7 +186,7 @@ const colourAxisPropTypes = PropTypes.shape({
 const chartDataPropTypes = PropTypes.shape({
     heatmapConfig: heatmapConfigPropTypes.isRequired,
     colourAxis: colourAxisPropTypes,
-    orderings: orderingsPropTypesValidator,
+    orderings: PropTypes.arrayOf(orderingPropTypes),
     heatmapData: heatmapDataPropTypes.isRequired,
     boxplotData: boxplotDataPropTypes,
     columnGroups: PropTypes.object.isRequired
@@ -202,7 +197,7 @@ export {
     columnGroupsPropTypes,
     heatmapDataPropTypes,
     chartDataPropTypes,
-    orderingsPropTypesValidator,
+    orderingPropTypes,
     filterPropTypes,
     dataSeriesPropTypes,
     colourAxisPropTypes
