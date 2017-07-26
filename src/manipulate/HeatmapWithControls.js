@@ -303,8 +303,8 @@ class _HeatmapWithControls extends React.Component {
       const anatomogramArgs = this.props.anatomogramConfig.show
         ? {
             species: this.props.anatomogramConfig.anatomogramData.species,
-            showIds: this.props.anatomogramConfig.anatomogramData.allSvgPathIds,
-            highlightIds: this.state.highlightIds,
+            showIds: heatmapData.xAxisCategories.map(e => e.id),
+            highlightIds: heatmapData.xAxisCategories.map(e => e.id).filter(id => this.state.highlightIds.includes(id)),
             selectIds: [],
             onMouseOver: this._onTissueIdIsUnderFocus,
             onMouseOut:this._onTissueIdIsNotUnderFocus
