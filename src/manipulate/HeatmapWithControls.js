@@ -226,34 +226,93 @@ const delayRender = (Component) => {
 }
 const HeatmapCanvasDelayRender = delayRender(HeatmapCanvas)
 
-const _HeatmapWithControls = args => (
-  <div>
-    <div>
-      <div style={{float: `left`, lineHeight: `2.5rem`, padding: `0.5rem 0`}}>
-        {args.heatmapConfig.introductoryMessage}
+const renderAnatomogramControlsAndCanvas = (args, heatmapDataToPresent, anatomogramArgs) => (
+    <div className="row">
+      {!!anatomogramArgs &&
+      <div className="small-3 columns">
+        <Anatomogram {...anatomogramArgs}/>
+      </div>}
+
+      <div className={!!anatomogramArgs ? `small-9 columns` : `small-12 columns`}>
+          <div>
+            <div style={{float: `left`, lineHeight: `2.5rem`, padding: `0.5rem 0`}}>
+              {args.heatmapConfig.introductoryMessage}
+            </div>
+            <div style={{float: `right`, padding: `0.5rem 0`}}>
+              {renderGenomeBrowsersDropdown(args)}
+              {renderOrderings(args)}
+              {renderFiltersButton(args)}
+              {renderDownloadButton(args)}
+            </div>
+           {
+               renderGenomeBrowserHint(args)
+           }
+          </div>
+          <div style={{clear: `both`}}>
+          <CanvasLegend {...args}>
+              <HeatmapCanvasDelayRender
+                  {...heatmapExtraArgs(args)}
+                  heatmapData={heatmapDataToPresent} />
+          </CanvasLegend>
+          {
+              renderCoexpressionOption(args)
+          }
+          </div>
       </div>
-      <div style={{float: `right`, padding: `0.5rem 0`}}>
-        {renderGenomeBrowsersDropdown(args)}
-        {renderOrderings(args)}
-        {renderFiltersButton(args)}
-        {renderDownloadButton(args)}
-      </div>
-     {
-         renderGenomeBrowserHint(args)
-     }
     </div>
-    <div style={{clear: `both`}}>
-    <CanvasLegend {...args}>
-        <HeatmapCanvasDelayRender
-            {...heatmapExtraArgs(args)}
-            heatmapData={heatmapDataToPresent(args)} />
-    </CanvasLegend>
-    {
-        renderCoexpressionOption(args)
-    }
-    </div>
-  </div>
 )
+
+class _HeatmapWithControls extends React.Component {
+    constructor(props) {
+      super(props)
+
+      this.state = {
+        highlightIds: [],
+        highlightColumns: []
+      }
+
+      this._onOntologyIdIsUnderFocus = this._onOntologyIdIsUnderFocus.bind(this)
+      this._onTissueIdIsUnderFocus = this._onTissueIdIsUnderFocus.bind(this)
+      this._onTissueIdIsNotUnderFocus = this._onTissueIdIsNotUnderFocus.bind(this)
+    }
+
+    _onOntologyIdIsUnderFocus(ids) {
+      this.setState({
+        highlightIds: ids
+      })
+    }
+
+    _onTissueIdIsUnderFocus(id) {
+      this.setState({
+        highlightColumns: [id]
+      })
+    }
+
+    _onTissueIdIsNotUnderFocus() {
+      this.setState({
+        highlightColumns: []
+      })
+    }
+    render() {
+      const args = Object.assign({},
+           this.state, this.props, {
+               onOntologyIdIsUnderFocus: this._onOntologyIdIsUnderFocus,
+            ontologyIdsToHighlight: this.state.highlightColumns
+        })
+      const heatmapData= heatmapDataToPresent(args)
+      const anatomogramArgs = this.props.anatomogramConfig.show
+        ? {
+            species: this.props.anatomogramConfig.anatomogramData.species,
+            showIds: this.props.anatomogramConfig.anatomogramData.allSvgPathIds,
+            highlightIds: this.state.highlightIds,
+            selectIds: [],
+            onMouseOver: this._onTissueIdIsUnderFocus,
+            onMouseOut:this._onTissueIdIsNotUnderFocus
+        }
+        : null
+      return renderAnatomogramControlsAndCanvas(args, heatmapData, anatomogramArgs)
+    }
+}
 
 _HeatmapWithControls.propTypes = {
     allGenomeBrowsers: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -304,68 +363,9 @@ const HeatmapWithControlsContainer = props => {
 }
 
 HeatmapWithControlsContainer.propTypes = {
-    onOntologyIdIsUnderFocus: PropTypes.func.isRequired,
-    ontologyIdsToHighlight: PropTypes.arrayOf(PropTypes.string).isRequired,
     heatmapConfig: heatmapConfigPropTypes.isRequired,
     heatmapData: heatmapDataPropTypes.isRequired,
     orderings: PropTypes.arrayOf(orderingPropTypes)
 }
 
-class HeatmapWithControlsAndAnatomogram extends React.Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      highlightIds: [],
-      highlightColumns: []
-    }
-
-    this._onOntologyIdIsUnderFocus = this._onOntologyIdIsUnderFocus.bind(this)
-    this._onTissueIdIsUnderFocus = this._onTissueIdIsUnderFocus.bind(this)
-    this._onTissueIdIsNotUnderFocus = this._onTissueIdIsNotUnderFocus.bind(this)
-  }
-
-  _onOntologyIdIsUnderFocus(id) {
-    this.setState({
-      highlightIds: id
-    })
-  }
-
-  _onTissueIdIsUnderFocus(id) {
-    this.setState({
-      highlightColumns: [id]
-    })
-  }
-
-  _onTissueIdIsNotUnderFocus() {
-    this.setState({
-      highlightColumns: []
-    })
-  }
-
-  render() {
-    return (
-      <div className="row">
-        {this.props.anatomogramConfig.show &&
-        <div className="small-3 columns">
-          <Anatomogram species={this.props.anatomogramConfig.anatomogramData.species}
-                       showIds={this.props.anatomogramConfig.anatomogramData.allSvgPathIds}
-                       highlightIds={this.state.highlightIds}
-                       selectIds={[]}
-                       onMouseOver={this._onTissueIdIsUnderFocus}
-                       onMouseOut={this._onTissueIdIsNotUnderFocus}
-          />
-        </div>}
-
-        <div className={this.props.anatomogramConfig.show ? `small-9 columns` : `small-12 columns`}>
-          <HeatmapWithControlsContainer {...this.props}
-                               onOntologyIdIsUnderFocus={this._onOntologyIdIsUnderFocus}
-                               ontologyIdsToHighlight={this.state.highlightColumns} />
-        </div>
-
-      </div>
-    )
-  }
-}
-
-export default HeatmapWithControlsAndAnatomogram
+export default HeatmapWithControlsContainer
