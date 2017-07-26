@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {groupedColumnsPropTypes} from '../../chartDataPropTypes.js'
+import {groupedColumnPropTypes,columnCategoryPropTypes} from '../../chartDataPropTypes.js'
 import Modal from 'react-bootstrap/lib/Modal'
 import Button from 'react-bootstrap/lib/Button'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
@@ -10,13 +10,13 @@ import GroupingFilter from './GroupingFilter.js'
 import uncontrollable from 'uncontrollable'
 
 const tabs = (className, style={}, aStyle={}) => (
-	({allTabs, currentTab, onChangeCurrentTab}) => (
+	({allTabs,disabledTabs=[], currentTab, onChangeCurrentTab}) => (
 		<ul className={className} style={style}>
 		{
 			allTabs.map(tab => (
 			   <li key={tab}
-				   className={tab==currentTab ? "active" : ""}>
-				   <a href="#" onClick={ onChangeCurrentTab.bind(this, tab)} style={aStyle}>
+				   className={tab==currentTab ? "active" : disabledTabs.includes(tab) ? "disabled" : "" }>
+				   <a href="#" onClick={ disabledTabs.includes(tab) ? ()=> {} : onChangeCurrentTab.bind(this, tab)} style={aStyle}>
 					   {tab}
 				   </a>
 			   </li>
@@ -39,8 +39,9 @@ const _FiltersModal = ({
 	allCategories,
 	currentCategory,
 	onChangeCurrentCategory,
-	currentSelectedValues,
-	onChangeCurrentSelectedValues
+	currentValues,
+	allValues,
+	onChangeCurrentValues
 	}) => (
 	<Modal show={showModal} onHide={onCloseModal} bsSize="large">
 		<Modal.Header closeButton>
@@ -52,7 +53,15 @@ const _FiltersModal = ({
 
 		<Modal.Body >
 			{
-				categoryTabs({allTabs: allCategories.map(c => c.name), currentTab:currentCategory, onChangeCurrentTab:onChangeCurrentCategory})
+				categoryTabs({
+					allTabs: allCategories.map(c => c.name),
+					disabledTabs: allCategories.filter(c => c.disabled).map(c => c.name),
+					currentTab:currentCategory.name,
+					onChangeCurrentTab: (categoryName) => {
+						onChangeCurrentValues(allValues.filter(e=>e.categories.includes(categoryName)))
+						return onChangeCurrentCategory(allCategories.find(c=>c.name == categoryName))
+					}
+				})
 			}
 			{
 				false && <GroupingFilter/>
@@ -92,18 +101,15 @@ const _Main = props => (
 			{...props}
 			onCloseModal={props.onChangeShowModal.bind(this, false)}
 			defaultCurrentTopTab={props.tabNames[0] || ""}
-			defaultCurrentCategory={(props.allCategories[0] || {name:""}).name}
+			defaultCurrentCategory={props.allCategories.find(c => !c.disabled)}
 			/>
 	</div>
 )
 
 _Main.propTypes = {
-	allCategories: PropTypes.arrayOf(PropTypes.shape({
-		name: PropTypes.string.isRequired,
-		disabled: PropTypes.bool.isRequired
-	})).isRequired,
-	allValues: PropTypes.arrayOf(PropTypes.string).isRequired,
-	currentValues: PropTypes.arrayOf(PropTypes.string).isRequired,
+	allCategories: PropTypes.arrayOf(columnCategoryPropTypes).isRequired,
+	allValues: PropTypes.arrayOf(groupedColumnPropTypes).isRequired,
+	currentValues: PropTypes.arrayOf(groupedColumnPropTypes).isRequired,
 	disabled : PropTypes.bool.isRequired,
 	onChangeCurrentValues:PropTypes.func.isRequired,
 	tabNames: PropTypes.arrayOf(PropTypes.string).isRequired,

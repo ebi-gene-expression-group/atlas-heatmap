@@ -1,3 +1,7 @@
+.nav  li.disabled  a {
+    color: #aaa;
+}
+
 /*
 Modify me massively brother
 Put me in the global CSS after you're finished

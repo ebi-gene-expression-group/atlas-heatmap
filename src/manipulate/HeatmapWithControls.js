@@ -22,7 +22,7 @@ import makeEventCallbacks from './Events.js'
 
 import {manipulate} from './Manipulators.js'
 
-import {heatmapDataPropTypes, heatmapConfigPropTypes, orderingPropTypes, filterPropTypes, colourAxisPropTypes, columnGroupsPropTypes} from '../manipulate/chartDataPropTypes.js'
+import {heatmapDataPropTypes, heatmapConfigPropTypes, orderingPropTypes, filterPropTypes, colourAxisPropTypes, groupedColumnPropTypes,columnGroupsPropTypes} from '../manipulate/chartDataPropTypes.js'
 
 
 const renderGenomeBrowsersDropdown = ({
@@ -88,21 +88,20 @@ const renderDownloadButton = ({
 
 const renderFiltersButton = ({
     heatmapConfig,
-    heatmapData: {xAxisCategories},
-    columnGroups: {groupingNames, categories, data},
+    columnGroups: {groupingNames,categories},
     currentZoom,
-    allColumnLabels,
-    currentSelectedColumnLabels,
-    onChangeCurrentSelectedColumnLabels
+    allGroupedColumns,
+    currentGroupedColumns,
+    onChangeCurrentGroupedColumns
  }) => (
     heatmapConfig.isMultiExperiment &&
         <div style={{display: `inline-block`, padding: `5px`}}>
             <FiltersButton
                 allCategories={categories}
-                allValues={allColumnLabels}
-                currentValues={currentSelectedColumnLabels}
+                allValues={allGroupedColumns}
+                currentValues={currentGroupedColumns}
                 disabled={currentZoom}
-                onChangeCurrentValues={onChangeCurrentSelectedColumnLabels}
+                onChangeCurrentValues={onChangeCurrentGroupedColumns}
                 tabNames={groupingNames}
                 />
         </div>
@@ -180,7 +179,7 @@ const heatmapDataToPresent = ({
     heatmapConfig,
     heatmapData,
     currentNumCoexpressions,
-    currentSelectedColumnLabels,
+    currentGroupedColumns,
     currentOrdering}) => manipulate (
     {
         keepSeries: series => true,
@@ -193,7 +192,7 @@ const heatmapDataToPresent = ({
             )
             : () => true,
         keepColumn:
-            columnHeader => currentSelectedColumnLabels.includes(columnHeader.label),
+            columnHeader => currentGroupedColumns.some(c => c.value === columnHeader.label),
         ordering: currentOrdering,
         allowEmptyColumns: Boolean(heatmapConfig.experiment)
     },
@@ -236,9 +235,9 @@ _HeatmapWithControls.propTypes = {
     allOrderings: PropTypes.arrayOf(orderingPropTypes),
     currentOrdering: orderingPropTypes,
     onChangeCurrentOrdering: PropTypes.func.isRequired,
-    allColumnLabels: PropTypes.arrayOf(PropTypes.string).isRequired,
-    currentSelectedColumnLabels: PropTypes.arrayOf(PropTypes.string).isRequired,
-    onChangeCurrentSelectedColumnLabels: PropTypes.func.isRequired,
+    allGroupedColumns: PropTypes.arrayOf(groupedColumnPropTypes).isRequired,
+    currentGroupedColumns: PropTypes.arrayOf(groupedColumnPropTypes).isRequired,
+    onChangeCurrentGroupedColumns: PropTypes.func.isRequired,
     allNumCoexpressions: PropTypes.number.isRequired,
     currentNumCoexpressions: PropTypes.number.isRequired,
     onChangeCurrentNumCoexpressions: PropTypes.func.isRequired,
@@ -254,24 +253,23 @@ _HeatmapWithControls.propTypes = {
 const HeatmapWithControls = uncontrollable(_HeatmapWithControls,{
     currentGenomeBrowser: `onChangeCurrentGenomeBrowser`,
     currentOrdering: `onChangeCurrentOrdering`,
-    currentSelectedColumnLabels:`onChangeCurrentSelectedColumnLabels`,
+    currentGroupedColumns:`onChangeCurrentGroupedColumns`,
     currentNumCoexpressions:`onChangeCurrentNumCoexpressions`,
     currentZoom:`onChangeCurrentZoom`
 })
 
 const HeatmapWithControlsContainer = props => {
-    const {heatmapData:{xAxisCategories,yAxisCategories}, orderings, heatmapConfig} = props
-    const allColumnLabels = xAxisCategories.map((columnHeader)=> columnHeader.label)
+    const {heatmapData:{xAxisCategories,yAxisCategories}, orderings, heatmapConfig, columnGroups:{data:groupedColumns}} = props
     return (
         <HeatmapWithControls
             {...props}
             allGenomeBrowsers={heatmapConfig.genomeBrowsers}
             allOrderings={orderings}
-            allColumnLabels={allColumnLabels}
+            allGroupedColumns={groupedColumns}
             allNumCoexpressions={heatmapConfig.coexpressionsAvailable ? yAxisCategories.length - 1 :0}
             defaultCurrentGenomeBrowser={"none"}
             defaultCurrentOrdering={orderings[0]}
-            defaultCurrentSelectedColumnLabels={allColumnLabels}
+            defaultCurrentGroupedColumns={groupedColumns}
             defaultCurrentNumCoexpressions={0}
             defaultCurrentZoom={false}
         />

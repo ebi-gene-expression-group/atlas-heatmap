@@ -100,17 +100,21 @@ const groupingPropType = PropTypes.shape({
     })).isRequired
 })
 
+const groupedColumnPropTypes = PropTypes.shape({
+    value: PropTypes.string.isRequired,
+    categories: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
+    groupings: PropTypes.arrayOf(groupingPropType).isRequired
+})
+
+const columnCategoryPropTypes = PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    disabled: PropTypes.bool.isRequired
+})
+
 const columnGroupsPropTypes = PropTypes.shape({
     groupingNames:PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
-    categories:PropTypes.arrayOf(PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        disabled: PropTypes.bool.isRequired
-    })).isRequired,
-    data: PropTypes.arrayOf(PropTypes.shape({
-        value: PropTypes.string.isRequired,
-        categories: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
-        groupings: PropTypes.arrayOf(groupingPropType).isRequired
-    })).isRequired
+    categories:PropTypes.arrayOf(columnCategoryPropTypes).isRequired,
+    data: PropTypes.arrayOf(groupedColumnPropTypes.isRequired).isRequired
 })
 
 const heatmapDataPropTypes = PropTypes.shape({
@@ -194,6 +198,8 @@ const chartDataPropTypes = PropTypes.shape({
 
 export {
     heatmapConfigPropTypes,
+    groupedColumnPropTypes,
+    columnCategoryPropTypes,
     columnGroupsPropTypes,
     heatmapDataPropTypes,
     chartDataPropTypes,

@@ -156,9 +156,9 @@ const columnsWithGroupings = ({xAxisCategories, dataSeries, columnGroupings}) =>
     .map((e,ix) => ({
         value: e.label,
         categories:
-            [].concat.apply([CATEGORY_ALL],
+            [].concat.apply([CATEGORY_ALL.name],
                 dataSeries
-                .filter(ds => ds.data.some(v => v.y == ix))
+                .filter(ds => ds.data.some(v => v.x == ix))
                 .map(ds => ds.info.name)
             )
         ,
@@ -169,14 +169,16 @@ const columnsWithGroupings = ({xAxisCategories, dataSeries, columnGroupings}) =>
 
 //columnGroupsPropTypes
 const main = ({heatmapData: {xAxisCategories, dataSeries}, columnGroupings}) => ({
-    groupingNames:
-        columnGroupings.map(e=> e.name),
+    //this could be inferred but is convenient to pass through
+    groupingNames: columnGroupings.map(e => e.name),
+    //This can't be inferred from the data later, because there might not be any columns with some category
+    //(Happens when there's an empty data series)
     categories:
         [].concat.apply([CATEGORY_ALL],
             dataSeries
             .map(ds => ({
                 name: ds.info.name,
-                disabled: !!ds.data.length
+                disabled: !ds.data.length
             }))
             .reverse()
         ),
