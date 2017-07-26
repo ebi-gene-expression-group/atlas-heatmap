@@ -5,7 +5,10 @@ import Modal from 'react-bootstrap/lib/Modal'
 import Button from 'react-bootstrap/lib/Button'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 require("./NavPills.css")
-import GroupingFilter from './GroupingFilter.js'
+import FilterOption from './FilterOption.js'
+import {groupBy, sortBy} from 'lodash'
+
+const groupIntoPairs = (arr,f) => Object.entries(groupBy(arr,f))
 
 import uncontrollable from 'uncontrollable'
 
@@ -37,13 +40,11 @@ const _FiltersModal = ({
 	currentTopTab,
 	onChangeCurrentTopTab,
 	allCategories,
-	currentCategory,
-	onChangeCurrentCategory,
 	currentValues,
 	allValues,
 	onChangeCurrentValues
 	}) => (
-	<Modal show={showModal} onHide={onCloseModal} bsSize="large">
+	<Modal show={showModal} onHide={onCloseModal} bsSize="large" style={{opacity:0.95}} >
 		<Modal.Header closeButton>
 		{allTopTabs.length > 1
 		 ? topRibbonTabs({allTabs:allTopTabs, currentTab:currentTopTab, onChangeCurrentTab:onChangeCurrentTopTab})
@@ -56,17 +57,48 @@ const _FiltersModal = ({
 				categoryTabs({
 					allTabs: allCategories.map(c => c.name),
 					disabledTabs: allCategories.filter(c => c.disabled).map(c => c.name),
-					currentTab:currentCategory.name,
-					onChangeCurrentTab: (categoryName) => {
-						onChangeCurrentValues(allValues.filter(e=>e.categories.includes(categoryName)))
-						return onChangeCurrentCategory(allCategories.find(c=>c.name == categoryName))
-					}
+					currentTab:(allCategories.find(category => allValues.every(value=> (
+						currentValues.some(currentValue => currentValue.value === value.value) === value.categories.includes(category.name)
+					)) && !category.disabled) || {name: ""}).name,
+					onChangeCurrentTab: (categoryName) => onChangeCurrentValues(
+						allValues
+						.filter(e=>e.categories.includes(categoryName))
+					)
 				})
 			}
-			{
-				false && <GroupingFilter/>
-			}
-
+			<div className="gxaFilter row">
+                {
+					sortBy(
+						groupIntoPairs(
+							[].concat.apply([],
+								allValues
+								.map(v =>
+									v.groupings
+									.find(g => g.name == currentTopTab)
+									.values
+									.map(group => [group.label, v.value])
+								)
+							),
+							'0'
+						).map(a => [a[0], [].concat.apply([], a[1].map(aa=> aa[1]))]),
+						a => a[0]==='Unmapped' ? "_" : " " + a[0] //makes Unmapped go last
+					).map(a => (
+						<FilterOption
+							key={a[0]}
+							name={a[0]}
+							allValues={a[1]}
+							currentValues={a[1].filter(v => currentValues.some(c=> c.value === v))}
+							onChangeCurrentValues={(newCurrentValues) => onChangeCurrentValues(
+								allValues.filter(v=>
+										a[1].includes(v.value)
+										? newCurrentValues.includes(v.value)
+										: currentValues.some(c => c.value === v.value)
+									)
+								)}
+						/>
+					))
+				}
+			</div>
 		</Modal.Body>
 
 		<Modal.Footer>
@@ -79,8 +111,7 @@ const _FiltersModal = ({
 )
 
 const FiltersModal = uncontrollable(_FiltersModal, {
-	currentTopTab : `onChangeCurrentTopTab`,
-	currentCategory: `onChangeCurrentCategory`,
+	currentTopTab : `onChangeCurrentTopTab`
 })
 
 const FiltersButton = ({disabled,onClickButton}) => (

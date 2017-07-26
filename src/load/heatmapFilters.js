@@ -150,6 +150,10 @@ const CATEGORY_ALL = {
     name: "All",
     disabled: false
 }
+const CATEGORY_NONE = {
+    name:"None",
+    disabled: false
+}
 
 const columnsWithGroupings = ({xAxisCategories, dataSeries, columnGroupings}) => (
     xAxisCategories
@@ -174,13 +178,17 @@ const main = ({heatmapData: {xAxisCategories, dataSeries}, columnGroupings}) => 
     //This can't be inferred from the data later, because there might not be any columns with some category
     //(Happens when there's an empty data series)
     categories:
-        [].concat.apply([CATEGORY_ALL],
-            dataSeries
-            .map(ds => ({
-                name: ds.info.name,
-                disabled: !ds.data.length
-            }))
-            .reverse()
+        [].concat(
+            [CATEGORY_ALL],
+            [].concat.apply([],
+                dataSeries
+                .map(ds => ({
+                    name: ds.info.name,
+                    disabled: !ds.data.length
+                }))
+                .reverse()
+            ),
+            [CATEGORY_NONE]
         ),
     data: columnsWithGroupings({xAxisCategories, dataSeries,columnGroupings}),
 })

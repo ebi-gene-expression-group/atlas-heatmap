@@ -3,15 +3,12 @@
 }
 
 /*
-Modify me massively brother
+Modify me massively brother especially them round corners
 Put me in the global CSS after you're finished
 
 */
 .nav-pills > li {
   float: left;
-}
-.nav-pills > li > a {
-  border-radius: 1px;
 }
 .nav-pills > li + li {
   margin-left: 2px;
@@ -27,9 +24,8 @@ Put me in the global CSS after you're finished
     color: #555;
     cursor: default;
     background-color: #fff;
-    border: 1px solid #ddd;
     border-bottom-color: transparent;
-    font-weight: bolder;
+    font-weight: bold;
 }
 
 /*BOOTSTRAP addition*/
