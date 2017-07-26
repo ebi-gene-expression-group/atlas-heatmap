@@ -198,6 +198,33 @@ const heatmapDataToPresent = ({
     },
     heatmapData
 )
+const delayRender = (Component) => {
+    return class extends React.Component {
+        constructor(props){
+            super(props)
+            this.state = {
+                hasEnqueuedUpdate : true
+            }
+        }
+        shouldComponentUpdate(nextProps, nextState){
+            if(!this.state.hasEnqueuedUpdate && !nextState.hasEnqueuedUpdate){
+                setTimeout(()=>this.setState({hasEnqueuedUpdate: true}));
+                return false;
+            } else if (nextState.hasEnqueuedUpdate){
+                return true;
+            } else {
+                return false;
+            }
+        }
+        componentDidUpdate(){
+            this.setState({hasEnqueuedUpdate: false})
+        }
+        render(){
+            return <Component {...this.props} />
+        }
+    }
+}
+const HeatmapCanvasDelayRender = delayRender(HeatmapCanvas)
 
 const _HeatmapWithControls = args => (
   <div>
@@ -217,7 +244,7 @@ const _HeatmapWithControls = args => (
     </div>
     <div style={{clear: `both`}}>
     <CanvasLegend {...args}>
-        <HeatmapCanvas
+        <HeatmapCanvasDelayRender
             {...heatmapExtraArgs(args)}
             heatmapData={heatmapDataToPresent(args)} />
     </CanvasLegend>
