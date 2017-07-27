@@ -226,6 +226,17 @@ const delayRender = (Component) => {
 }
 const HeatmapCanvasDelayRender = delayRender(HeatmapCanvas)
 
+const renderHeatmapCanvasWithSelectedDataSlice = (_args, heatmapDataToPresent) => {
+    const args = Object.assign({}, _args, {heatmapData: heatmapDataToPresent})
+    return (
+        <CanvasLegend {...args}>
+            <HeatmapCanvasDelayRender
+                {...heatmapExtraArgs(args)}
+                heatmapData={heatmapDataToPresent} />
+        </CanvasLegend>
+    )
+}
+
 const renderAnatomogramControlsAndCanvas = (args, heatmapDataToPresent, anatomogramArgs) => (
     <div className="row">
       {!!anatomogramArgs &&
@@ -249,11 +260,9 @@ const renderAnatomogramControlsAndCanvas = (args, heatmapDataToPresent, anatomog
            }
           </div>
           <div style={{clear: `both`}}>
-          <CanvasLegend {...args}>
-              <HeatmapCanvasDelayRender
-                  {...heatmapExtraArgs(args)}
-                  heatmapData={heatmapDataToPresent} />
-          </CanvasLegend>
+          {
+              renderHeatmapCanvasWithSelectedDataSlice(args, heatmapDataToPresent)
+          }
           {
               renderCoexpressionOption(args)
           }
