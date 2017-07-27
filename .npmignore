@@ -2,5 +2,6 @@
 *
 .*
 
-# But the build files...
+# But the build files and assets
 !lib/**
+!assets/**
