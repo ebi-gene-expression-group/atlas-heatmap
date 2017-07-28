@@ -17,7 +17,7 @@ DataSeriesHeatmapLegendBox.propTypes = {
 
 
 const DataSeriesHeatmapLegend = props =>
-    <div className ="gxaHeatmapLegend">
+    <div className="gxaHeatmapLegend" style={{textAlign:"right"}}>
         {props.legendItems.map(legendItemProps => <DataSeriesHeatmapLegendBox {...legendItemProps} />)}
 
         <div className="legend-item">
@@ -41,5 +41,3 @@ DataSeriesHeatmapLegend.propTypes = {
 }
 
 export default DataSeriesHeatmapLegend
-
-
