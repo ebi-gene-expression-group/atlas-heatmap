@@ -4,7 +4,7 @@ import {capitalizeFirstLetter, numberWithCommas} from '../utils'
 // Message on top of the chart: “Showing 3 experiments:”, “Showing 12 genes of 432 found:”, “Showing 32 genes:”...
 const introductoryMessage = (experiment, profiles) => {
     const shownRows = profiles.rows.length
-    const totalRows = profiles.searchResultTotal
+    const totalRows = +(profiles.searchResultTotal || shownRows)
 
     const what = (experiment ? `gene` : `experiment`) + (totalRows > 1 ? `s` : ``)
 
