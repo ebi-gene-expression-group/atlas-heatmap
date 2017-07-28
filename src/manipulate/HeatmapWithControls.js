@@ -119,7 +119,7 @@ const renderCoexpressionOption = ({heatmapConfig,heatmapData,allNumCoexpressions
 
 const renderGenomeBrowserHint = ({currentGenomeBrowser}) => (
     <p style={{clear: `both`, float: `right`, fontSize: `small`, margin: `0`,
-               visibility: currentGenomeBrowser === `none` ? `hidden` : ` visible`}}>
+               display: currentGenomeBrowser === `none` ? `none` : ` block`}}>
       Click on a cell to open the selected genome browser with attached tracks if available
     </p>
 )
@@ -238,36 +238,36 @@ const renderHeatmapCanvasWithSelectedDataSlice = (_args, heatmapDataToPresent) =
 }
 
 const renderAnatomogramControlsAndCanvas = (args, heatmapDataToPresent, anatomogramArgs) => (
-    <div className="row">
-      {!!anatomogramArgs &&
-      <div className="small-3 columns">
-        <Anatomogram {...anatomogramArgs}/>
-      </div>}
-
-      <div className={!!anatomogramArgs ? `small-9 columns` : `small-12 columns`}>
-          <div>
-            <div style={{float: `left`, lineHeight: `2.5rem`, padding: `0.5rem 0`}}>
-              {args.heatmapConfig.introductoryMessage}
+    <div>
+        <div className="row">
+            <div className="small-12 large-4 columns">
+                {args.heatmapConfig.introductoryMessage}
             </div>
-            <div style={{float: `right`, padding: `0.5rem 0`}}>
-              {renderGenomeBrowsersDropdown(args)}
-              {renderOrderings(args)}
-              {renderFiltersButton(args)}
-              {renderDownloadButton(args)}
+            <div className="small-12 large-8 columns" style={{textAlign:"right"}}>
+                {renderGenomeBrowsersDropdown(args)}
+                {renderOrderings(args)}
+                {renderFiltersButton(args)}
+                {renderDownloadButton(args)}
             </div>
-           {
-               renderGenomeBrowserHint(args)
-           }
-          </div>
-          <div style={{clear: `both`}}>
-          {
-              renderHeatmapCanvasWithSelectedDataSlice(args, heatmapDataToPresent)
-          }
-          {
-              renderCoexpressionOption(args)
-          }
-          </div>
-      </div>
+        </div>
+        {
+            renderGenomeBrowserHint(args)
+        }
+        <div className="row">
+            <div className={!anatomogramArgs ? `` : "small-12 medium-9 medium-push-3 columns"}>
+            {
+                renderHeatmapCanvasWithSelectedDataSlice(args, heatmapDataToPresent)
+            }
+            {
+                renderCoexpressionOption(args)
+            }
+            </div>
+            {!!anatomogramArgs &&
+                <div className="small-12 medium-3 medium-pull-9 columns">
+                    <Anatomogram {...anatomogramArgs}/>
+                </div>
+            }
+        </div>
     </div>
 )
 
