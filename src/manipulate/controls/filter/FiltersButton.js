@@ -19,7 +19,7 @@ const tabs = (className, style={}, aStyle={}) => (
 			allTabs.map(tab => (
 			   <li key={tab}
 				   className={tab==currentTab ? "active" : disabledTabs.includes(tab) ? "disabled" : "" }>
-				   <a href="#" onClick={ disabledTabs.includes(tab) ? ()=> {} : onChangeCurrentTab.bind(this, tab)} style={aStyle}>
+				   <a onClick={ disabledTabs.includes(tab) ? ()=> {} : onChangeCurrentTab.bind(this, tab)} style={aStyle}>
 					   {tab}
 				   </a>
 			   </li>
