@@ -101,4 +101,13 @@ const ZebrafishText = {
     )
 }
 
-export default {"fortLauderdale": BlueprintText, "zebrafish": ZebrafishText}
+const PancancerText = {
+    "title": "PCAWG Publication and Embargo Policy",
+    "content" : (
+        <p>
+            The PanCancer Analysis of Whole Genomes (PCAWG) project is committed to the principle of rapid distribution of primary data, alignments files, and secondary analysis data (such as mutation calls) to all members of the research community that have applied for (and have become approved for) data access. The primary data contributed to the project will fall under any publication/embargo policy of the contributing institute or consortia. The community resource for the PCAWG project comprises newly generated files produced by this collaboration (unified alignments, mutation calls and any secondary analysis data). As is the case for similar "community resource projects", users of data generated and distributed by the PCAWG project are asked to respect the desire of the PCAWG Consortium to publish reports on the generation and analysis of their data. Hence, scientific works with a primary focus on pan-cancer (across entity) analysis that made use of the WGS pan cancer community resource will be under publication embargo until the WGS pan-cancer consortium publishes its main paper (anticipated end of 2017). Methodology papers may be published prior to this embargo, with agreement from the full scientific working group. Please write to jennifer.jennings@oicr.on.ca for further information.
+        </p>
+    )
+}
+
+export default {"fortLauderdale": BlueprintText, "zebrafish": ZebrafishText, "pancancer": PancancerText}
