@@ -14,7 +14,7 @@ const DataSeriesLegend = ({dataSeries}) => {
                 name: series.info.name,
                 colour: series.info.colour,
                 on: !!series.data.length
-            }))
+            })).reverse()
 
     return <DataSeriesHeatmapLegend legendItems={legendItems} />
 }
