@@ -280,24 +280,26 @@ class _HeatmapWithControls extends React.Component {
         highlightColumns: []
       }
 
-      this._onOntologyIdIsUnderFocus = this._onOntologyIdIsUnderFocus.bind(this)
-      this._onTissueIdIsUnderFocus = this._onTissueIdIsUnderFocus.bind(this)
-      this._onTissueIdIsNotUnderFocus = this._onTissueIdIsNotUnderFocus.bind(this)
+      this.onOntologyIdIsUnderFocus = this._onOntologyIdIsUnderFocus.bind(this)
+      this.onTissueIdIsUnderFocus = this._onTissueIdIsUnderFocus.bind(this)
+      this.onTissueIdIsNotUnderFocus = this._onTissueIdIsNotUnderFocus.bind(this)
     }
 
     _onOntologyIdIsUnderFocus(ids) {
       this.setState({
         highlightIds: ids
-      })
+    })
     }
 
-    _onTissueIdIsUnderFocus(id) {
+    _onTissueIdIsUnderFocus(ids) {
+
       this.setState({
-        highlightColumns: [id]
+        highlightColumns: ids
       })
     }
 
     _onTissueIdIsNotUnderFocus() {
+
       this.setState({
         highlightColumns: []
       })
@@ -305,7 +307,7 @@ class _HeatmapWithControls extends React.Component {
     render() {
       const args = Object.assign({},
            this.state, this.props, {
-               onOntologyIdIsUnderFocus: this._onOntologyIdIsUnderFocus,
+               onOntologyIdIsUnderFocus: this.onOntologyIdIsUnderFocus,
             ontologyIdsToHighlight: this.state.highlightColumns
         })
       const heatmapData= heatmapDataToPresent(args)
@@ -315,8 +317,8 @@ class _HeatmapWithControls extends React.Component {
             showIds: heatmapData.xAxisCategories.map(e => e.id),
             highlightIds: heatmapData.xAxisCategories.map(e => e.id).filter(id => this.state.highlightIds.includes(id)),
             selectIds: [],
-            onMouseOver: this._onTissueIdIsUnderFocus,
-            onMouseOut:this._onTissueIdIsNotUnderFocus
+            onMouseOver: this.onTissueIdIsUnderFocus,
+            onMouseOut:this.onTissueIdIsNotUnderFocus
         }
         : null
       return renderAnatomogramControlsAndCanvas(args, heatmapData, anatomogramArgs)
