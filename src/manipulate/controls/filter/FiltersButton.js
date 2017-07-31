@@ -73,8 +73,7 @@ const _FiltersModal = ({
 							[].concat.apply([],
 								allValues
 								.map(v =>
-									v.groupings
-									.find(g => g.name == currentTopTab)
+									(v.groupings.find(g => g.name == currentTopTab) || {values:[]})
 									.values
 									.map(group => [group.label, v.value])
 								)
