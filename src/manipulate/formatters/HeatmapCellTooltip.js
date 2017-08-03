@@ -1,12 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import formatScientificNotation from 'expression-atlas-number-format'
-const scientificNotation = value => formatScientificNotation(value,4, {fontWeight: `bold`})
+import ScientificNotationNumber from 'expression-atlas-number-format'
 
-const roundTStat = (n) => (
-  n ? +n.toFixed(4) : ""
-)
+const scientificNotation = value => <ScientificNotationNumber value={value} style={{fontWeight: `bold`}} />
+const roundTStat = (n) => (n ? +n.toFixed(4) : ``)
 
 const _tinySquare= (colour) => {
     return (
@@ -23,21 +21,12 @@ const _tinySquare= (colour) => {
     )
 }
 
-const _info = (text) => {
-    return (
-        <div>
-            <i>{text}</i>
-        </div>
-    )
-}
-
 const _div = (name, value, format) => {
     return (
         name && value ?
             <div key={`${name} ${value}`}>
-              {name}
-              {": "}
-              {value.length > 50 ? <br/> : null }
+              {`${name}: `}
+              {value.length > 50 && <br/>}
               {(format || _bold)(value)}
             </div> :
             null
@@ -47,25 +36,18 @@ const _div = (name, value, format) => {
 const _span = (name, value) =>  {
     return (
         <span key={`${name} ${value}`}>
-          {name}
-          {": "}
-          {value.length > 50 ? <br/> : null }
+          {`${name}: `}
+          {value.length > 50 && <br/>}
           {_bold(value)}
         </span>
     )
 }
 
-const _bold = (value) =>  {
-    return <b>{value}</b>
-}
+const _bold = (value) =>  <b>{value}</b>
 
-const yInfo = ({config, yLabel}) => (
-  _div(config.yAxisLegendName, yLabel)
-)
+const yInfo = ({config, yLabel}) => _div(config.yAxisLegendName, yLabel)
 
-const xInfo = ({xAxisLegendName, config, xLabel}) => (
-  _div(xAxisLegendName || config.xAxisLegendName, xLabel)
-)
+const xInfo = ({xAxisLegendName, config, xLabel}) => _div(xAxisLegendName || config.xAxisLegendName, xLabel)
 
 const _comparisonDiv = (name, v1, v2, format) => {
     return (
@@ -74,7 +56,7 @@ const _comparisonDiv = (name, v1, v2, format) => {
                 {`${name}: `}
                 {v1.length + v2.length > 50 ? <br/> : null }
                 {(format || _bold)(v1)}
-                <i style={{margin:"0.25rem"}}>vs</i>
+                <i style={{margin: `0.25rem`}}>vs</i>
                 {(format || _bold)(v2)}
             </div> :
             null
@@ -92,7 +74,7 @@ const prettyName = (name) => (
 const xPropertiesBaselineList = ({xProperties}) => (
   xProperties
   .filter((property)=>(
-    property.contrastPropertyType !== "SAMPLE" // would fail with showing too much stuff which isn't catastrophic
+    property.contrastPropertyType !== `SAMPLE` // would fail with showing too much stuff which isn't catastrophic
   ))
   .map((property)=>(
     _div(prettyName(property.propertyName), property.testValue)
