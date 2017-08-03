@@ -1,23 +1,15 @@
 var webpack = require('webpack');
 var path = require('path');
 var CleanWebpackPlugin = require('clean-webpack-plugin');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 process.traceDeprecation = true;
 
 module.exports = {
     entry: {
         heatmapHighcharts: ['babel-polyfill', 'whatwg-fetch', './src/Main.js'],
-        experimentPicker: ['babel-polyfill', 'whatwg-fetch', 'react-hot-loader/patch', './html/index.js'],
+        experimentPicker: ['babel-polyfill', 'whatwg-fetch', './html/ExperimentPicker.js'],
         dependencies: ['color', 'downloadjs', 'he', 'highcharts', 'highcharts-custom-events', 'lodash', 'object-hash',
             'rc-slider', 'react', 'react-bootstrap', 'react-dom', 'react-highcharts', 'react-refetch', 'urijs']
-    },
-
-    resolve: {
-        alias: {
-            "react": path.resolve('./node_modules/react'),
-            "react-dom": path.resolve('./node_modules/react-dom')
-        }
     },
 
     output: {
@@ -33,16 +25,7 @@ module.exports = {
             name: 'dependencies',
             filename: 'vendorCommons.bundle.js',
             minChunks: Infinity     // Explicit definition-based split, see dependencies entry
-        }),
-        new CopyWebpackPlugin([
-          { from: './node_modules/anatomogram/lib/svg', to: './svg' },
-          { from: './node_modules/anatomogram/lib/img', to: './img' },
-          { from: './node_modules/anatomogram/lib/json', to: './json' }
-        ]),
-        new webpack.HotModuleReplacementPlugin(),
-        // enable HMR globally, necessary along with devServer.hot: true (see below) for HMR to work as expected 🤔
-        new webpack.NamedModulesPlugin()
-        // prints more readable module names in the browser console on HMR updates
+        })
     ],
 
     module: {
@@ -136,9 +119,6 @@ module.exports = {
     },
 
     devServer: {
-        hot: true,      // CLI --hot is equivalent to this option, but it also enables the HMR plugin (see above)
-        hotOnly: true,  // Won’t inject modules if there’s a compilation error (without this a full page reload is
-                        // done after a successful build and we lose state)
         port: 9000
     }
 };
