@@ -125,36 +125,12 @@ module.exports = {
                     }
                 ]
             },
-            // Don’t use .babelrc, we need a different config for JSX and JS files because babel-preset-react breaks
-            // some syntax in heatmapAxisCategories, specifically Array.map(condition ? e => ... : e => ...)
-            // https://discuss.babeljs.io/t/babel-preset-react-breaks-conditional-map-of-arrays-when-combined-with-latest-env-or-es2015
             {
                 test: /\.js$/,
                 // Place after node_modules packages owned by Expression Atlas to be transpiled, as they aren’t
                 // distributed pre-bundled or with a dist kind of folder
-                exclude: /node_modules\/(?!(expression-atlas))/,
-                use: [
-                    {
-                        loader: 'babel-loader',
-                        options: {
-                            presets: ['react', ['env', {modules: false}]],
-                            plugins: ['transform-object-rest-spread', 'react-hot-loader/babel']
-                        }
-                    }
-                ]
-            },
-            {
-                test: /\.jsx$/,
-                exclude: /node_modules\/(?!(expression-atlas|anatomogram|react-ebi-species))/,
-                use: [
-                    {
-                        loader: 'babel-loader',
-                        options: {
-                            presets: ['react', ['env', {modules: false}]],
-                            plugins: ['react-hot-loader/babel']
-                        }
-                    }
-                ]
+                exclude: /node_modules\//,
+                use: 'babel-loader'
             }
         ]
     },

@@ -12,7 +12,7 @@
   },
   "repository": "https://github.com/gxa/atlas-heatmap",
   "dependencies": {
-    "anatomogram": "^1.2.7",
+    "anatomogram": "latest",
     "color": "0.11.3",
     "downloadjs": "1.4.6",
     "expression-atlas-number-format": "latest",
@@ -30,7 +30,6 @@
     "react-highcharts": "^12.0.0",
     "react-hot-loader": "^3.0.0-beta.6",
     "react-refetch": "^1.0.0",
-    "react-tooltip": "https://github.com/gxa/react-tooltip/tarball/dist",
     "sanitize-html": "^1.14.1",
     "uncontrollable": "^4.0.3",
     "urijs": "^1.18.7"
