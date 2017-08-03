@@ -26,9 +26,8 @@ export default function({data, inProxy, outProxy, atlasUrl, showAnatomogram, isW
     //misses: idsExpressedInExperiment
     //show is extra
     const anatomogramConfig = {
-        show: showAnatomogram && anatomogramSpecies.includes(data.anatomogram.species) && !! data.anatomogram && !! atlasUrl,
+        show: showAnatomogram && !! data.anatomogram && anatomogramSpecies.includes(data.anatomogram.species),
         anatomogramData: data.anatomogram,
-        pathToResources: inProxy + URI(`resources/js-bundles/`, atlasUrl).toString(),
         expressedTissueColour: data.experiment ? `gray` : `red`,
         hoveredTissueColour: data.experiment ? `red` : `purple`,
     }
