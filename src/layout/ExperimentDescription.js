@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const ExperimentDescription = props =>
-    <div style={{width: `100%`, paddingBottom: `20px`}}>
+const ExperimentDescription = ({outProxy, experimentUrl, description}) =>
+    <div className={`row column margin-bottom-large`}>
         <div>
-            <a target="_blank" href={props.outProxy + props.experimentUrl}>{props.description}</a>
+            <a target={`_blank`} href={outProxy + experimentUrl}>{description}</a>
         </div>
     </div>
 

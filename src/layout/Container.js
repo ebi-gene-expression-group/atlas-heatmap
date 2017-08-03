@@ -19,20 +19,18 @@ const Container = (props) => {
         URI(atlasUrl).segment(`query`).search({geneQuery, conditionQuery, species})
 
     return (
-        <div>
-            {isWidget && data.experiment &&
-            <ExperimentDescription outProxy={outProxy}
-                                   experimentUrl={URI(data.experiment.relUrl, atlasUrl).toString()}
-                                   description={data.experiment.description} />
-            }
+        <div className={`row column`}>
+            { isWidget && data.experiment &&
+              <ExperimentDescription outProxy={outProxy}
+                                     experimentUrl={URI(data.experiment.relUrl, atlasUrl).toString()}
+                                     description={data.experiment.description} /> }
 
             <ChartContainer chartData={loadChartData(props)} />
 
-            {isWidget &&
-            <Footer outProxy={outProxy}
-                    atlasUrl={atlasUrl}
-                    moreInformationUrl={moreInformationUrl.toString()} />
-            }
+            { isWidget &&
+              <Footer outProxy={outProxy}
+                      atlasUrl={atlasUrl}
+                      moreInformationUrl={moreInformationUrl.toString()} /> }
         </div>
     )
 }
