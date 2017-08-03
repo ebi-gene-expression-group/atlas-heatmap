@@ -15,14 +15,24 @@ import HeatmapCanvas from '../show/HeatmapCanvas.js'
 import cellTooltipFormatter from './formatters/heatmapCellTooltipFormatter.js'
 import axesFormatters from './formatters/axesFormatters.js'
 
-import {DataSeriesLegend as MultiExperimentLegend , GradientLegend as SingleExperimentLegend} from './heatmap-legend/Main.js'
+import {
+  DataSeriesLegend as MultiExperimentLegend,
+  GradientLegend as SingleExperimentLegend
+} from './heatmap-legend/Main.js'
 import CoexpressionOption from './coexpression/CoexpressionOption.js'
 
 import makeEventCallbacks from './Events.js'
 
 import {manipulate} from './Manipulators.js'
 
-import {heatmapDataPropTypes, heatmapConfigPropTypes, orderingPropTypes, filterPropTypes, colourAxisPropTypes, groupedColumnPropTypes,columnGroupsPropTypes} from '../manipulate/chartDataPropTypes.js'
+import {
+  colourAxisPropTypes,
+  columnGroupsPropTypes,
+  groupedColumnPropTypes,
+  heatmapConfigPropTypes,
+  heatmapDataPropTypes,
+  orderingPropTypes
+} from '../manipulate/chartDataPropTypes.js'
 
 
 const renderGenomeBrowsersDropdown = ({
@@ -158,22 +168,20 @@ const heatmapExtraArgs = ({
     currentGenomeBrowser,
     heatmapConfig,
     onChangeCurrentZoom,
-    ontologyIdsToHighlight
-} ) => ({
-    ontologyIdsToHighlight,
-    onZoom:onChangeCurrentZoom,
-    events:
-        makeEventCallbacks({
-          heatmapData: heatmapData,
-          onSelectOntologyIds: onOntologyIdIsUnderFocus,
-          genomeBrowser: currentGenomeBrowser,
-          experimentAccession: heatmapConfig.experiment && heatmapConfig.experiment.accession,
-          accessKey: heatmapConfig.experiment && heatmapConfig.experiment.accessKey,
-          atlasUrl: heatmapConfig.atlasUrl}),
-    cellTooltipFormatter:
-        cellTooltipFormatter(heatmapConfig),
-    ...axesFormatters(heatmapConfig)
-})
+    ontologyIdsToHighlight} ) => ({
+      ontologyIdsToHighlight,
+      onZoom:onChangeCurrentZoom,
+      events:
+          makeEventCallbacks({
+            heatmapData: heatmapData,
+            onSelectOntologyIds: onOntologyIdIsUnderFocus,
+            genomeBrowser: currentGenomeBrowser,
+            experimentAccession: heatmapConfig.experiment && heatmapConfig.experiment.accession,
+            accessKey: heatmapConfig.experiment && heatmapConfig.experiment.accessKey,
+            atlasUrl: heatmapConfig.atlasUrl}),
+      cellTooltipFormatter: cellTooltipFormatter(heatmapConfig),
+      ...axesFormatters(heatmapConfig)
+    })
 
 const heatmapDataToPresent = ({
     heatmapConfig,
@@ -287,24 +295,24 @@ class _HeatmapWithControls extends React.Component {
     })
     }
 
-    _onTissueIdIsUnderFocus(ids) {
-
+    _onTissueIdIsUnderFocus(id) {
       this.setState({
-        highlightColumns: ids
+        highlightColumns: [id]
       })
     }
 
     _onTissueIdIsNotUnderFocus() {
-
       this.setState({
         highlightColumns: []
       })
     }
+
     render() {
       const args = Object.assign({},
-           this.state, this.props, {
-               onOntologyIdIsUnderFocus: this.onOntologyIdIsUnderFocus,
-            ontologyIdsToHighlight: this.state.highlightColumns
+        this.state, this.props,
+        {
+          onOntologyIdIsUnderFocus: this.onOntologyIdIsUnderFocus,
+          ontologyIdsToHighlight: this.state.highlightColumns
         })
       const heatmapData= heatmapDataToPresent(args)
       const anatomogramArgs = this.props.anatomogramConfig.show
@@ -314,7 +322,7 @@ class _HeatmapWithControls extends React.Component {
             highlightIds: heatmapData.xAxisCategories.map(e => e.id).filter(id => this.state.highlightIds.includes(id)),
             selectIds: [],
             onMouseOver: this.onTissueIdIsUnderFocus,
-            onMouseOut:this.onTissueIdIsNotUnderFocus
+            onMouseOut: this.onTissueIdIsNotUnderFocus
         }
         : null
       return renderAnatomogramControlsAndCanvas(args, heatmapData, anatomogramArgs)
