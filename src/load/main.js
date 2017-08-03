@@ -1,3 +1,5 @@
+import {anatomogramSpecies} from 'anatomogram'
+
 import getChartConfiguration from './chartConfiguration.js'
 
 import getHeatmapData from './heatmapData.js'
@@ -8,11 +10,8 @@ import getColourAxisFromDataSeries from './heatmapColourAxis.js'
 import columnsWithGroupings from './heatmapFilters.js'
 import URI from 'urijs'
 
-
-//({data, inProxy, outProxy, atlasUrl, showAnatomogram, isWidget})
 export default function({data, inProxy, outProxy, atlasUrl, showAnatomogram, isWidget}) {
     const pathToResources = inProxy + URI(`resources/js-bundles/`, atlasUrl).toString()
-
 
     // This ensures that adding or removing coexpressed genes doesn’t change the colours in the heat map. Colours are
     // computed upfront and then we just add/remove rows with the coexpression slider.
@@ -27,7 +26,7 @@ export default function({data, inProxy, outProxy, atlasUrl, showAnatomogram, isW
     //misses: idsExpressedInExperiment
     //show is extra
     const anatomogramConfig = {
-        show: showAnatomogram && !! data.anatomogram && !! atlasUrl,
+        show: showAnatomogram && anatomogramSpecies.includes(data.anatomogram.species) && !! data.anatomogram && !! atlasUrl,
         anatomogramData: data.anatomogram,
         pathToResources: inProxy + URI(`resources/js-bundles/`, atlasUrl).toString(),
         expressedTissueColour: data.experiment ? `gray` : `red`,
@@ -43,5 +42,4 @@ export default function({data, inProxy, outProxy, atlasUrl, showAnatomogram, isW
         orderings: createOrderingsForData(data.experiment, allRows, data.columnHeaders),
         columnGroups: columnsWithGroupings({heatmapData, columnGroupings: data.columnGroupings})
     }
-
 }
