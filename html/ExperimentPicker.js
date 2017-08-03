@@ -1,4 +1,6 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
+
 import ExpressionAtlasHeatmap from '../src/Main.js'
 
 class ExperimentPicker extends React.Component {
@@ -85,6 +87,9 @@ class ExperimentPicker extends React.Component {
     }
 }
 
+const render = (target) => {
+  ReactDOM.render(<ExperimentPicker />, document.getElementById(target))
+}
 
-export default ExperimentPicker
+export {render}
 
