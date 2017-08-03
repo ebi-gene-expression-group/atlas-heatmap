@@ -43,7 +43,7 @@ const differentialColumnHeadersPropTypes = PropTypes.shape({
     }).isRequired,
     resources: PropTypes.arrayOf(PropTypes.shape({
         type: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired
+        uri: PropTypes.string.isRequired
     })).isRequired
 })
 
