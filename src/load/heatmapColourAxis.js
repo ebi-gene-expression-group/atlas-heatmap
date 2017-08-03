@@ -2,10 +2,7 @@ import Colour from 'color'
 
 import {isMultiExperiment} from './experimentTypeUtils.js'
 
-const highlightColour = c =>
-    c.light() ?
-        c.clone().lighten(0.5)
-        : c.clone().saturate(0.3).darken(0.5)
+const highlightColour = c => c.light() ? Colour(c).lighten(0.5) : Colour(c).saturate(0.3).darken(0.5)
 
 const dataClassesFromSeries = dataSeries => {
     // No need to validate here, as it’s already been done in Container.jsx (cf. with previous version of ColorAxis.js)
@@ -48,9 +45,9 @@ const dataClassesFromSeries = dataSeries => {
             )
 
     const needToSplit = x =>
-    x.sortedValues.length > 3 &&
-    x.sortedValues[0] !== x.sortedValues[x.sortedValues.length - 1] &&
-    x.minColour.rgbString() !== x.maxColour.rgbString()
+      x.sortedValues.length > 3 &&
+      x.sortedValues[0] !== x.sortedValues[x.sortedValues.length - 1] &&
+      x.minColour.rgb().string() !== x.maxColour.rgb().string()
 
     const splitInHalf = x =>
         [
@@ -60,7 +57,7 @@ const dataClassesFromSeries = dataSeries => {
                 max: x.median,
                 maxColour: x.medianColour,
                 median: x.sortedValues[Math.floor(x.sortedValues.length/4)],
-                medianColour: x.minColour.clone().mix(x.medianColour),
+                medianColour: Colour(x.minColour).mix(x.medianColour),
                 sortedValues: x.sortedValues.slice(0, Math.floor(x.sortedValues.length/2))
             },
             {
@@ -69,7 +66,7 @@ const dataClassesFromSeries = dataSeries => {
                 max: x.max,
                 maxColour: x.maxColour,
                 median: x.sortedValues[Math.floor(3* x.sortedValues.length/4)],
-                medianColour: x.medianColour.clone().mix(x.maxColour),
+                medianColour: Colour(x.medianColour).mix(x.maxColour),
                 sortedValues: x.sortedValues.slice(Math.floor(x.sortedValues.length/2))
             }
         ]
@@ -94,7 +91,7 @@ const dataClassesFromSeries = dataSeries => {
             ({
                 from: x.min,
                 to: x.max,
-                color: x.medianColour.hexString()
+                color: x.medianColour.hex()
             })
         )
     )
