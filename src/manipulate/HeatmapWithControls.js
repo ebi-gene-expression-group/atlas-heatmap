@@ -254,19 +254,15 @@ const renderAnatomogramControlsAndCanvas = (args, heatmapDataToPresent, anatomog
             renderGenomeBrowserHint(args)
         }
         <div className="row">
-            <div className={!anatomogramArgs ? `` : "small-12 medium-9 medium-push-3 columns"}>
-            {
-                renderHeatmapCanvasWithSelectedDataSlice(args, heatmapDataToPresent)
-            }
-            {
-                renderCoexpressionOption(args)
-            }
+          { !!anatomogramArgs &&
+            <div className={`small-12 medium-3 columns`}>
+              <Anatomogram {...anatomogramArgs}/>
+            </div> }
+
+            <div className={`small-12 ${!anatomogramArgs ? `` : `medium-9`} columns`}>
+              { renderHeatmapCanvasWithSelectedDataSlice(args, heatmapDataToPresent) }
+              { renderCoexpressionOption(args) }
             </div>
-            {!!anatomogramArgs &&
-                <div className="small-12 medium-3 medium-pull-9 columns">
-                    <Anatomogram {...anatomogramArgs}/>
-                </div>
-            }
         </div>
     </div>
 )
@@ -347,12 +343,12 @@ _HeatmapWithControls.propTypes = {
     columnGroups: columnGroupsPropTypes,
 }
 
-const HeatmapWithControls = uncontrollable(_HeatmapWithControls,{
+const HeatmapWithControls = uncontrollable(_HeatmapWithControls, {
     currentGenomeBrowser: `onChangeCurrentGenomeBrowser`,
     currentOrdering: `onChangeCurrentOrdering`,
-    currentGroupedColumns:`onChangeCurrentGroupedColumns`,
-    currentNumCoexpressions:`onChangeCurrentNumCoexpressions`,
-    currentZoom:`onChangeCurrentZoom`
+    currentGroupedColumns: `onChangeCurrentGroupedColumns`,
+    currentNumCoexpressions: `onChangeCurrentNumCoexpressions`,
+    currentZoom: `onChangeCurrentZoom`
 })
 
 const HeatmapWithControlsContainer = props => {
@@ -368,8 +364,7 @@ const HeatmapWithControlsContainer = props => {
             defaultCurrentOrdering={orderings[0]}
             defaultCurrentGroupedColumns={groupedColumns}
             defaultCurrentNumCoexpressions={0}
-            defaultCurrentZoom={false}
-        />
+            defaultCurrentZoom={false} />
     )
 }
 
