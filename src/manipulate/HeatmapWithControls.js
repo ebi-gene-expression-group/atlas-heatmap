@@ -25,6 +25,8 @@ import makeEventCallbacks from './Events.js'
 
 import {manipulate} from './Manipulators.js'
 
+import URI from 'urijs'
+
 import {
   colourAxisPropTypes,
   columnGroupsPropTypes,
@@ -72,14 +74,18 @@ const renderDownloadButton = ({
     heatmapConfig:{
         shortDescription,
         description,
-        disclaimer
+        disclaimer,
+        experiment,
+        atlasUrl,
+        outProxy
     },
     currentOrdering,
     allNumCoexpressions,
     currentNumCoexpressions}) => (
     <div style={{display: `inline-block`, padding: `5px`}}>
-        <DownloadButton {...{
-          download: {
+        <DownloadButton
+            disclaimer={disclaimer}
+            currentlyShownContent={{
               name: shortDescription || "download",
               descriptionLines:
                   [
@@ -90,9 +96,13 @@ const renderDownloadButton = ({
                           []
                   ],
               heatmapData
-          },
-          disclaimer
-        }}/>
+            }}
+            fullDatasetUrl={
+                experiment
+                ? outProxy+URI(experiment.urls.download, atlasUrl).toString()
+                : ""
+            }
+        />
     </div>
 )
 

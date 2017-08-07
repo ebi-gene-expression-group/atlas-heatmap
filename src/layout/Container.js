@@ -22,7 +22,7 @@ const Container = (props) => {
         <div className={`row column`}>
             { isWidget && data.experiment &&
               <ExperimentDescription outProxy={outProxy}
-                                     experimentUrl={URI(data.experiment.relUrl, atlasUrl).toString()}
+                                     experimentUrl={URI(data.experiment.urls.main_page, atlasUrl).toString()}
                                      description={data.experiment.description} /> }
 
             <ChartContainer chartData={loadChartData(props)} />

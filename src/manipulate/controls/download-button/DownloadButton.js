@@ -1,89 +1,121 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Modal from 'react-bootstrap/lib/Modal'
-import Button from 'react-bootstrap/lib/Button'
-import Glyphicon from 'react-bootstrap/lib/Glyphicon'
+import {MenuItem,Glyphicon,SplitButton, Button, Modal} from 'react-bootstrap/lib'
 
 import Disclaimers from './Disclaimers.js'
 
-import Download from './Download.js'
+import ClientSideDownload from './Download.js'
 
 import {heatmapDataPropTypes} from '../../../manipulate/chartDataPropTypes.js'
 
-class DownloadButton extends React.Component {
-    constructor(props) {
-        super(props)
+import uncontrollable from 'uncontrollable'
 
-        this.state = { showModal: false }
+import URI from 'urijs'
 
-        this.afterDownloadButtonClicked = this._afterDownloadButtonClicked.bind(this)
-        this.commenceDownloadAndCloseModal = this._commenceDownloadAndCloseModal.bind(this)
-        this.closeModal = this._closeModal.bind(this)
-    }
+const _DownloadWithModal = ({showModal, onChangeShowModal, disclaimer: {title, content}, downloadOptions}) => (
+    <div>
+        <Button
+            bsSize="small"
+            onClick={onChangeShowModal.bind(this, true)}
+            title={"Download"}
+            style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
+            <Glyphicon glyph="download"/> Download
+        </Button>
 
-    _closeModal() {
-        this.setState({ showModal: false })
-    }
+        <Modal show={showModal} onHide={onChangeShowModal.bind(this, false)}>
+            <Modal.Header closeButton>
+                <Modal.Title>
+                    {title}
+                </Modal.Title>
+            </Modal.Header>
 
-    _disclaimer() {
-        return this.props.disclaimer && Disclaimers[this.props.disclaimer] || {title: null, content: null}
-    }
+            <Modal.Body>
+                {content}
+            </Modal.Body>
 
-    _afterDownloadButtonClicked() {
-        if(!this._disclaimer().title && !this._disclaimer().content) {
-            this._commenceDownload()
-        } else {
-            this.setState({ showModal: true })
-        }
-    }
-
-    _commenceDownload() {
-        Download(this.props.download)
-        typeof window.ga === 'function' && window.ga(`atlas-highcharts-widget.send`, `event`, `HeatmapHighcharts`, `downloadData`)
-    }
-
-    _commenceDownloadAndCloseModal() {
-        this._commenceDownload()
-        this.closeModal()
-    }
-
-    render() {
-        return (
-            <a onClick={this.afterDownloadButtonClicked}>
-                <Button bsSize="small"
-                        style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
-                    <Glyphicon glyph="download-alt"/> Download table content
+            <Modal.Footer>
+                <Button onClick={onChangeShowModal.bind(this, false)}>
+                    Close
                 </Button>
-
-                <Modal show={this.state.showModal} onHide={this.closeModal}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>
-                            {this._disclaimer().title}
-                        </Modal.Title>
-                    </Modal.Header>
-
-                    <Modal.Body>
-                        {this._disclaimer().content}
-                    </Modal.Body>
-
-                    <Modal.Footer>
-                        <Button onClick={this._closeModal}>Close</Button>
-                        <Button bsStyle="primary" onClick={this.commenceDownloadAndCloseModal}>
-                            Continue downloading
+                {
+                    downloadOptions.map(o => (
+                        <Button
+                            key={o.description}
+                            bsStyle="primary"
+                            onClick={() => {
+                                o.onClick()
+                                onChangeShowModal(false)
+                            }}>
+                            {"Download: " + o.description}
                         </Button>
-                    </Modal.Footer>
-                </Modal>
-            </a>
-        )
-    }
+                    ))
+                }
+            </Modal.Footer>
+        </Modal>
+    </div>
+)
+
+
+
+
+const DownloadWithModal = uncontrollable(_DownloadWithModal, {
+    'showModal' : 'onChangeShowModal'
+})
+
+DownloadWithModal.defaultProps = {
+    defaultShowModal : false
 }
 
+const SplitDownloadButton = ({downloadOptions}) => (
+    <SplitButton
+        bsSize="small"
+        onClick={downloadOptions[0].onClick}
+        title={"Download"}
+        style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
+        {
+            downloadOptions.map((o,ix) => (
+                <MenuItem eventKey={ix} id={o.description} onClick={o.onClick}>
+                    <Glyphicon glyph="download-alt"/> {o.description}
+                </MenuItem>
+            ))
+        }
+    </SplitButton>
+)
+
+
+const DownloadButton = ({currentlyShownContent, fullDatasetUrl, disclaimer}) => {
+
+    const downloadOptions = [].concat(
+        fullDatasetUrl
+        ? [{
+            onClick : () => window.open(fullDatasetUrl, "Download"),
+            description : "All data"
+        }]
+        : [],
+        [{
+            onClick: () => ClientSideDownload(currentlyShownContent),
+            description : "Table content"
+        }]
+    )
+
+    return (
+        disclaimer && Disclaimers[disclaimer]
+        ? <DownloadWithModal
+            disclaimer={Disclaimers[disclaimer]}
+            downloadOptions={downloadOptions}/>
+        : <SplitDownloadButton
+            downloadOptions={downloadOptions}/>
+    )
+}
+
+
 DownloadButton.propTypes = {
-    download: PropTypes.shape({
+    currentlyShownContent: PropTypes.shape({
         name: PropTypes.string.isRequired,
         descriptionLines : PropTypes.arrayOf(PropTypes.string).isRequired,
         heatmapData: heatmapDataPropTypes,
-    }),
+    }).isRequired,
+    fullDatasetUrl: PropTypes.string.isRequired,
     disclaimer: PropTypes.string.isRequired
 }
 

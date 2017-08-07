@@ -26,10 +26,10 @@ const _ontologyIdsForRowIndex = (heatmapData, y) => (
   .filter(onlyUnique)
 )
 
-const onClickUseGenomeBrowser = ({heatmapData, currentGenomeBrowser,heatmapConfig: {experiment, atlasUrl}}) => (
+const onClickUseGenomeBrowser = ({heatmapData, currentGenomeBrowser,heatmapConfig: {experiment, atlasUrl, outProxy}}) => (
     currentGenomeBrowser && experiment && currentGenomeBrowser !== `none`
     ? (x, y) => {
-      window.open(URI(experiment.urls.genome_browsers, atlasUrl).addSearch({
+      window.open(outProxy + URI(experiment.urls.genome_browsers, atlasUrl).addSearch({
         experimentAccession: experiment.accession,
         name: currentGenomeBrowser,
         geneId: heatmapData.yAxisCategories[y].info.trackId,
