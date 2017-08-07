@@ -175,10 +175,8 @@ const heatmapExtraArgs = ({
           makeEventCallbacks({
             heatmapData: heatmapData,
             onSelectOntologyIds: onOntologyIdIsUnderFocus,
-            genomeBrowser: currentGenomeBrowser,
-            experimentAccession: heatmapConfig.experiment && heatmapConfig.experiment.accession,
-            accessKey: heatmapConfig.experiment && heatmapConfig.experiment.accessKey,
-            atlasUrl: heatmapConfig.atlasUrl}),
+            currentGenomeBrowser,
+            heatmapConfig}),
       cellTooltipFormatter: cellTooltipFormatter(heatmapConfig),
       ...axesFormatters(heatmapConfig)
     })

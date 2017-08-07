@@ -15,7 +15,7 @@ const Container = (props) => {
     const {geneQuery, conditionQuery, species} = data.config
 
     const moreInformationUrl = data.experiment ?    // single experiment?
-        URI(data.experiment.relUrl, atlasUrl).search(``) :
+        URI(data.experiment.urls.main_page, atlasUrl) :
         URI(atlasUrl).segment(`query`).search({geneQuery, conditionQuery, species})
 
     return (

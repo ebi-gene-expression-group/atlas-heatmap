@@ -26,7 +26,20 @@ const _ontologyIdsForRowIndex = (heatmapData, y) => (
   .filter(onlyUnique)
 )
 
-const makeEventCallbacks = ({heatmapData, onSelectOntologyIds, genomeBrowser, experimentAccession, accessKey, atlasUrl}) => {
+const onClickUseGenomeBrowser = ({heatmapData, currentGenomeBrowser,heatmapConfig: {experiment, atlasUrl}}) => (
+    currentGenomeBrowser && experiment && currentGenomeBrowser !== `none`
+    ? (x, y) => {
+      window.open(URI(experiment.urls.genome_browsers, atlasUrl).addSearch({
+        experimentAccession: experiment.accession,
+        name: currentGenomeBrowser,
+        geneId: heatmapData.yAxisCategories[y].info.trackId,
+        trackId: heatmapData.xAxisCategories[x].info.trackId
+      }).toString(), `_blank`)
+    }
+    : undefined
+)
+
+const makeEventCallbacks = ({heatmapData, onSelectOntologyIds, currentGenomeBrowser,heatmapConfig}) => {
   return {
     onHoverRowLabel: (yAxisLabel) => {
       const rowIndex = heatmapData.yAxisCategories.findIndex((cat) => cat.label === sanitizeHtml(yAxisLabel, noTags))
@@ -46,27 +59,7 @@ const makeEventCallbacks = ({heatmapData, onSelectOntologyIds, genomeBrowser, ex
       onSelectOntologyIds([])
     },
 
-    /*
-      For this to work genomeBrowser needs to be included in the props that cause a re-render in HeatmapCanvas.jsx
-
-      TODO we have suffered a bit of a defeat here because it made us include accessKey.
-      If instead of genomeBrowser string we had a {name, uri} here, we could do
-      URI(genomeBrowser.uri, atlasUrl).search({
-        experimentAccession: experimentAccession,
-        geneId: heatmapData.xAxisCategories[x].info.trackId,
-        trackId: heatmapData.yAxisCategories[y].info.trackId
-      })
-    */
-    onClick: genomeBrowser !== `none` ?
-      (x, y) => {
-        window.open(URI(`external-services/genome-browser/${genomeBrowser}`, atlasUrl).search({
-          experimentAccession: experimentAccession,
-          geneId: heatmapData.yAxisCategories[y].info.trackId,
-          trackId: heatmapData.xAxisCategories[x].info.trackId,
-          accessKey: accessKey
-        }).toString(), `_blank`)
-      } :
-      undefined
+    onClick: onClickUseGenomeBrowser({heatmapData, currentGenomeBrowser, heatmapConfig})
   }
 }
 
