@@ -70,7 +70,6 @@ const renderOrderings = ({heatmapData,heatmapConfig,allOrderings,currentOrdering
 }
 
 const renderDownloadButton = ({
-    heatmapData,
     heatmapConfig:{
         shortDescription,
         description,
@@ -81,7 +80,8 @@ const renderDownloadButton = ({
     },
     currentOrdering,
     allNumCoexpressions,
-    currentNumCoexpressions}) => (
+    currentNumCoexpressions}
+    ,heatmapData) => (
     <div style={{display: `inline-block`, padding: `5px`}}>
         <DownloadButton
             disclaimer={disclaimer}
@@ -263,7 +263,7 @@ const renderAnatomogramControlsAndCanvas = (args, heatmapDataToPresent, anatomog
                 {renderGenomeBrowsersDropdown(args)}
                 {renderOrderings(args)}
                 {renderFiltersButton(args)}
-                {renderDownloadButton(args)}
+                {renderDownloadButton(args,heatmapDataToPresent)}
             </div>
         </div>
         {
