@@ -1,16 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import Anatomogram from 'anatomogram'
-
 import uncontrollable from 'uncontrollable'
 
 import GenomeBrowsersDropdown from './controls/GenomeBrowsersDropdown.js'
 import OrderingsDropdown from './controls/OrderingsDropdown.js'
 import DownloadButton from './controls/download-button/DownloadButton.js'
 import FiltersButton from './controls/filter/FiltersButton.js'
-
-import HeatmapCanvas from '../show/HeatmapCanvas.js'
 
 import cellTooltipFormatter from './formatters/heatmapCellTooltipFormatter.js'
 import axesFormatters from './formatters/axesFormatters.js'
@@ -24,6 +20,13 @@ import CoexpressionOption from './coexpression/CoexpressionOption.js'
 import makeEventCallbacks from './Events.js'
 
 import {manipulate} from './Manipulators.js'
+
+import debounceRender from 'react-debounce-render'
+import _Anatomogram from 'anatomogram'
+import _HeatmapCanvas from '../show/HeatmapCanvas.js'
+
+const Anatomogram = debounceRender(_Anatomogram, 50)
+const HeatmapCanvas = debounceRender(_HeatmapCanvas, 50)
 
 import URI from 'urijs'
 
@@ -214,39 +217,12 @@ const heatmapDataToPresent = ({
     },
     heatmapData
 )
-const delayRender = (Component) => {
-    return class extends React.Component {
-        constructor(props){
-            super(props)
-            this.state = {
-                hasEnqueuedUpdate : true
-            }
-        }
-        shouldComponentUpdate(nextProps, nextState){
-            if(!this.state.hasEnqueuedUpdate && !nextState.hasEnqueuedUpdate){
-                setTimeout(()=>this.setState({hasEnqueuedUpdate: true}));
-                return false;
-            } else if (nextState.hasEnqueuedUpdate){
-                return true;
-            } else {
-                return false;
-            }
-        }
-        componentDidUpdate(){
-            this.setState({hasEnqueuedUpdate: false})
-        }
-        render(){
-            return <Component {...this.props} />
-        }
-    }
-}
-const HeatmapCanvasDelayRender = delayRender(HeatmapCanvas)
 
 const renderHeatmapCanvasWithSelectedDataSlice = (_args, heatmapDataToPresent) => {
     const args = Object.assign({}, _args, {heatmapData: heatmapDataToPresent})
     return (
         <CanvasLegend {...args}>
-            <HeatmapCanvasDelayRender
+            <HeatmapCanvas
                 {...heatmapExtraArgs(args)}
                 heatmapData={heatmapDataToPresent} />
         </CanvasLegend>
@@ -303,9 +279,9 @@ class _HeatmapWithControls extends React.Component {
     })
     }
 
-    _onTissueIdIsUnderFocus(id) {
+    _onTissueIdIsUnderFocus(ids) {
       this.setState({
-        highlightColumns: [id]
+        highlightColumns: ids
       })
     }
 
