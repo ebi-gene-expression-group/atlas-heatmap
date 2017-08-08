@@ -1,46 +1,27 @@
-.gxaHeatmapLegend {
-  color: #606060;
-  border: 0 solid olive;
-}
-.gxaHeatmapLegend .legend-item {
+.gxaGradientLegend {
+  font-size: 12px;
+  padding-top: 10px;
+  margin-left: 10px;
+  text-align: center;
   display: inline-block;
-  margin-left: 8px;
-  padding: 4px;
+}
+.gxaGradientColour {
+  overflow: auto;
+  height: 15px;
+  margin: 2px 6px 2px 6px;
   vertical-align: middle;
-  cursor: default;
-}
-.gxaHeatmapLegend .legend-item.legend-item-off {
-  color: #ccc;
-}
-.gxaHeatmapLegend .legend-item.legend-item-off div {
-  background-color: #f7f7f7;
-}
-.gxaHeatmapLegend .legend-item .legend-rectangle {
-  width: 12px;
-  height: 12px;
-  border: 1px rgba(0, 0, 0, 0.2) solid;
+  width: 200px;
   display: inline-block;
-  margin-right: 4px;
+}
+.gxaGradientLevel {
+  white-space: nowrap;
+  font-size: 10px;
   vertical-align: middle;
+  display: table-cell;
 }
-.gxaHeatmapLegend .legend-item .gxaInfoIcon:before {
-  font-size: 180%;
-  color: #7e7e7e;
+.gxaGradientLevelMin {
+  text-align: right;
 }
-.gxaHeatmapLegend .legend-item:hover .gxaInfoIcon:before {
-  color: #353535;
-}
-@font-face {
-  font-family: 'EBI-Generic';
-  src: url('https://www.ebi.ac.uk/web_guidelines/fonts/EBI-Generic/fonts/EBI-Generic.eot');
-  src: url('https://www.ebi.ac.uk/web_guidelines/fonts/EBI-Generic/fonts/EBI-Generic.eot?#iefix') format('embedded-opentype'), url('https://www.ebi.ac.uk/web_guidelines/fonts/EBI-Generic/fonts/EBI-Generic.woff') format('woff'), local('☺'), url('https://www.ebi.ac.uk/web_guidelines/fonts/EBI-Generic/fonts/EBI-Generic.svg#EBI-Generic') format('svg'), url('https://www.ebi.ac.uk/web_guidelines/fonts/EBI-Generic/fonts/EBI-Generic.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-.gxaInfoIcon:before {
-  font-family: 'EBI-Generic';
-  font-size: 100%;
-  color: #BBB;
-  content: attr(data-icon);
-  margin: 0 0 0 0;
+.gxaGradientLevelMax {
+  text-align: left;
 }
