@@ -68,13 +68,13 @@ DownloadWithModal.defaultProps = {
 
 const SplitDownloadButton = ({downloadOptions}) => (
     <SplitButton
+        id={"Download-split-button"}
         bsSize="small"
         onClick={downloadOptions[0].onClick}
-        title={"Download"}
-        style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
+        title={"Download"}>
         {
             downloadOptions.map((o,ix) => (
-                <MenuItem eventKey={ix} id={o.description} onClick={o.onClick}>
+                <MenuItem key={ix} eventKey={ix} id={o.description} onClick={o.onClick}>
                     <Glyphicon glyph="download-alt"/> {o.description}
                 </MenuItem>
             ))
