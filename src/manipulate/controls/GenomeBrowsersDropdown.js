@@ -45,7 +45,7 @@ class GenomeBrowsersDropdown extends React.Component {
                     <Dropdown.Toggle bsSize="small"
                                      style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
                         <Glyphicon glyph={this._genomeBrowserIcon(this.props.selected)}/>
-                        {genomeBrowsers.find(gb => this.props.selected === gb.id).label}
+                        &nbsp;{genomeBrowsers.find(gb => this.props.selected === gb.id).label}
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu bsSize="small">
