@@ -91,10 +91,10 @@ const renderDownloadButton = ({
             currentlyShownContent={{
               name: shortDescription || "download",
               descriptionLines:
-                [].concat(
-                    [description],
+                description.concat(
                     experiment ? [] : [`Ordering: ${currentOrdering.name}`],
-                    allNumCoexpressions && currentNumCoexpressions ? [`Including ${currentNumCoexpressions} genes with similar expression pattern`] : []
+                    allNumCoexpressions && currentNumCoexpressions ? [`Including ${currentNumCoexpressions} genes with similar expression pattern`] : [],
+                    experiment ? ["Results as shown on page"] : []
                 ),
               heatmapData
             }}

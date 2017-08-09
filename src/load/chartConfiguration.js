@@ -11,19 +11,31 @@ const introductoryMessage = (experiment, profiles) => {
     return `Showing ${numberWithCommas(shownRows)} ` + (totalRows === shownRows ? what + `:` : `of ${numberWithCommas(totalRows)} ${what} found:`)
 }
 
-const queryDescription = (geneQuery, conditionQuery, species) => {
-    // Since Atlas uses URLEncoder in SemanticQuery.java
-    const plusDecode = str => decodeURIComponent(str.replace(/\+/g, `%20`))
+const plusDecode = str => decodeURIComponent(str.replace(/\+/g, `%20`))
 
+const multiExperimentQueryDescription = ({geneQuery, conditionQuery, species}) => {
+    // Since Atlas uses URLEncoder in SemanticQuery.java
     const decodedGeneQuery = plusDecode(geneQuery)
     const decodedConditionQuery = plusDecode(conditionQuery)
     const decodedSpecies = plusDecode(species)
 
-    return `Query results for: ${decodedGeneQuery}` +
+    return [`Query results for: ${decodedGeneQuery}` +
         (decodedConditionQuery ? `, in conditions ${decodedConditionQuery}` : ``) +
         (decodedSpecies ?
             `, in species ${decodedSpecies[0].toUpperCase() + decodedSpecies.slice(1).toLowerCase()}` :
             ``)
+        ]
+}
+
+const singleExperimentQueryDescription = ({geneQuery, experiment:{description, accession}}) => {
+    const decodedGeneQuery = plusDecode(geneQuery)
+
+    return [].concat(
+        [`Experiment accession: ${accession}`],
+        // description can be empty, see ExperimentsCacheLoader.java or BaselineExperimentsBuilder.java
+        description ? [description] : [],
+        decodedGeneQuery ? [`Gene query: ${decodedGeneQuery}`] : []
+    )
 }
 
 const getChartConfiguration = (data, inProxy, outProxy, atlasUrl, isWidget) => {
@@ -37,10 +49,9 @@ const getChartConfiguration = (data, inProxy, outProxy, atlasUrl, isWidget) => {
     }
 
     const description =
-        isMultiExperiment(experiment) ?
-            queryDescription(geneQuery, conditionQuery, species) :
-            // description can be empty, see ExperimentsCacheLoader.java or BaselineExperimentsBuilder.java
-            experiment.description || experiment.accession
+        (isMultiExperiment(experiment)
+         ? multiExperimentQueryDescription
+         : singleExperimentQueryDescription)(Object.assign({}, data, data.config))
 
     const shortDescription =
         isMultiExperiment(experiment) ?
