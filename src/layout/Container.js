@@ -19,7 +19,7 @@ const Container = (props) => {
         URI(atlasUrl).segment(`query`).search({geneQuery, conditionQuery, species})
 
     return (
-        <div className={`row column`}>
+        <div className={`row column expanded`}>
             { isWidget && data.experiment &&
               <ExperimentDescription outProxy={outProxy}
                                      experimentUrl={URI(data.experiment.urls.main_page, atlasUrl).toString()}

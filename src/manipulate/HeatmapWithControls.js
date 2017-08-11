@@ -229,7 +229,7 @@ const renderHeatmapCanvasWithSelectedDataSlice = (_args, heatmapDataToPresent) =
 
 const renderAnatomogramControlsAndCanvas = (args, heatmapDataToPresent, anatomogramArgs) => (
     <div>
-        <div className="row">
+        <div className="row expanded">
             <div className="small-12 large-4 columns">
                 {args.heatmapConfig.introductoryMessage}
             </div>
@@ -243,13 +243,13 @@ const renderAnatomogramControlsAndCanvas = (args, heatmapDataToPresent, anatomog
         {
             renderGenomeBrowserHint(args)
         }
-        <div className="row">
+        <div className="row expanded">
           { !!anatomogramArgs &&
-            <div className={`small-12 medium-3 columns`}>
+            <div className={`small-12 medium-2 columns`}>
               <Anatomogram {...anatomogramArgs}/>
             </div> }
 
-            <div className={`small-12 ${!anatomogramArgs ? `` : `medium-9`} columns`}>
+            <div className={`small-12 ${!anatomogramArgs ? `` : `medium-10`} columns`}>
               { renderHeatmapCanvasWithSelectedDataSlice(args, heatmapDataToPresent) }
               { renderCoexpressionOption(args) }
             </div>
