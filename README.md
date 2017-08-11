@@ -81,9 +81,6 @@ expressionAtlasHeatmapRender({...})
 For all the options available visit the [examples showcase](http://www.ebi.ac.uk/gxa/resources/test/widget/showcase/index.html).
 
 ##### Notes for developers
-`imports-loader`, although not strictly needed, is necessary to build the `anatomogram` package and therefore it is
-included in `devDependencies`.
-
 The authoritative docs are the code itself, here is the main function: [here](https://github.com/gxa/atlas-heatmap/blob/master/src/Main.js)
 
 #### Licence
