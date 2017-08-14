@@ -17,6 +17,7 @@ import ContainerLoader from './layout/ContainerLoader.js'
  * @param {string}          options.atlasUrl - Atlas host and path with protocol and port
  * @param {string}          options.inProxy - Inbound proxy to pull assets from outside your domain
  * @param {string}          options.outProxy - Outbound proxy for links that take you outside the current domain
+ * @param {boolean}         options.useEbiFramework - Import styles from EBI Framework 1.2 lite
  * @param {string}          options.experiment
  * @param {Object|string}   options.query - Query object or relative URL endpoint to source data from:
  *                              e.g. json/experiments/E-PROT-1, /json/genes/ENSG00000005801, /json/genesets/GO:0000001
