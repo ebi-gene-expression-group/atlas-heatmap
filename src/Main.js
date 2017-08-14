@@ -57,8 +57,7 @@ const render = options => {
     }
 
     ReactDOM.render(
-        <ExpressionAtlasHeatmap {...DEFAULT_OPTIONS}
-                                {...options} />,
+        <ExpressionAtlasHeatmap {...options} />,
         typeof target === `string` ? document.getElementById(target) : target,
         render)
 
