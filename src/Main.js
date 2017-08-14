@@ -44,8 +44,7 @@ const ExpressionAtlasHeatmap = options => {
         <ContainerLoader
             {...DEFAULT_OPTIONS}
             {...options}
-            sourceUrl={sourceUrl.toString()}
-        />
+            sourceUrl={sourceUrl.toString()} />
     )
 }
 
@@ -53,7 +52,8 @@ const render = options => {
     const { disableGoogleAnalytics = false, render = () => {}, target } = options
 
     ReactDOM.render(
-        <ExpressionAtlasHeatmap {...options} />,
+        <ExpressionAtlasHeatmap {...DEFAULT_OPTIONS}
+                                {...options} />,
         typeof target === `string` ? document.getElementById(target) : target,
         render)
 
