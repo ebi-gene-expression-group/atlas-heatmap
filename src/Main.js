@@ -33,7 +33,8 @@ const DEFAULT_OPTIONS = {
     atlasUrl: `https://www.ebi.ac.uk/gxa/`,
     inProxy: ``,
     outProxy: ``,
-    experiment: ``
+    experiment: ``,
+    useEbiFramework: true
 }
 
 const ExpressionAtlasHeatmap = options => {
@@ -50,6 +51,10 @@ const ExpressionAtlasHeatmap = options => {
 
 const render = options => {
     const { disableGoogleAnalytics = false, render = () => {}, target } = options
+
+    if (options.useEbiFramework) {
+        require('./ebiFrameworkLite.css')
+    }
 
     ReactDOM.render(
         <ExpressionAtlasHeatmap {...DEFAULT_OPTIONS}
