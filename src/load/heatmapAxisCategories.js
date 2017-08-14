@@ -20,13 +20,6 @@ const getHeatmapXAxisCategories = ({columnHeaders, experiment, inProxy, atlasUrl
       info: {
         trackId: columnHeader.id,
         tooltip: {
-          resources: columnHeader.resources.map(resource => ({
-            type: resource.type,
-            url: Url.resolve(inProxy + atlasUrl, resource.uri),
-            icon: Url.resolve(
-              pathToResources,
-              Path.basename(require(`../../assets/${resource.type}-icon.png`)))
-          })),
           ...columnHeader.contrastSummary
         }
       }
