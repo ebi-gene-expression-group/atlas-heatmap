@@ -26,18 +26,17 @@ class ChartContainer extends React.Component {
 
     render() {
         return (
-            <div>
+            <div style={{width: `100%`}}>
               {this.props.chartData.boxplotData &&
                   <a href="#" onClick={this.handleClick}>
                     {`Switch to ${this._theOtherChartType()} view`}
                   </a>
               }
-              <div className={this.state.chartType === 'heatmap' ? '' : 'hidden' } >
-                <Heatmap
-                  {...this.props.chartData}/>
+              <div style={{display: this.state.chartType === `heatmap` ? `block` : `none`, width: `100%`}} >
+                <Heatmap {...this.props.chartData} />
               </div>
               { this.props.chartData.boxplotData &&
-                <div className={this.state.chartType === 'boxplot' ? '' : 'hidden' } >
+                <div style={{display: this.state.chartType === `boxplot` ? `block` : `none`, width: `100%`}} >
                   <Boxplot {...this.props.chartData.boxplotData} />
                 </div>
               }

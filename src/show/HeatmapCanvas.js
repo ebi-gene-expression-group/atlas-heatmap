@@ -25,8 +25,8 @@ class HeatmapCanvas extends React.Component {
     shouldComponentUpdate(nextProps) {
         // Callback that does setState fails: https://github.com/kirjs/react-highcharts/issues/245
         // Don’t call render again after zoom happens
-        return hash.MD5([nextProps.heatmapData, nextProps.events.onClick]) !==
-               hash.MD5([this.props.heatmapData, this.props.events.onClick])
+        return hash.MD5([nextProps.heatmapData, nextProps.events.onClick, nextProps.withAnatomogram]) !==
+               hash.MD5([this.props.heatmapData, this.props.events.onClick, this.props.withAnatomogram])
     }
 
     _countColumns() {
@@ -251,7 +251,8 @@ HeatmapCanvas.propTypes = {
       onHoverOff: PropTypes.func.isRequired,
       onClick: PropTypes.func
     }),
-    onZoom: PropTypes.func.isRequired
+    onZoom: PropTypes.func.isRequired,
+    withAnatomogram: PropTypes.bool.isRequired
 }
 
 const Main = props => (

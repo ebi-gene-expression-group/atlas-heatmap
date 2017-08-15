@@ -216,24 +216,25 @@ const heatmapDataToPresent = ({
     heatmapData
 )
 
-const renderHeatmapCanvasWithSelectedDataSlice = (_args, heatmapDataToPresent) => {
+const renderHeatmapCanvasWithSelectedDataSlice = (_args, heatmapDataToPresent, withAnatomogram) => {
     const args = Object.assign({}, _args, {heatmapData: heatmapDataToPresent})
     return (
         <CanvasLegend {...args}>
             <HeatmapCanvas
                 {...heatmapExtraArgs(args)}
-                heatmapData={heatmapDataToPresent} />
+                heatmapData={heatmapDataToPresent}
+                withAnatomogram={withAnatomogram} />
         </CanvasLegend>
     )
 }
 
 const renderAnatomogramControlsAndCanvas = (args, heatmapDataToPresent, anatomogramArgs) => (
-    <div>
-        <div className="row expanded">
-            <div className="small-12 large-4 columns">
+    <div style={{clear: `both`, width: `95%`, marginLeft: `0.9375rem`, marginRight: `0.9375rem`}}>
+        <div style={{clear: `both`}}>
+            <div style={{display: `inline-block`, width: `30%`}}>
                 {args.heatmapConfig.introductoryMessage}
             </div>
-            <div className="small-12 large-8 columns" style={{textAlign:"right"}}>
+            <div style={{display: `inline-block`, width: `70%`, textAlign: `right`}}>
                 {renderGenomeBrowsersDropdown(args)}
                 {renderOrderings(args)}
                 {renderFiltersButton(args)}
@@ -243,14 +244,14 @@ const renderAnatomogramControlsAndCanvas = (args, heatmapDataToPresent, anatomog
         {
             renderGenomeBrowserHint(args)
         }
-        <div className="row expanded">
-          { !!anatomogramArgs &&
-            <div className={`small-12 medium-2 columns`}>
+        <div style={{clear: `both`}}>
+            { !!anatomogramArgs &&
+            <div style={{width: `20%`, display: `inline-block`, verticalAlign: `top`}}>
               <Anatomogram {...anatomogramArgs}/>
             </div> }
 
-            <div className={`small-12 ${!anatomogramArgs ? `` : `medium-10`} columns`}>
-              { renderHeatmapCanvasWithSelectedDataSlice(args, heatmapDataToPresent) }
+            <div style={{width: !anatomogramArgs ? `100%` : `80%`, display: `inline-block`, verticalAlign: `top`}}>
+              { renderHeatmapCanvasWithSelectedDataSlice(args, heatmapDataToPresent, !!anatomogramArgs) }
               { renderCoexpressionOption(args) }
             </div>
         </div>
