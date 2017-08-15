@@ -1,30 +1,11 @@
-.gxaFilter {
-  padding-bottom: 1.25rem;
-}
-.gxaFilter .filterBody input {
-  margin: 0.2rem;
-}
-.gxaFilter .filterBody .groupName {
-  display: inline-block;
-  cursor: pointer;
-}
-.gxaFilter .filterBody .groupName:first-letter {
-  text-transform: capitalize;
-}
-.gxaFilter .filterBody .groupName:hover {
-  text-decoration: underline;
-}
-.gxaFilter .filterBody .groupName:indeterminate {
-  opacity: 0.75;
-}
-.gxaFilter .filterBody .options {
-  padding-left: 15px;
-  font-size: 85%;
-  -webkit-column-width: 180px;
-  -moz-column-width: 180px;
-  column-width: 180px;
+.gxaCapitalize:first-letter {
+    text-transform: capitalize;
 }
 
-.sr-only {
-    display: none;
+.gxaInline {
+    display: inline-block;
+}
+
+.gxaPaddingLeftSmall {
+    padding-left: 5px;
 }

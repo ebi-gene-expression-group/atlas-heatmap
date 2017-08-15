@@ -18,31 +18,31 @@ const _FilterOption = ({
 
     const openable = allValues.length !== 1 || allValues[0] !==name
     return (
-        <div className="filterBody">
-            <input type="checkbox"
+        <div>
+            <input type={`checkbox`}
+                   style={{margin: `10px 0 0 `}}
                    value={name}
                    onChange={
                        onChangeCurrentValues.bind(this, xor(allValues, currentValues).length ? allValues: [])
                    }
                    checked={allChecked}
-                   ref={checkbox => {checkbox ? checkbox.indeterminate = !allChecked && !allUnchecked : null}}
-            />
+                   ref={checkbox => {checkbox ? checkbox.indeterminate = !allChecked && !allUnchecked : null}} />
 
-            <div className="groupName"
-                 onClick={openable ? onChangeIsOpen.bind(this, !isOpen) : () => {}}
-                 href="#">
-                {name}
-                {openable && <Glyphicon style={{fontSize: `x-small`, paddingLeft: `5px`}} glyph={isOpen ? `menu-up` : `menu-down`}/>}
+            <div onClick={openable ? onChangeIsOpen.bind(this, !isOpen) : () => {}}
+                 href={`#`}
+                 className={`gxaCapitalize gxaInline gxaPaddingLeftSmall`}>{name}
+                 {openable && <Glyphicon style={{fontSize: `x-small`, paddingLeft: `5px`}} glyph={isOpen ? `menu-up` : `menu-down`}/>}
             </div>
 
             {openable && isOpen &&
-            <div className="options">
+            <div>
                 {allValues.map(value => (
-                    <div className="option" key={value}>
-                      <input type="checkbox"
+                    <div key={value} style={{marginLeft: `20px`, fontSize: `smaller`}}>
+                      <input type={`checkbox`}
                              value={value}
                              onChange={onChangeCurrentValues.bind(this, xor([value], currentValues))}
-                             checked={currentValues.includes(value)}/>
+                             checked={currentValues.includes(value)}
+                             style={{margin: `0`}}/>
                       <span> {value}</span>
                     </div>
                 ))}

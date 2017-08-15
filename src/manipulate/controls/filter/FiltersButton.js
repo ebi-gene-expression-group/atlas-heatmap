@@ -1,41 +1,42 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Modal from 'react-bootstrap/lib/Modal'
-import Button from 'react-bootstrap/lib/Button'
-import Glyphicon from 'react-bootstrap/lib/Glyphicon'
+import {Modal, Button, Glyphicon, Nav, NavItem} from 'react-bootstrap/lib'
+// import Button from 'react-bootstrap/lib/Button'
+// import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 
 import {groupedColumnPropTypes,columnCategoryPropTypes} from '../../chartDataPropTypes.js'
 
 import FilterOption from './FilterOption.js'
 import {groupBy, sortBy} from 'lodash'
 
-import './NavPills.css'
+// import './NavPills.css'
 import '../controlButton.css'
 
 const groupIntoPairs = (arr,f) => Object.entries(groupBy(arr,f))
 
 import uncontrollable from 'uncontrollable'
 
-const tabs = (className, style={}, aStyle={}) => (
-	({allTabs,disabledTabs=[], currentTab, onChangeCurrentTab}) => (
-		<ul className={className} style={style}>
-		{
-			allTabs.map(tab => (
-			   <li key={tab}
-				   className={tab==currentTab ? "active" : disabledTabs.includes(tab) ? "disabled" : "" }>
-				   <a onClick={ disabledTabs.includes(tab) ? ()=> {} : onChangeCurrentTab.bind(this, tab)} style={aStyle}>
-					   {tab}
-				   </a>
-			   </li>
-			))
-		}
-		</ul>
-	)
+const navTabs = (className) => (
+  ({allTabs, disabledTabs=[], currentTab, onChangeCurrentTab}) => (
+		<Nav bsStyle={className}
+				 activeKey={currentTab}
+				 onSelect={onChangeCurrentTab}
+		     style={{fontSize: `medium`}}>
+      {
+        allTabs.map((tab) => (
+					<NavItem eventKey={tab}
+									 key={tab}
+									 disabled={disabledTabs.includes(tab)}>
+              {tab}
+					</NavItem>
+        ))
+      }
+		</Nav>
+  )
 )
 
-const topRibbonTabs = tabs("nav nav-tabs")
-const categoryTabs = tabs("nav nav-pills",{fontSize:"medium"}, {border:"none"})
-
+const topRibbonTabs = navTabs(`tabs`)
+const categoryTabs = navTabs(`pills`)
 
 const _FiltersModal = ({
 	showModal,
@@ -47,12 +48,15 @@ const _FiltersModal = ({
 	currentValues,
 	allValues,
 	onChangeCurrentValues
-	}) => (
-	<Modal show={showModal} onHide={onCloseModal} bsSize="large" style={{opacity:0.95}} >
+}) => (
+	<Modal show={showModal}
+				 onHide={onCloseModal}
+				 bsSize={`large`}
+				 style={{opacity: 0.95}} >
 		<Modal.Header closeButton>
 		{allTopTabs.length > 1
-		 ? topRibbonTabs({allTabs:allTopTabs, currentTab:currentTopTab, onChangeCurrentTab:onChangeCurrentTopTab})
-		 : <h4 className="modal-title"> Filters </h4>
+		 ? topRibbonTabs({allTabs: allTopTabs, currentTab: currentTopTab, onChangeCurrentTab: onChangeCurrentTopTab})
+		 : <h4 className={`modal-title`}> Filters </h4>
 		}
 		</Modal.Header>
 
@@ -63,28 +67,28 @@ const _FiltersModal = ({
 					disabledTabs: allCategories.filter(c => c.disabled).map(c => c.name),
 					currentTab:(allCategories.find(category => allValues.every(value=> (
 						currentValues.some(currentValue => currentValue.value === value.value) === value.categories.includes(category.name)
-					)) && !category.disabled) || {name: ""}).name,
+					)) && !category.disabled) || {name: ``}).name,
 					onChangeCurrentTab: (categoryName) => onChangeCurrentValues(
 						allValues
 						.filter(e=>e.categories.includes(categoryName))
 					)
 				})
 			}
-			<div className="gxaFilter row">
-                {
+			<div style={{marginLeft: `20px`, columnCount: `2`}}>
+				{
 					sortBy(
 						groupIntoPairs(
 							[].concat.apply([],
 								allValues
 								.map(v =>
-									(v.groupings.find(g => g.name == currentTopTab) || {values:[]})
+									(v.groupings.find(g => g.name === currentTopTab) || {values:[]})
 									.values
 									.map(group => [group.label, v.value])
 								)
 							),
-							'0'
+							`0`
 						).map(a => [a[0], [].concat.apply([], a[1].map(aa=> aa[1]))]),
-						a => a[0]==='Unmapped' ? "_" : " " + a[0] //makes Unmapped go last
+						a => a[0] === `Unmapped` ? `_` : ` ${a[0]}` //makes Unmapped go last
 					).map(a => (
 						<FilterOption
 							key={a[0]}
@@ -118,13 +122,12 @@ const FiltersModal = uncontrollable(_FiltersModal, {
 })
 
 const FiltersButton = ({disabled,onClickButton}) => (
-	<Button bsSize="small"
+	<Button bsSize={`small`}
 					onClick={onClickButton}
 					disabled={disabled}
 					title={disabled ? `Reset zoom to enable filters` : ``}
 					className={`gxaButtonUnset`}>
-		<Glyphicon glyph="equalizer"/>
-		<span style={{verticalAlign: `middle`}}> Filters</span>
+		<Glyphicon glyph={`equalizer`}/><span style={{verticalAlign: `middle`}}> Filters</span>
 	</Button>
 )
 
@@ -136,7 +139,7 @@ const _Main = props => (
 		<FiltersModal
 			{...props}
 			onCloseModal={props.onChangeShowModal.bind(this, false)}
-			defaultCurrentTopTab={props.tabNames[0] || ""}
+			defaultCurrentTopTab={props.tabNames[0] || ``}
 			defaultCurrentCategory={props.allCategories.find(c => !c.disabled)}
 			/>
 	</div>
