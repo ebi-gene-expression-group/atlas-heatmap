@@ -18,7 +18,7 @@ const _FilterOption = ({
 
     const openable = allValues.length !== 1 || allValues[0] !==name
     return (
-        <div className="filterBody large-6 columns">
+        <div className="filterBody">
             <input type="checkbox"
                    value={name}
                    onChange={

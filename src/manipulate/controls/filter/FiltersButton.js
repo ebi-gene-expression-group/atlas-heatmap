@@ -1,12 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {groupedColumnPropTypes,columnCategoryPropTypes} from '../../chartDataPropTypes.js'
 import Modal from 'react-bootstrap/lib/Modal'
 import Button from 'react-bootstrap/lib/Button'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
-require("./NavPills.css")
+
+import {groupedColumnPropTypes,columnCategoryPropTypes} from '../../chartDataPropTypes.js'
+
 import FilterOption from './FilterOption.js'
 import {groupBy, sortBy} from 'lodash'
+
+import './NavPills.css'
+import '../controlButton.css'
 
 const groupIntoPairs = (arr,f) => Object.entries(groupBy(arr,f))
 
@@ -102,7 +106,7 @@ const _FiltersModal = ({
 
 		<Modal.Footer>
 			<Button onClick={onCloseModal}
-					style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
+							className={`gxaButtonUnset`}>
 				Close
 			</Button>
 		</Modal.Footer>
@@ -114,9 +118,11 @@ const FiltersModal = uncontrollable(_FiltersModal, {
 })
 
 const FiltersButton = ({disabled,onClickButton}) => (
-	<Button bsSize="small" onClick={onClickButton} disabled={disabled}
-			title={disabled ? `Reset zoom to enable filters` : ``}
-			style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
+	<Button bsSize="small"
+					onClick={onClickButton}
+					disabled={disabled}
+					title={disabled ? `Reset zoom to enable filters` : ``}
+					className={`gxaButtonUnset`}>
 		<Glyphicon glyph="equalizer"/>
 		<span style={{verticalAlign: `middle`}}> Filters</span>
 	</Button>

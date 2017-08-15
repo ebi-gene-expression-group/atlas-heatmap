@@ -4,6 +4,8 @@ import Dropdown from 'react-bootstrap/lib/Dropdown'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 
+import './controlButton.css'
+
 class GenomeBrowsersDropdown extends React.Component {
     constructor(props) {
         super(props)
@@ -43,7 +45,7 @@ class GenomeBrowsersDropdown extends React.Component {
                           title={`Choose genome browser`}>
 
                     <Dropdown.Toggle bsSize="small"
-                                     style={{textTransform: `unset`, letterSpacing: `unset`, height: `unset`}}>
+                                     className={`gxaButtonUnset`}>
                         <Glyphicon glyph={this._genomeBrowserIcon(this.props.selected)}/>
                         &nbsp;{genomeBrowsers.find(gb => this.props.selected === gb.id).label}
                     </Dropdown.Toggle>

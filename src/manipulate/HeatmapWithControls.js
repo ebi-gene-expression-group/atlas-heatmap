@@ -15,6 +15,7 @@ import {
   DataSeriesLegend as MultiExperimentLegend,
   GradientLegend as SingleExperimentLegend
 } from './heatmap-legend/Main.js'
+
 import CoexpressionOption from './coexpression/CoexpressionOption.js'
 
 import makeEventCallbacks from './Events.js'
@@ -217,7 +218,11 @@ const heatmapDataToPresent = ({
 )
 
 const renderHeatmapCanvasWithSelectedDataSlice = (_args, heatmapDataToPresent, withAnatomogram) => {
-    const args = Object.assign({}, _args, {heatmapData: heatmapDataToPresent})
+    const args = {
+      ..._args,
+      heatmapData: heatmapDataToPresent
+    }
+
     return (
         <CanvasLegend {...args}>
             <HeatmapCanvas
@@ -229,7 +234,7 @@ const renderHeatmapCanvasWithSelectedDataSlice = (_args, heatmapDataToPresent, w
 }
 
 const renderAnatomogramControlsAndCanvas = (args, heatmapDataToPresent, anatomogramArgs) => (
-    <div style={{clear: `both`, width: `95%`, marginLeft: `0.9375rem`, marginRight: `0.9375rem`}}>
+    <div style={{clear: `both`, width: `100%`}}>
         <div style={{clear: `both`}}>
             <div style={{display: `inline-block`, width: `30%`}}>
                 {args.heatmapConfig.introductoryMessage}
@@ -246,7 +251,7 @@ const renderAnatomogramControlsAndCanvas = (args, heatmapDataToPresent, anatomog
         }
         <div style={{clear: `both`}}>
             { !!anatomogramArgs &&
-            <div style={{width: `20%`, display: `inline-block`, verticalAlign: `top`}}>
+            <div style={{width: `17%`, marginRight: `3%`, display: `inline-block`, verticalAlign: `top`}}>
               <Anatomogram {...anatomogramArgs}/>
             </div> }
 

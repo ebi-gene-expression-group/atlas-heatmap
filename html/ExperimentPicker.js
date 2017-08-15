@@ -50,7 +50,7 @@ class ExperimentPicker extends React.Component {
 
     render() {
         return (
-            <div className="row">
+            <div className="row column">
                 <div className="row">
                     <div className="small-12 columns">
                         <form onSubmit={this.handleSubmit}>

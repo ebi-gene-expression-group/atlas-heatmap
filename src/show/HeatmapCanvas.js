@@ -73,7 +73,7 @@ class HeatmapCanvas extends React.Component {
 
         const highchartsConfig = {
             chart: {
-                marginTop,
+                // marginTop,
                 marginBottom,
                 marginRight,
                 height,
@@ -221,9 +221,9 @@ class HeatmapCanvas extends React.Component {
             })
         }
 
-        const maxWidthFraction = this._countColumns() > 6 ? 1 : Math.max(0.5, 1 - Math.exp(-(1 + 0.05 * Math.pow(1 + this._countColumns(), 2))))
+        // const maxWidthFraction = this._countColumns() > 6 ? 1 : Math.max(0.5, 1 - Math.exp(-(1 + 0.05 * Math.pow(1 + this._countColumns(), 2))))
         return (
-            <div style={{maxWidth: `${maxWidthFraction * 100}%`, minWidth: `600px`}}>
+            <div>
                 <ReactHighcharts ref={(ref) => this.highchartsRef = ref} config={highchartsConfig}/>
             </div>
         )
