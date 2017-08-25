@@ -3,8 +3,7 @@ import PropTypes from 'prop-types'
 import {MenuItem, Glyphicon, SplitButton, Button, Modal} from 'react-bootstrap/lib'
 
 import uncontrollable from 'uncontrollable'
-
-import Disclaimers from './Disclaimers.js'
+import Disclaimers from 'expression-atlas-disclaimers'
 import ClientSideDownload from './Download.js'
 
 import {heatmapDataPropTypes} from '../../../manipulate/chartDataPropTypes.js'

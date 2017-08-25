@@ -14,6 +14,7 @@
     "color": "^2.0.0",
     "downloadjs": "^1.4.7",
     "expression-atlas-number-format": "latest",
+    "expression-atlas-disclaimers": "latest",
     "he": "^1.1.1",
     "highcharts": "git://github.com/gxa/highcharts-dist.git",
     "highcharts-custom-events": "^2.0.16",
