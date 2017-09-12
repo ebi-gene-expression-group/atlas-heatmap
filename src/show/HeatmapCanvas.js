@@ -63,7 +63,7 @@ class HeatmapCanvas extends React.Component {
         if (this._labelsPosition() === `rotated`) {
             return 60
         } else {
-            return 0
+            return 20
         }
     }
 
