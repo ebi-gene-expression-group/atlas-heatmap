@@ -39,7 +39,6 @@ Container.propTypes = {
     inProxy: PropTypes.string.isRequired,
     outProxy: PropTypes.string.isRequired,
     atlasUrl: PropTypes.string.isRequired,
-    sourceUrl: PropTypes.string.isRequired,
     showAnatomogram: PropTypes.bool.isRequired,
     isWidget: PropTypes.bool.isRequired,
     data: DataPropTypes.isRequired

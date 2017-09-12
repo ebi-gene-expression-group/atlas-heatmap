@@ -35,22 +35,27 @@ const DEFAULT_OPTIONS = {
     outProxy: ``,
     experiment: ``
 }
-
-const ExpressionAtlasHeatmap = options => {
-    const parsedQuery = parseQuery(options.query)
-    const sourceUrl = typeof parsedQuery === `string` ? parsedQuery : URI(resolveEndpoint(options.experiment)).addSearch(parsedQuery)
-
+const ExpressionAtlasHeatmap = options => (
     // The wrapping div is important to determine the width of the heatmap and know if the labels are going to be
     // rotated, so that we can set sensible margin sizes. See HeatmapCanvas.js
-    return (
-      <div className={`gxaHeatmapContainer`}>
+    <div className={`gxaHeatmapContainer`}>
         <ContainerLoader
             {...DEFAULT_OPTIONS}
             {...options}
-            sourceUrl={sourceUrl.toString()} />
-      </div>
-    )
-}
+            source={
+                typeof options.query == 'string'
+                ? {
+                    endpoint: options.query,
+                    params: {}
+                }
+                : {
+                    endpoint: resolveEndpoint(options.experiment),
+                    //the webapp wants "geneQuery" and "conditionQuery" as parameters but in the API offering query.gene and query.condition felt nicer
+                    params: Object.entries(options.query).map(p => ["gene", "condition"].includes(p[0]) ? [p[0]+"Query", p[1]]: p).reduce((acc,o)=>{ acc[o[0]]=o[1]; return acc}, {})
+                }} />
+    </div>
+
+)
 
 const render = options => {
     const { disableGoogleAnalytics = false, render = () => {}, target } = options
@@ -79,27 +84,5 @@ function resolveEndpoint(experiment) {
                 `json/experiments/${experiment}`
     )
 }
-
-function parseQuery(query) {
-    if (!query) {
-        return null
-    }
-
-    if (typeof query === `string`) {
-        return query
-    }
-
-    return {
-        geneQuery: stringifyIfNotString(query.gene),
-        conditionQuery: stringifyIfNotString(query.condition),
-        species: stringifyIfNotString(query.species),
-        source: stringifyIfNotString(query.source)
-    }
-}
-
-function stringifyIfNotString(o) {
-    return typeof o === `string` ? o : JSON.stringify(o)
-}
-
 
 export {ExpressionAtlasHeatmap as default, render}
