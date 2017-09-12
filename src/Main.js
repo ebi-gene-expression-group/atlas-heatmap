@@ -54,7 +54,6 @@ const ExpressionAtlasHeatmap = options => (
                     params: Object.entries(options.query).map(p => ["gene", "condition"].includes(p[0]) ? [p[0]+"Query", p[1]]: p).reduce((acc,o)=>{ acc[o[0]]=o[1]; return acc}, {})
                 }} />
     </div>
-
 )
 
 const render = options => {
