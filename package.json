@@ -1,6 +1,6 @@
 {
   "name": "expression-atlas-heatmap-highcharts",
-  "version": "3.5.4",
+  "version": "3.5.5",
   "description": "Expression Atlas Highcharts heatmap and boxplot of baseline and differential expression experiments from the Expression Atlas project (https://www.ebi.ac.uk/gxa)",
   "main": "lib/Main.js",
   "author": "Wojciech Bażant<wbazant@ebi.ac.uk>, Elisabet Barrera <barrera@ebi.ac.uk> and Alfonso Muñoz-Pomer Fuentes <amunoz@ebi.ac.uk>",
@@ -13,8 +13,8 @@
     "anatomogram": "latest",
     "color": "^2.0.0",
     "downloadjs": "^1.4.7",
-    "expression-atlas-number-format": "latest",
     "expression-atlas-disclaimers": "latest",
+    "expression-atlas-number-format": "latest",
     "he": "^1.1.1",
     "highcharts": "git://github.com/gxa/highcharts-dist.git",
     "highcharts-custom-events": "^2.0.16",
