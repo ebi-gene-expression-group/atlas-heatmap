@@ -55,18 +55,6 @@ class HeatmapCanvas extends React.Component {
         return this.props.heatmapData.xAxisCategories.length
     }
 
-    _getAdjustedMarginRight() {
-        // TODO Should add extra margin if labels are slanted and last ones (3 or so?) are very long. See reference_experiment_single_gene.html
-        // const initialMarginRight = 60
-        // return initialMarginRight * (1 + 10 / Math.pow(1 + this._countColumns(), 2))
-      
-        if (this._labelsPosition() === `rotated`) {
-            return 60
-        } else {
-            return 20
-        }
-    }
-
     _getAdjustedMarginTop() {
         const longestColumnLabelLength =
             Math.max(...this.props.heatmapData.xAxisCategories.map(category => category.label.length))
@@ -81,7 +69,8 @@ class HeatmapCanvas extends React.Component {
         }
     }
 
-    _getAdjustedHeight(marginTop, marginBottom) {
+    _getAdjustedHeight(marginBottom) {
+        const marginTop = this._getAdjustedMarginTop()  // A guess at best...
         const rowsCount = this.props.heatmapData.yAxisCategories.length
         const rowHeight = 40
         return rowsCount * rowHeight + marginTop + marginBottom
@@ -90,17 +79,13 @@ class HeatmapCanvas extends React.Component {
     render() {
         // TODO Should the margins be recalculated when the window is resized?
         const marginBottom = 10
-        const marginTop = this._getAdjustedMarginTop()
-        const marginRight = this._getAdjustedMarginRight()
-        const height = this._getAdjustedHeight(marginTop, marginBottom)
+        const height = this._getAdjustedHeight(marginBottom)
 
         const {cellTooltipFormatter, xAxisFormatter, yAxisFormatter, events, onZoom} = this.props
 
         const highchartsConfig = {
             chart: {
-                marginTop,
                 marginBottom,
-                marginRight,
                 height,
                 type: `heatmap`,
                 spacingTop: 0,
