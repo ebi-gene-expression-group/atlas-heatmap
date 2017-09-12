@@ -1,15 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Modal, Button, Glyphicon, Nav, NavItem} from 'react-bootstrap/lib'
-// import Button from 'react-bootstrap/lib/Button'
-// import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 
 import {groupedColumnPropTypes,columnCategoryPropTypes} from '../../chartDataPropTypes.js'
 
 import FilterOption from './FilterOption.js'
 import {groupBy, sortBy} from 'lodash'
 
-// import './NavPills.css'
 import '../controlButton.css'
 
 const groupIntoPairs = (arr,f) => Object.entries(groupBy(arr,f))
@@ -18,7 +15,10 @@ import uncontrollable from 'uncontrollable'
 
 const navTabs = (className) => (
   ({allTabs, disabledTabs=[], currentTab, onChangeCurrentTab}) => (
-		<Nav bsStyle={className}
+  	// Beware: we’re using a custom nav class, it’s just the same as Bootstrap’s but renamed to avoid clashes with
+		// other environemnts where nav is also used
+		<Nav bsClass={`gxa-nav`}
+			   bsStyle={className}
 				 activeKey={currentTab}
 				 onSelect={onChangeCurrentTab}
 		     style={{fontSize: `medium`}}>
