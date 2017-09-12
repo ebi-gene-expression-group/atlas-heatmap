@@ -2090,6 +2090,15 @@ express@^4.13.3, express@^4.15.2:
     utils-merge "1.0.0"
     vary "~1.1.1"
 
+expression-atlas-disclaimers@latest:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/expression-atlas-disclaimers/-/expression-atlas-disclaimers-0.0.3.tgz#69ee2f9ba42eb9de3f2773b0d74e3efc54a50562"
+  dependencies:
+    prop-types "^15.5.10"
+    react "^15.6.1"
+    react-dom "^15.6.1"
+    urijs "^1.18.10"
+
 expression-atlas-number-format@latest:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/expression-atlas-number-format/-/expression-atlas-number-format-2.0.2.tgz#a800bfd319565bc21b559035280d83d28bb82141"

@@ -29,36 +29,61 @@ class HeatmapCanvas extends React.Component {
                hash.MD5([this.props.heatmapData, this.props.events.onClick, this.props.withAnatomogram])
     }
 
+    _labelsPosition() {
+      const containerDivWidth = this.props.withAnatomogram ?
+        document.getElementsByClassName(`gxaHeatmapContainer`)[0].clientWidth * 0.80 :
+        document.getElementsByClassName(`gxaHeatmapContainer`)[0].clientWidth
+
+      // An upper bound, considering there will be labels to the left, possibly margin to the right of the chart
+      const columnWidth = containerDivWidth / this.props.heatmapData.xAxisCategories.length
+
+      const longestColumnLabelLength =
+        Math.max(...this.props.heatmapData.xAxisCategories.map(category => category.label.length))
+
+      const columnLabelWidthRatio = longestColumnLabelLength / columnWidth
+
+      if (columnLabelWidthRatio < 0.2) {
+        return `horizontal`
+      } else if (columnLabelWidthRatio < 0.8) {
+        return `rotated`
+      } else {
+        return `vertical`
+      }
+    }
+
     _countColumns() {
         return this.props.heatmapData.xAxisCategories.length
     }
 
     _getAdjustedMarginRight() {
         // TODO Should add extra margin if labels are slanted and last ones (3 or so?) are very long. See reference_experiment_single_gene.html
-        const initialMarginRight = 60
-        return initialMarginRight * (1 + 10 / Math.pow(1 + this._countColumns(), 2))
+        // const initialMarginRight = 60
+        // return initialMarginRight * (1 + 10 / Math.pow(1 + this._countColumns(), 2))
+      
+        if (this._labelsPosition() === `rotated`) {
+            return 60
+        } else {
+            return 0
+        }
     }
 
     _getAdjustedMarginTop() {
         const longestColumnLabelLength =
             Math.max(...this.props.heatmapData.xAxisCategories.map(category => category.label.length))
+        const labelsPosition = this._labelsPosition()
 
-        // Minimum margins when labels aren’t tilted, -45° and -90° respectively see labels.autoRotation below
-        const [horizontalLabelsMarginTop, tiltedLabelsMarginTop, verticalLabelsMarginTop] = [30, 100, 200]
-
-        // TODO To know if the labels are actually rotated we must take into account the width of the chart and div
-        if (this._countColumns() < 10) {
-            return Math.max(horizontalLabelsMarginTop, Math.round(longestColumnLabelLength))
-        } else if (this._countColumns() < 80) {
-            return Math.max(tiltedLabelsMarginTop, Math.round(longestColumnLabelLength * 3.85))
-        } else {
-            return Math.max(verticalLabelsMarginTop, Math.round(longestColumnLabelLength * 5.5))
+        if (labelsPosition === `horizontal`) {
+            return 30
+        } else if (labelsPosition === `rotated`) {
+            return longestColumnLabelLength * 4
+        } else { // labelsPosition === `vertical`
+            return longestColumnLabelLength * 5
         }
     }
 
     _getAdjustedHeight(marginTop, marginBottom) {
         const rowsCount = this.props.heatmapData.yAxisCategories.length
-        const rowHeight = 30
+        const rowHeight = 40
         return rowsCount * rowHeight + marginTop + marginBottom
     }
 
@@ -73,7 +98,7 @@ class HeatmapCanvas extends React.Component {
 
         const highchartsConfig = {
             chart: {
-                // marginTop,
+                marginTop,
                 marginBottom,
                 marginRight,
                 height,

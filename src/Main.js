@@ -40,11 +40,15 @@ const ExpressionAtlasHeatmap = options => {
     const parsedQuery = parseQuery(options.query)
     const sourceUrl = typeof parsedQuery === `string` ? parsedQuery : URI(resolveEndpoint(options.experiment)).addSearch(parsedQuery)
 
+    // The wrapping div is important to determine the width of the heatmap and know if the labels are going to be
+    // rotated, so that we can set sensible margin sizes. See HeatmapCanvas.js
     return (
+      <div className={`gxaHeatmapContainer`}>
         <ContainerLoader
             {...DEFAULT_OPTIONS}
             {...options}
             sourceUrl={sourceUrl.toString()} />
+      </div>
     )
 }
 
