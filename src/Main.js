@@ -5,6 +5,8 @@ import ReactGA from 'react-ga'
 import URI from 'urijs'
 
 import ContainerLoader from './layout/ContainerLoader.js'
+import Container from './layout/Container.js'
+
 
 /**
  * @param {Object}          options
@@ -25,6 +27,8 @@ import ContainerLoader from './layout/ContainerLoader.js'
  * @param {{value: string, category: string}[]} options.query.gene
  * @param {{value: string, category: string}[]} options.query.condition
  * @param {string}                              options.query.source
+ * @param {Object}          [unsupported] options.payload - optional, instead of query. It is left undocumented what this optional parameter could be, or when you would want to use it.
+
  */
 const DEFAULT_OPTIONS = {
     showAnatomogram: true,
@@ -39,7 +43,10 @@ const ExpressionAtlasHeatmap = options => (
     // The wrapping div is important to determine the width of the heatmap and know if the labels are going to be
     // rotated, so that we can set sensible margin sizes. See HeatmapCanvas.js
     <div className={`gxaHeatmapContainer`}>
-        <ContainerLoader
+    {
+        options.payload
+        ? <Container {...DEFAULT_OPTIONS} {...options} data={options.payload} />
+        : <ContainerLoader
             {...DEFAULT_OPTIONS}
             {...options}
             source={
@@ -52,7 +59,9 @@ const ExpressionAtlasHeatmap = options => (
                     endpoint: resolveEndpoint(options.experiment),
                     //the webapp wants "geneQuery" and "conditionQuery" as parameters but in the API offering query.gene and query.condition felt nicer
                     params: Object.entries(options.query).map(p => ["gene", "condition"].includes(p[0]) ? [p[0]+"Query", p[1]]: p).reduce((acc,o)=>{ acc[o[0]]=o[1]; return acc}, {})
-                }} />
+                }}
+            render={fetchedData => (<Container {...DEFAULT_OPTIONS} {...options} data={fetchedData} />)}/>
+    }
     </div>
 )
 
