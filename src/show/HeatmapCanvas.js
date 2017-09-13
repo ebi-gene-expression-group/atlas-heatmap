@@ -77,7 +77,7 @@ class HeatmapCanvas extends React.Component {
   }
 
   _getAdjustedMarginRight() {
-    const minMarginRight = 5
+    const minMarginRight = 20
 
     if (this.xAxisLabelsRotationAngle === 0 || this.xAxisLabelsRotationAngle === -90) {
       return minMarginRight
@@ -94,13 +94,14 @@ class HeatmapCanvas extends React.Component {
   }
 
   _getMarginTop() {
+    const minMarginTop = 30
+    const xAxisLabelAvgCharWidth = 5.3
+
     const longestColumnLabelLength =
       Math.max(...this.props.heatmapData.xAxisCategories.map(category => category.label.length))
 
-    const xAxisLabelAvgCharWidth = 5.3
-
     return this.xAxisLabelsRotationAngle === 0 ?
-      30 :
+      minMarginTop :
       stringHeightInPixels(longestColumnLabelLength, xAxisLabelAvgCharWidth, Math.abs(this.xAxisLabelsRotationAngle))
   }
 
