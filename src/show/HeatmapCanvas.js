@@ -26,10 +26,6 @@ window.oncontextmenu = function() {
 class HeatmapCanvas extends React.Component {
   constructor(props) {
     super(props)
-
-    this.columnCount = this.props.heatmapData.xAxisCategories.length
-    this.xAxisLabelsAutoRotation = this._getAutoRotationBasedOnLastLabelsLength()
-    this.xAxisLabelsRotationAngle = this._xAxisLabelsRotationAngle()
   }
 
   shouldComponentUpdate(nextProps) {
@@ -37,6 +33,10 @@ class HeatmapCanvas extends React.Component {
     // Don’t call render again after zoom happens
     return hash.MD5([nextProps.heatmapData, nextProps.events.onClick, nextProps.withAnatomogram]) !==
     hash.MD5([this.props.heatmapData, this.props.events.onClick, this.props.withAnatomogram])
+  }
+
+  _countColumns() {
+    return this.props.heatmapData.xAxisCategories.length
   }
 
   _getAutoRotationBasedOnLastLabelsLength() {
@@ -73,13 +73,14 @@ class HeatmapCanvas extends React.Component {
     const labelLengthToWidthRatio = longestColumnLabelLength / columnWidth
 
     // Ratio cutoff based on trial and error...
-    return labelLengthToWidthRatio < 0.3 ? 0 : this.xAxisLabelsAutoRotation[0]
+    return labelLengthToWidthRatio < 0.3 ? 0 : this._getAutoRotationBasedOnLastLabelsLength()[0]
   }
 
   _getAdjustedMarginRight() {
     const minMarginRight = 20
+    const xAxisLabelsRotationAngle = this._xAxisLabelsRotationAngle()
 
-    if (this.xAxisLabelsRotationAngle === 0 || this.xAxisLabelsRotationAngle === -90) {
+    if (xAxisLabelsRotationAngle === 0 || xAxisLabelsRotationAngle === -90) {
       return minMarginRight
     }
     else {
@@ -96,13 +97,14 @@ class HeatmapCanvas extends React.Component {
   _getMarginTop() {
     const minMarginTop = 30
     const xAxisLabelAvgCharWidth = 5.3
+    const xAxisLabelsRotationAngle = this._xAxisLabelsRotationAngle()
 
     const longestColumnLabelLength =
       Math.max(...this.props.heatmapData.xAxisCategories.map(category => category.label.length))
 
-    return this.xAxisLabelsRotationAngle === 0 ?
+    return xAxisLabelsRotationAngle === 0 ?
       minMarginTop :
-      stringHeightInPixels(longestColumnLabelLength, xAxisLabelAvgCharWidth, Math.abs(this.xAxisLabelsRotationAngle))
+      stringHeightInPixels(longestColumnLabelLength, xAxisLabelAvgCharWidth, Math.abs(xAxisLabelsRotationAngle))
   }
 
   _getHeight(marginBottom) {
@@ -199,7 +201,7 @@ class HeatmapCanvas extends React.Component {
               events.onHoverOff()
             }
           },
-          autoRotation: this.xAxisLabelsAutoRotation,
+          autoRotation: this._getAutoRotationBasedOnLastLabelsLength(),
           formatter: function() {
             return xAxisFormatter(this.value)
           }
@@ -208,7 +210,7 @@ class HeatmapCanvas extends React.Component {
         opposite: 'true',
         categories: this.props.heatmapData.xAxisCategories,
         min: 0,
-        max: this.columnCount - 1,
+        max: this._countColumns() - 1,
 
         events: {
           setExtremes: function(event) {
@@ -259,14 +261,14 @@ class HeatmapCanvas extends React.Component {
         return {
           name: e.info.name,
           color: e.info.colour,
-          borderWidth: this.columnCount > 200 ? 0 : 1,
+          borderWidth: this._countColumns() > 200 ? 0 : 1,
           borderColor: `white`,
           data: e.data
         }
       })
     }
 
-    // const maxWidthFraction = this.columnCount > 6 ? 1 : Math.max(0.5, 1 - Math.exp(-(1 + 0.05 * Math.pow(1 + this.columnCount, 2))))
+    // const maxWidthFraction = this._countColumns() > 6 ? 1 : Math.max(0.5, 1 - Math.exp(-(1 + 0.05 * Math.pow(1 + this._countColumns(), 2))))
     return (
       <div>
         <ReactHighcharts ref={(ref) => this.highchartsRef = ref} config={highchartsConfig}/>
