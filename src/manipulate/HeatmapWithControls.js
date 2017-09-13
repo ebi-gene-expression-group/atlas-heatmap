@@ -157,7 +157,7 @@ const CanvasLegend = ({heatmapData,heatmapConfig,colourAxis,children}) => {
                 dataSeries={heatmapData.dataSeries}
               />
             </div> :
-            <div>
+            <div style={{paddingBottom: `1rem`}}>
               <SingleExperimentLegend
                 heatmapConfig={heatmapConfig}
                 colourAxis={colourAxis}
