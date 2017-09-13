@@ -1,12 +1,12 @@
 {
   "name": "expression-atlas-heatmap-highcharts",
-  "version": "3.6.0",
+  "version": "3.6.1",
   "description": "Expression Atlas Highcharts heatmap and boxplot of baseline and differential expression experiments from the Expression Atlas project (https://www.ebi.ac.uk/gxa)",
   "main": "lib/Main.js",
   "author": "Wojciech Bażant<wbazant@ebi.ac.uk>, Elisabet Barrera <barrera@ebi.ac.uk> and Alfonso Muñoz-Pomer Fuentes <amunoz@ebi.ac.uk>",
   "license": "Apache-2.0",
   "scripts": {
-    "prepublishOnly": "rm -rf lib && babel src -d lib --ignore '**/*.less' --copy-files"
+    "prepack": "rm -rf lib && babel src -d lib --ignore '**/*.less' --copy-files"
   },
   "repository": "https://github.com/gxa/atlas-heatmap",
   "dependencies": {
