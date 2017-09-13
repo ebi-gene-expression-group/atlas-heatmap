@@ -12,265 +12,299 @@ import hash from 'object-hash'
 
 import {heatmapDataPropTypes, colourAxisPropTypes} from '../manipulate/chartDataPropTypes.js'
 
+const stringWidthInPixels = (strLength, averageCharWidth, rotationInDeg) =>
+  strLength * averageCharWidth * Math.cos(rotationInDeg * Math.PI / 180)
+const stringHeightInPixels = (strLength, averageCharWidth, rotationInDeg) =>
+  strLength * averageCharWidth * Math.sin(rotationInDeg * Math.PI / 180)
+
+
 // Custom Events default behaviour disables context menu on right-click, we bring it back
 window.oncontextmenu = function() {
-    return true
+  return true
 }
 
 class HeatmapCanvas extends React.Component {
-    constructor(props) {
-        super(props)
+  constructor(props) {
+    super(props)
+
+    this.columnCount = this.props.heatmapData.xAxisCategories.length
+    this.xAxisLabelsAutoRotation = this._getAutoRotationBasedOnLastLabelsLength()
+    this.xAxisLabelsRotationAngle = this._xAxisLabelsRotationAngle()
+  }
+
+  shouldComponentUpdate(nextProps) {
+    // Callback that does setState fails: https://github.com/kirjs/react-highcharts/issues/245
+    // Don’t call render again after zoom happens
+    return hash.MD5([nextProps.heatmapData, nextProps.events.onClick, nextProps.withAnatomogram]) !==
+    hash.MD5([this.props.heatmapData, this.props.events.onClick, this.props.withAnatomogram])
+  }
+
+  _getAutoRotationBasedOnLastLabelsLength() {
+    // If any of the last four labels is longer than 30 chars make the labels vertical, ymmv, change if needed
+    const tailLength = 4
+    const maxChars = 30
+    const lastLabels = this.props.heatmapData.xAxisCategories.map((category) => category.label).slice(-tailLength)
+    return lastLabels.some((label) => label.length > maxChars) ? [-90] : [-45]
+  }
+
+  _getColumnWidthInPixels() {
+    // The anatomogram takes 20% of the total div width
+    const containerDivWidth = this.props.withAnatomogram ?
+      document.getElementsByClassName(`gxaHeatmapContainer`)[0].clientWidth * 0.80 :
+      document.getElementsByClassName(`gxaHeatmapContainer`)[0].clientWidth
+
+    const longestRowLabelLength =
+      Math.max(...this.props.heatmapData.yAxisCategories.map(category => category.label.length))
+
+    const yAxisAvgCharWidth = 8.25
+    const yAxisPadding = 12
+
+    const heatmapWidth =
+      containerDivWidth - stringWidthInPixels(longestRowLabelLength, yAxisAvgCharWidth, 0) - yAxisPadding
+
+    return heatmapWidth / this.props.heatmapData.xAxisCategories.length
+  }
+
+  _xAxisLabelsRotationAngle() {
+    const columnWidth = this._getColumnWidthInPixels()
+    const longestColumnLabelLength =
+      Math.max(...this.props.heatmapData.xAxisCategories.map(category => category.label.length))
+
+    const labelLengthToWidthRatio = longestColumnLabelLength / columnWidth
+
+    // Ratio cutoff based on trial and error...
+    return labelLengthToWidthRatio < 0.3 ? 0 : this.xAxisLabelsAutoRotation[0]
+  }
+
+  _getAdjustedMarginRight() {
+    const minMarginRight = 5
+
+    if (this.xAxisLabelsRotationAngle === 0 || this.xAxisLabelsRotationAngle === -90) {
+      return minMarginRight
     }
+    else {
+      const columnWidth = this._getColumnWidthInPixels()
+      const longestColumnLabelWidthNearTheTailInPixels =
+        stringWidthInPixels(
+          Math.max(...this.props.heatmapData.xAxisCategories.slice(-4).map(category => category.label.length)), 5.3, 45)
 
-    shouldComponentUpdate(nextProps) {
-        // Callback that does setState fails: https://github.com/kirjs/react-highcharts/issues/245
-        // Don’t call render again after zoom happens
-        return hash.MD5([nextProps.heatmapData, nextProps.events.onClick, nextProps.withAnatomogram]) !==
-               hash.MD5([this.props.heatmapData, this.props.events.onClick, this.props.withAnatomogram])
+      // We divide by two because the label is placed in the middle of the column
+      return Math.max(minMarginRight, longestColumnLabelWidthNearTheTailInPixels - columnWidth / 2)
     }
+  }
 
-    _labelsPosition() {
-      const containerDivWidth = this.props.withAnatomogram ?
-        document.getElementsByClassName(`gxaHeatmapContainer`)[0].clientWidth * 0.80 :
-        document.getElementsByClassName(`gxaHeatmapContainer`)[0].clientWidth
+  _getMarginTop() {
+    const longestColumnLabelLength =
+      Math.max(...this.props.heatmapData.xAxisCategories.map(category => category.label.length))
 
-      // An upper bound, considering there will be labels to the left, possibly margin to the right of the chart
-      const columnWidth = containerDivWidth / this.props.heatmapData.xAxisCategories.length
+    const xAxisLabelAvgCharWidth = 5.3
 
-      const longestColumnLabelLength =
-        Math.max(...this.props.heatmapData.xAxisCategories.map(category => category.label.length))
+    return this.xAxisLabelsRotationAngle === 0 ?
+      30 :
+      stringHeightInPixels(longestColumnLabelLength, xAxisLabelAvgCharWidth, Math.abs(this.xAxisLabelsRotationAngle))
+  }
 
-      const columnLabelWidthRatio = longestColumnLabelLength / columnWidth
+  _getHeight(marginBottom) {
+    const rowCount = this.props.heatmapData.yAxisCategories.length
+    return rowCount * 40 + this._getMarginTop() + marginBottom;
+  }
 
-      if (columnLabelWidthRatio < 0.2) {
-        return `horizontal`
-      } else if (columnLabelWidthRatio < 0.8) {
-        return `rotated`
-      } else {
-        return `vertical`
-      }
-    }
+  render() {
+    const marginBottom = 10
+    const marginRight = this._getAdjustedMarginRight()
+    const height = this._getHeight(marginBottom)
 
-    _countColumns() {
-        return this.props.heatmapData.xAxisCategories.length
-    }
+    const {cellTooltipFormatter, xAxisFormatter, yAxisFormatter, events, onZoom} = this.props
 
-    _getAdjustedMarginTop() {
-        const longestColumnLabelLength =
-            Math.max(...this.props.heatmapData.xAxisCategories.map(category => category.label.length))
-        const labelsPosition = this._labelsPosition()
+    const highchartsConfig = {
+      chart: {
+        marginBottom,
+        marginRight,
+        height,
+        type: `heatmap`,
+        spacingTop: 0,
+        plotBorderWidth: 1,
+        events: {
+          handleGxaAnatomogramTissueMouseEnter: function (e) {
+            const selectedPoints = this.getSelectedPoints()
+            if (selectedPoints.length > 0) {
+              Highcharts.each(selectedPoints, function (point) {
+                point.select(false)
+              })
+            }
 
-        if (labelsPosition === `horizontal`) {
-            return 30
-        } else if (labelsPosition === `rotated`) {
-            return longestColumnLabelLength * 4
-        } else { // labelsPosition === `vertical`
-            return longestColumnLabelLength * 5
-        }
-    }
-
-    _getAdjustedHeight(marginBottom) {
-        const marginTop = this._getAdjustedMarginTop()  // A guess at best...
-        const rowsCount = this.props.heatmapData.yAxisCategories.length
-        const rowHeight = 40
-        return rowsCount * rowHeight + marginTop + marginBottom
-    }
-
-    render() {
-        // TODO Should the margins be recalculated when the window is resized?
-        const marginBottom = 10
-        const height = this._getAdjustedHeight(marginBottom)
-
-        const {cellTooltipFormatter, xAxisFormatter, yAxisFormatter, events, onZoom} = this.props
-
-        const highchartsConfig = {
-            chart: {
-                marginBottom,
-                height,
-                type: `heatmap`,
-                spacingTop: 0,
-                plotBorderWidth: 1,
-                events: {
-                   handleGxaAnatomogramTissueMouseEnter: function (e) {
-                     const selectedPoints = this.getSelectedPoints()
-                     if (selectedPoints.length > 0) {
-                       Highcharts.each(selectedPoints, function (point) {
-                         point.select(false)
-                       })
-                     }
-
-                     Highcharts.each(this.series, function (series) {
-                       Highcharts.each(series.points, function (point) {
-                         if (e.svgPathIds.includes(point.series.xAxis.categories[point.x].id)) {
-                           point.select(true, true)
-                         }
-                       })
-                     })
-                   }
-                },
-                zoomType: `x`
-            },
-
-            plotOptions: {
-                heatmap: {
-                    turboThreshold: 0
-                },
-
-                series: {
-                    cursor: events.onClick ? `pointer` : undefined,
-                    point: {
-                        events: {
-                            click: events.onClick ? function() { events.onClick(this.x, this.y) } : function() {},
-                            mouseOver: function() { events.onHoverPoint(this.x) },
-                            mouseOut: function() { events.onHoverOff() }
-                        }
-                    },
-
-                    states: {
-                        hover: {
-                            color: `#eeec38` //#edab12 color cell on mouse over
-                        },
-                        select: {
-                            color: `#eeec38`
-                        }
-                    }
+            Highcharts.each(this.series, function (series) {
+              Highcharts.each(series.points, function (point) {
+                if (e.svgPathIds.includes(point.series.xAxis.categories[point.x].id)) {
+                  point.select(true, true)
                 }
-            },
-
-            credits: {
-                enabled: false
-            },
-
-            legend: {
-                enabled: false
-            },
-
-            title: null,
-
-            colorAxis: this.props.colourAxis,
-
-            xAxis: { //assay groups, contrasts, or factors across experiments
-                tickLength: 5,
-                tickColor: `rgb(192, 192, 192)`,
-                lineColor: `rgb(192, 192, 192)`,
-                labels: {
-                    style: this.props.xAxisStyle,
-                    // Events in labels enabled by 'highcharts-custom-events'
-                    events: {
-                        mouseover: function() {
-                          events.onHoverColumnLabel(this.value)
-                        },
-                        mouseout: function() {
-                          events.onHoverOff()
-                        }
-                    },
-                    autoRotation: [-45, -90],
-                    formatter: function() {
-                        return xAxisFormatter(this.value)
-                    }
-                },
-
-                opposite: 'true',
-                categories: this.props.heatmapData.xAxisCategories,
-                min: 0,
-                max: this._countColumns() - 1,
-
-                events: {
-                    setExtremes: function(event) {
-                        onZoom(event.min !== undefined && event.max !== undefined)
-                    }
-                }
-            },
-
-            yAxis: { //experiments or bioentities
-                useHTML: true,
-                reversed: true,
-                labels: {
-                    style: this.props.yAxisStyle,
-                    events: {
-                        mouseover: function() {
-                          events.onHoverRowLabel(this.value)
-                        },
-                        mouseout: function() {
-                          events.onHoverOff()
-                        }
-                    },
-                    formatter: function() {
-                        return yAxisFormatter(this.value)
-                    }
-                },
-
-                categories: this.props.heatmapData.yAxisCategories,
-                title: null,
-                gridLineWidth: 0,
-                minorGridLineWidth: 0,
-                endOnTick: false
-            },
-
-            tooltip: {
-                useHTML: true,
-                shared: false,
-                borderRadius: 0,
-                borderWidth: 0,
-                shadow: false,
-                enabled: true,
-                backgroundColor: `none`,
-                formatter: function() {
-                    return cellTooltipFormatter(this.series, this.point)
-                }
-            },
-
-            series: this.props.heatmapData.dataSeries.map(e => {
-                return {
-                    name: e.info.name,
-                    color: e.info.colour,
-                    borderWidth: this._countColumns() > 200 ? 0 : 1,
-                    borderColor: `white`,
-                    data: e.data
-                }
+              })
             })
+          }
+        },
+        zoomType: `x`
+      },
+
+      plotOptions: {
+        heatmap: {
+          turboThreshold: 0
+        },
+
+        series: {
+          cursor: events.onClick ? `pointer` : undefined,
+          point: {
+            events: {
+              click: events.onClick ? function() { events.onClick(this.x, this.y) } : function() {},
+              mouseOver: function() { events.onHoverPoint(this.x) },
+              mouseOut: function() { events.onHoverOff() }
+            }
+          },
+
+          states: {
+            hover: {
+              color: `#eeec38` //#edab12 color cell on mouse over
+            },
+            select: {
+              color: `#eeec38`
+            }
+          }
         }
+      },
 
-        // const maxWidthFraction = this._countColumns() > 6 ? 1 : Math.max(0.5, 1 - Math.exp(-(1 + 0.05 * Math.pow(1 + this._countColumns(), 2))))
-        return (
-            <div>
-                <ReactHighcharts ref={(ref) => this.highchartsRef = ref} config={highchartsConfig}/>
-            </div>
-        )
+      credits: {
+        enabled: false
+      },
+
+      legend: {
+        enabled: false
+      },
+
+      title: null,
+
+      colorAxis: this.props.colourAxis,
+
+      xAxis: { //assay groups, contrasts, or factors across experiments
+        tickLength: 5,
+        tickColor: `rgb(192, 192, 192)`,
+        lineColor: `rgb(192, 192, 192)`,
+        labels: {
+          style: this.props.xAxisStyle,
+          // Events in labels enabled by 'highcharts-custom-events'
+          events: {
+            mouseover: function() {
+              events.onHoverColumnLabel(this.value)
+            },
+            mouseout: function() {
+              events.onHoverOff()
+            }
+          },
+          autoRotation: this.xAxisLabelsAutoRotation,
+          formatter: function() {
+            return xAxisFormatter(this.value)
+          }
+        },
+
+        opposite: 'true',
+        categories: this.props.heatmapData.xAxisCategories,
+        min: 0,
+        max: this.columnCount - 1,
+
+        events: {
+          setExtremes: function(event) {
+            onZoom(event.min !== undefined && event.max !== undefined)
+          }
+        }
+      },
+
+      yAxis: { //experiments or bioentities
+        useHTML: true,
+        reversed: true,
+        labels: {
+          style: this.props.yAxisStyle,
+          events: {
+            mouseover: function() {
+              events.onHoverRowLabel(this.value)
+            },
+            mouseout: function() {
+              events.onHoverOff()
+            }
+          },
+          formatter: function() {
+            return yAxisFormatter(this.value)
+          }
+        },
+
+        categories: this.props.heatmapData.yAxisCategories,
+        title: null,
+        gridLineWidth: 0,
+        minorGridLineWidth: 0,
+        endOnTick: false
+      },
+
+      tooltip: {
+        useHTML: true,
+        shared: false,
+        borderRadius: 0,
+        borderWidth: 0,
+        shadow: false,
+        enabled: true,
+        backgroundColor: `none`,
+        formatter: function() {
+          return cellTooltipFormatter(this.series, this.point)
+        }
+      },
+
+      series: this.props.heatmapData.dataSeries.map(e => {
+        return {
+          name: e.info.name,
+          color: e.info.colour,
+          borderWidth: this.columnCount > 200 ? 0 : 1,
+          borderColor: `white`,
+          data: e.data
+        }
+      })
     }
 
-    componentWillReceiveProps(nextProps) {
-      const chart = this.highchartsRef.getChart()
-      Highcharts.fireEvent(chart, `handleGxaAnatomogramTissueMouseEnter`, {svgPathIds: nextProps.ontologyIdsToHighlight})
-    }
+    // const maxWidthFraction = this.columnCount > 6 ? 1 : Math.max(0.5, 1 - Math.exp(-(1 + 0.05 * Math.pow(1 + this.columnCount, 2))))
+    return (
+      <div>
+        <ReactHighcharts ref={(ref) => this.highchartsRef = ref} config={highchartsConfig}/>
+      </div>
+    )
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const chart = this.highchartsRef.getChart()
+    Highcharts.fireEvent(chart, `handleGxaAnatomogramTissueMouseEnter`, {svgPathIds: nextProps.ontologyIdsToHighlight})
+  }
 }
 
 HeatmapCanvas.propTypes = {
-    heatmapData: heatmapDataPropTypes.isRequired,
-    colourAxis: colourAxisPropTypes,    // Only for experiment heatmap
-    cellTooltipFormatter: PropTypes.func.isRequired,
-    xAxisFormatter: PropTypes.func.isRequired,
-    xAxisStyle: PropTypes.object.isRequired,
-    yAxisFormatter: PropTypes.func.isRequired,
-    yAxisStyle: PropTypes.object.isRequired,
-    ontologyIdsToHighlight: PropTypes.arrayOf(PropTypes.string).isRequired,
-    events: PropTypes.shape({
-      onHoverRowLabel: PropTypes.func.isRequired,
-      onHoverColumnLabel: PropTypes.func.isRequired,
-      onHoverPoint: PropTypes.func.isRequired,
-      onHoverOff: PropTypes.func.isRequired,
-      onClick: PropTypes.func
-    }),
-    onZoom: PropTypes.func.isRequired,
-    withAnatomogram: PropTypes.bool.isRequired
+  heatmapData: heatmapDataPropTypes.isRequired,
+  colourAxis: colourAxisPropTypes,    // Only for experiment heatmap
+  cellTooltipFormatter: PropTypes.func.isRequired,
+  xAxisFormatter: PropTypes.func.isRequired,
+  xAxisStyle: PropTypes.object.isRequired,
+  yAxisFormatter: PropTypes.func.isRequired,
+  yAxisStyle: PropTypes.object.isRequired,
+  ontologyIdsToHighlight: PropTypes.arrayOf(PropTypes.string).isRequired,
+  events: PropTypes.shape({
+    onHoverRowLabel: PropTypes.func.isRequired,
+    onHoverColumnLabel: PropTypes.func.isRequired,
+    onHoverPoint: PropTypes.func.isRequired,
+    onHoverOff: PropTypes.func.isRequired,
+    onClick: PropTypes.func
+  }),
+  onZoom: PropTypes.func.isRequired,
+  withAnatomogram: PropTypes.bool.isRequired
 }
 
 const Main = props => (
-    props.heatmapData.yAxisCategories.length < 1
-    ? <div style={{padding: `50px 0`}}>
-        No data match your filtering criteria or your original query. Please, change your query or your filters and try again.
-      </div>
-    : <HeatmapCanvas {...props} />
+  props.heatmapData.yAxisCategories.length < 1?
+   <div style={{padding: `50px 0`}}>
+     No data match your filtering criteria or your original query. Please, change your query or your filters and try again.
+   </div> :
+   <HeatmapCanvas {...props} />
 )
 
 export default Main
