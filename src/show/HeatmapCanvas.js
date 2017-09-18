@@ -73,7 +73,7 @@ class HeatmapCanvas extends React.Component {
     const labelLengthToWidthRatio = longestColumnLabelLength / columnWidth
 
     // Ratio cutoff based on trial and error...
-    return labelLengthToWidthRatio < 0.3 ? 0 : this._getAutoRotationBasedOnLastLabelsLength()[0]
+    return labelLengthToWidthRatio < 0.2 ? 0 : this._getAutoRotationBasedOnLastLabelsLength()[0]
   }
 
   _getAdjustedMarginRight() {
