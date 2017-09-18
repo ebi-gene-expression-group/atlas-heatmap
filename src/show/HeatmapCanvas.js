@@ -56,7 +56,7 @@ class HeatmapCanvas extends React.Component {
     const longestRowLabelLength =
       Math.max(...this.props.heatmapData.yAxisCategories.map(category => category.label.length))
 
-    const yAxisAvgCharWidth = 8.25
+    const yAxisAvgCharWidth = 8.75
     const yAxisPadding = 12
 
     const heatmapWidth =
@@ -73,7 +73,7 @@ class HeatmapCanvas extends React.Component {
     const labelLengthToWidthRatio = longestColumnLabelLength / columnWidth
 
     // Ratio cutoff based on trial and error...
-    return labelLengthToWidthRatio < 0.3 ? 0 : this._getAutoRotationBasedOnLastLabelsLength()[0]
+    return labelLengthToWidthRatio < 0.2 ? 0 : this._getAutoRotationBasedOnLastLabelsLength()[0]
   }
 
   _getAdjustedMarginRight() {
@@ -87,7 +87,7 @@ class HeatmapCanvas extends React.Component {
       const columnWidth = this._getColumnWidthInPixels()
       const longestColumnLabelWidthNearTheTailInPixels =
         stringWidthInPixels(
-          Math.max(...this.props.heatmapData.xAxisCategories.slice(-4).map(category => category.label.length)), 5.3, 45)
+          Math.max(...this.props.heatmapData.xAxisCategories.slice(-4).map(category => category.label.length)), 6, 45)
 
       // We divide by two because the label is placed in the middle of the column
       return Math.max(minMarginRight, longestColumnLabelWidthNearTheTailInPixels - columnWidth / 2)
@@ -96,7 +96,7 @@ class HeatmapCanvas extends React.Component {
 
   _getMarginTop() {
     const minMarginTop = 30
-    const xAxisLabelAvgCharWidth = 5.3
+    const xAxisLabelAvgCharWidth = 6
     const xAxisLabelsRotationAngle = this._xAxisLabelsRotationAngle()
 
     const longestColumnLabelLength =
