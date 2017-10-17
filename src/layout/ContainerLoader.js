@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-refetch'
 import URI from 'urijs'
 
+import Container from './Container.js'
+
 const Loading = ({spinnerUrl}) => <div><img src={spinnerUrl}/></div>
 
 const failAndShowMessage = ({onFailure, request, message}) => {
@@ -21,7 +23,8 @@ const showMessage = message => failAndShowMessage({
   message
 })
 
-const ContainerLoader = ({inProxy, atlasUrl, fail, sourceUrlFetch, render}) => {
+const ContainerLoader = (props) => {
+  const {inProxy, atlasUrl, fail, sourceUrlFetch} = props
 
   if (sourceUrlFetch.pending) {
 
@@ -46,7 +49,7 @@ const ContainerLoader = ({inProxy, atlasUrl, fail, sourceUrlFetch, render}) => {
     } else if (!sourceUrlFetch.value.profiles) {
       return showMessage(`Sorry, no results could be found matching your query.`)
     } else {
-      return render(sourceUrlFetch.value)
+      return <Container {...props} data={sourceUrlFetch.value} />
     }
   }
 }
@@ -58,7 +61,6 @@ ContainerLoader.propTypes = {
         endpoint: PropTypes.string.isRequired,
         params: PropTypes.object.isRequired
     }).isRequired,
-    render: PropTypes.func.isRequired,
     fail: PropTypes.func
 }
 
