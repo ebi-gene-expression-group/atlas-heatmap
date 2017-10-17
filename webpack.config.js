@@ -80,13 +80,13 @@ module.exports = {
                             query: {
                                 bypassOnDebug: true,
                                 mozjpeg: {
-                                    progressive: true,
+                                    progressive: true
                                 },
                                 gifsicle: {
-                                    interlaced: true,
+                                    interlaced: true
                                 },
                                 optipng: {
-                                    optimizationLevel: 7,
+                                    optimizationLevel: 7
                                 }
                             }
                         }
