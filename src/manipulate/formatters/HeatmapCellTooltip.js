@@ -39,15 +39,29 @@ const yInfo = ({config, yLabel}) => _div(config.yAxisLegendName, yLabel)
 
 const xInfo = ({xAxisLegendName, config, xLabel}) => _div(xAxisLegendName || config.xAxisLegendName, xLabel)
 
+const tooltipValueMaxLength = 30
+const trimEllipsify = (str) => {
+  if (str.length > tooltipValueMaxLength) {
+    const words = str.slice(0, tooltipValueMaxLength).split(` `)
+    if (words.length > 1) {
+      return `${words.slice(0, -1).join(` `)}…`
+    } else {
+      return `${words[0].slice(0, -1)}…`
+    }
+  }
+
+  return str
+}
+
 const _comparisonDiv = (name, v1, v2, format) => {
     return (
         name && v1 && v2 ?
             <div key={`${name} ${v1} ${v2}`}>
                 {`${name}: `}
-                {v1.length + v2.length > 50 ? <br/> : null }
-                {(format || _bold)(v1)}
+                {v1.length + v2.length > tooltipValueMaxLength * 2 ? <br/> : null }
+                {(format || _bold)(trimEllipsify(v1))}
                 <i style={{margin: `0.25rem`}}>vs</i>
-                {(format || _bold)(v2)}
+                {(format || _bold)(trimEllipsify(v2))}
             </div> :
             null
     )
