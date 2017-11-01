@@ -38,7 +38,8 @@ export default function({data, inProxy, outProxy, atlasUrl, showAnatomogram, isW
         && data.experiment
         && data.experiment.accession
         ? {
-            url: inProxy + URI(`json/debug-experiments/${data.experiment.accession}/genes/${data.profiles.rows[0].id}/transcripts?type=RNASEQ_MRNA_BASELINE`, atlasUrl).toString()
+            url: inProxy + URI(`json/debug-experiments/${data.experiment.accession}/genes/${data.profiles.rows[0].id}/transcripts?type=RNASEQ_MRNA_BASELINE`, atlasUrl).toString(),
+            keepOnlyTheseColumnIds:data.columnHeaders.map(e => e.assayGroupId).filter((e,ix, self) => self.indexOf(e) == ix ).filter(e=>e)
         }
         : null
 
