@@ -1,17 +1,13 @@
 import React from 'react'
 import { connect } from 'react-refetch'
-import PropTypes from 'prop-types'
-
-import URI from 'urijs'
 
 import ReactHighcharts from 'react-highcharts'
 import HighchartsMore from 'highcharts/highcharts-more'
 HighchartsMore(ReactHighcharts.Highcharts)
-import uncontrollable from 'uncontrollable'
 
 const SUFFIX=" individual"
 
-const baseConfig = ({xAxisCategories,useLogarithmicAxis,pointShape}) => ({
+const baseConfig = ({xAxisCategories}) => ({
 	chart: {
 		marginRight : 60 * (1 + 10 / Math.pow(1 + xAxisCategories.length, 2)),
 		type: 'boxplot',
@@ -59,7 +55,7 @@ const baseConfig = ({xAxisCategories,useLogarithmicAxis,pointShape}) => ({
 		title: {
 			text: 'Expression (TPM)'
 		},
-		type: useLogarithmicAxis?'logarithmic':'',
+		type:'logarithmic',
 		min:0.1
 	}
 	,
@@ -80,7 +76,7 @@ const baseConfig = ({xAxisCategories,useLogarithmicAxis,pointShape}) => ({
         },
 		scatter: {
 		   marker: {
-			   symbol: pointShape,
+			   symbol: "circle",
 			   states: {
 				   hover: {
 					   enabled: true,
@@ -97,34 +93,10 @@ const baseConfig = ({xAxisCategories,useLogarithmicAxis,pointShape}) => ({
 	   }
 	},
 })
-const boxPlotConfig = ({xAxisCategories, dataSeries,useLogarithmicAxis}) => Object.assign(
-	baseConfig({xAxisCategories,useLogarithmicAxis}),{
+const plotConfig = ({xAxisCategories, dataSeries}) => Object.assign(
+	baseConfig({xAxisCategories}),{
     series: dataSeries
 })
-
-//TODO tooltip
-const plotConfig = ({xAxisCategories, dataSeries,useLogarithmicAxis, pointShape}) => Object.assign(
-	baseConfig({xAxisCategories,useLogarithmicAxis,pointShape}),{
-    series: dataSeries
-})
-
-const scatterPlotConfig = ({xAxisCategories, dataSeries,useLogarithmicAxis}) => Object.assign(
-	baseConfig({xAxisCategories,useLogarithmicAxis}),{
-    series: dataSeries,
-	tooltip: {
-        pointFormat: 'Expression: {point.y} TPM <br/> Assay:  {point.info.assays}'
-    }
-})
-
-const SelectTranscripts = ({rowNames,currentRowNames, onChangeCurrentRowNames}) => (
-	<ReactSelect
-	name=""
-	options={rowNames.map(name => ({label:name, value:name}))}
-	multi={true}
-	onChange={x => {onChangeCurrentRowNames(x.map(xx=> xx.value))}}
-	value={currentRowNames}
-	/>
-)
 
 const boxPlotDataSeries = ({rows}) => (
 	rows.map(({id, name, expressions}) => ({
@@ -137,17 +109,8 @@ const boxPlotDataSeries = ({rows}) => (
 			))
 	}))
 )
-const BoxPlot = ({rows,columnHeaders,useLogarithmicAxis}) => (
-	<div key={`boxPlot`}>
-	  {rows.length && <ReactHighcharts config={boxPlotConfig({
-		  useLogarithmicAxis,
-		  xAxisCategories: columnHeaders.map(({id, name})=>name || id),
-		  dataSeries: boxPlotDataSeries({rows})
-	  })}/>}
-	</div>
-)
 
-const scatterDataSeries = ({rows, useLogarithmicAxis}) => { return (
+const scatterDataSeries = ({rows}) => { return (
 	rows.map(({id, name, expressions},rowIndex) => ({
 		type: 'scatter',
 		name: id+SUFFIX,
@@ -157,7 +120,7 @@ const scatterDataSeries = ({rows, useLogarithmicAxis}) => { return (
 			 expressions.map(({values, stats}, ix) =>(
 			  values
 			  ? values
-				  .filter(({value})=> !useLogarithmicAxis || value >0)
+				  .filter(({value})=> value >0)
 				  .map(({value, id, assays})=>({
 					  x:ix,
 					  y:value,
@@ -176,45 +139,22 @@ const scatterDataSeries = ({rows, useLogarithmicAxis}) => { return (
 	}))
 )}
 
-const ScatterPlot = ({rows,columnHeaders,useLogarithmicAxis}) => (
-	<div key={`scatterPlot`}>
-	  {rows.length && <ReactHighcharts config={scatterPlotConfig({
-		  useLogarithmicAxis,
-		  xAxisCategories: columnHeaders.map(({id,name})=>name || id),
-		  dataSeries: scatterDataSeries({rows,useLogarithmicAxis})
-	  })}/>}
-	</div>
-)
-const DISPLAY_PLOT_TYPE = {
-	BOX:1, SCATTER:2, BOTH:3
-}
-
-const _Chart = ({rows,columnHeaders,toDisplay, onChangeToDisplay,useLogarithmicAxis,onChangeUseLogarithmicAxis,pointShape, onChangePointShape }) => (
+const Chart = ({rows,columnHeaders}) => (
   	<div>
 	<br/>
 	<div key={`chart`}>
 	  {rows.length && <ReactHighcharts config={plotConfig({
-		  pointShape,
-		  useLogarithmicAxis,
-		  xAxisCategories: columnHeaders.map(({id})=>id),
+		  xAxisCategories: columnHeaders.map(({id,name})=>name || id),
 		  dataSeries:
 			  [].concat(
-				  toDisplay == DISPLAY_PLOT_TYPE.SCATTER ? [] : boxPlotDataSeries({rows})
+				  boxPlotDataSeries({rows})
 			  ).concat(
-				  toDisplay == DISPLAY_PLOT_TYPE.BOX ? [] : scatterDataSeries({rows,useLogarithmicAxis})
+				  scatterDataSeries({rows})
 			  )
 	  })}/>}
 	</div>
   </div>
 )
-
-const Chart = uncontrollable(_Chart, {toDisplay: 'onChangeToDisplay',useLogarithmicAxis:'onChangeUseLogarithmicAxis', pointShape:"onChangePointShape" })
-
-Chart.defaultProps = {
-	defaultToDisplay: DISPLAY_PLOT_TYPE.BOTH,
-	defaultUseLogarithmicAxis:true,
-	defaultPointShape: "circle"
-}
 
 const Transcripts = ({columnHeaders, profiles:{rows}}) => (
 	<div>
