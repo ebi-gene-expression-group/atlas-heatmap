@@ -32,9 +32,20 @@ export default function({data, inProxy, outProxy, atlasUrl, showAnatomogram, isW
         hoveredTissueColour: data.experiment ? `red` : `purple`,
     }
 
+    const transcriptsData =
+        Array.isArray(data.profiles.rows)
+        && data.profiles.rows.length ==1
+        && data.experiment
+        && data.experiment.accession
+        ? {
+            url: inProxy + URI(`json/debug-experiments/${data.experiment.accession}/genes/${data.profiles.rows[0].id}/transcripts?type=RNASEQ_MRNA_BASELINE`, atlasUrl).toString()
+        }
+        : null
+
     return {
         anatomogramConfig,
         heatmapData,
+        transcriptsData,
         boxplotData: getBoxplotData(data),
         heatmapConfig: getChartConfiguration(data, inProxy, outProxy, atlasUrl, isWidget),
         colourAxis : getColourAxisFromDataSeries(data.experiment, heatmapData.dataSeries),

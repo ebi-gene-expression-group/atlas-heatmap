@@ -2,6 +2,7 @@ import React from 'react'
 
 import Heatmap from './HeatmapWithControls.js'
 import Boxplot from '../show/BoxplotCanvas.js'
+import Transcripts from '../show/AsyncLoadedTranscripts.js'
 import {chartDataPropTypes} from './chartDataPropTypes.js'
 
 class ChartContainer extends React.Component {
@@ -37,7 +38,12 @@ class ChartContainer extends React.Component {
               </div>
               { this.props.chartData.boxplotData &&
                 <div style={{display: this.state.chartType === `boxplot` ? `block` : `none`, width: `100%`}} >
-                  <Boxplot {...this.props.chartData.boxplotData} />
+                    <Boxplot {...this.props.chartData.boxplotData} />
+                </div>
+              }
+              { this.props.chartData.transcriptsData &&
+                <div style={{display: this.state.chartType === `boxplot` ? `block` : `none`, width: `100%`}} >
+                  <Transcripts {...this.props.chartData.transcriptsData} />
                 </div>
               }
             </div>
