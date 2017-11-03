@@ -45,9 +45,14 @@ const baseConfig = ({xAxisCategories}) => ({
 	},
 
 	xAxis: {
+		tickLength: 5,
+		tickColor: `rgb(192, 192, 192)`,
+		lineColor: `rgb(192, 192, 192)`,
 		categories: xAxisCategories,
-		title: {
-			text: 'Assay group'
+		labels: {
+			style: {
+				fontSize: `9px`
+			}
 		}
 	},
 

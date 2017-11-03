@@ -120,7 +120,6 @@ const BoxplotCanvas = ({title, xAxisCategories, boxplotSeries,loosePointsSeries,
                     fontSize: `9px`
                 }
             }
-            // opposite: 'true'
         },
 
         yAxis: {
