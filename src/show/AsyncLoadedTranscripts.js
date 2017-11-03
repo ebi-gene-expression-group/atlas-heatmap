@@ -10,6 +10,7 @@ const SUFFIX=" individual"
 const baseConfig = ({xAxisCategories}) => ({
 	chart: {
 		marginRight : 60 * (1 + 10 / Math.pow(1 + xAxisCategories.length, 2)),
+		ignoreHiddenSeries: false,
 		type: 'boxplot',
 		zoomType: 'x',
 		events: {
@@ -72,9 +73,10 @@ const baseConfig = ({xAxisCategories}) => ({
         },
 		series: {
 			animation: false,
-            events: {
-                legendItemClick: function () {
-                        return false;
+			events: {
+                legendItemClick: ({target:{name:thisSeriesName,chart}}) => {
+					chart.series.forEach(s => s.name.replace(SUFFIX,"") === thisSeriesName.replace(SUFFIX,"") && (s.visible ? s.hide(): s.show()))
+                    return false;
                 }
             }
         },
