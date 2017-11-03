@@ -168,7 +168,7 @@ const Chart = ({rows,columnHeaders}) => (
   </div>
 )
 
-const Transcripts = ({keepOnlyTheseColumnIds, columnHeaders, profiles:{rows}}) => {
+const Transcripts = ({keepOnlyTheseColumnIds, columnHeaders, profiles:{rows}, display}) => {
 
 	const ixs =
 		columnHeaders
@@ -176,7 +176,7 @@ const Transcripts = ({keepOnlyTheseColumnIds, columnHeaders, profiles:{rows}}) =
 		.filter((eix) => keepOnlyTheseColumnIds.includes(eix[0].id))
 		.map((eix) => eix[1])
 
-	return (
+	return ( !!display &&
 		<div>
 			<Chart
 				columnHeaders={columnHeaders.filter((e,ix) => ixs.includes(ix))}
@@ -190,7 +190,7 @@ const noData = (msg) => {
 	return <span/>
 }
 
-const QuietTranscriptsLoader = ({sourceUrlFetch, keepOnlyTheseColumnIds}) => (
+const QuietTranscriptsLoader = ({sourceUrlFetch, keepOnlyTheseColumnIds, shouldDisplayHackForNotTriggeringTheLoadEventUntilChartIsActuallyVisible}) => (
 	sourceUrlFetch.pending
 	? noData()
 	: sourceUrlFetch.rejected
@@ -201,7 +201,7 @@ const QuietTranscriptsLoader = ({sourceUrlFetch, keepOnlyTheseColumnIds}) => (
 				? noData(sourceUrlFetch.value.error)
 				: (! sourceUrlFetch.value.profiles || ! sourceUrlFetch.value.columnHeaders)
 					? noData(sourceUrlFetch.value)
-					: <Transcripts {...{keepOnlyTheseColumnIds}}  {... sourceUrlFetch.value} />
+					: <Transcripts {...{keepOnlyTheseColumnIds, display: shouldDisplayHackForNotTriggeringTheLoadEventUntilChartIsActuallyVisible}}  {... sourceUrlFetch.value} />
 )
 
 export default connect(props => ({

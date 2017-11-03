@@ -43,7 +43,7 @@ class ChartContainer extends React.Component {
               }
               { this.props.chartData.transcriptsData &&
                 <div style={{display: this.state.chartType === `boxplot` ? `block` : `none`, width: `100%`}} >
-                  <Transcripts {...this.props.chartData.transcriptsData} />
+                  <Transcripts {...this.props.chartData.transcriptsData} shouldDisplayHackForNotTriggeringTheLoadEventUntilChartIsActuallyVisible={this.state.chartType === `boxplot`} />
                 </div>
               }
             </div>
