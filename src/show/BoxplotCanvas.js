@@ -42,6 +42,7 @@ const BoxplotCanvas = ({title, xAxisCategories, boxplotSeries,loosePointsSeries,
     const initialMarginRight = 60
     const marginRight = initialMarginRight * (1 + 10 / Math.pow(1 + xAxisCategories.length, 2))
 
+    //see also: transcripts colors
     const color = ReactHighcharts.Highcharts.getOptions().colors[0]
     const series = []
     boxplotSeries.length && series.push(
@@ -127,7 +128,7 @@ const BoxplotCanvas = ({title, xAxisCategories, boxplotSeries,loosePointsSeries,
             title: {
                 text: `Expression` + (unit ? ` (${unit})`: ``)
             },
-            // reversed: true
+            min:0.1
         },
 
         series: series

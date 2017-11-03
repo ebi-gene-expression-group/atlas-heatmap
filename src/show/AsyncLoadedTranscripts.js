@@ -98,9 +98,17 @@ const plotConfig = ({xAxisCategories, dataSeries}) => Object.assign(
     series: dataSeries
 })
 
+/*
+color number 0 is used in BoxplotCanvas.js
+if there is only one transcript, use the same color
+otherwise use different colors (tries to be less misleading)
+*/
+const colorForSeries = (rowIndex, total) => ReactHighcharts.Highcharts.getOptions().colors[total < 2 ? 0 : rowIndex+1]
+
 const boxPlotDataSeries = ({rows}) => (
-	rows.map(({id, name, expressions}) => ({
+	rows.map(({id, name, expressions}, rowIndex, self) => ({
 		name: id,
+		color: colorForSeries(rowIndex, self.length),
 		data: expressions.map(
 					({values, stats}) =>(
 				stats
@@ -111,10 +119,10 @@ const boxPlotDataSeries = ({rows}) => (
 )
 
 const scatterDataSeries = ({rows}) => { return (
-	rows.map(({id, name, expressions},rowIndex) => ({
+	rows.map(({id, name, expressions},rowIndex, self) => ({
 		type: 'scatter',
 		name: id+SUFFIX,
-		color: ReactHighcharts.Highcharts.getOptions().colors[rowIndex],
+		color: colorForSeries(rowIndex,self.length),
 		data:
 		  [].concat.apply([],
 			 expressions.map(({values, stats}, ix) =>(
