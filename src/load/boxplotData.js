@@ -10,14 +10,27 @@ const quartilesFromExpression = (expression) => (
   : []
 )
 
+const loosePointsFromExpression = (expression, ix) => (
+  expression.quartiles
+  ? []
+  : [{x:ix, y: expression.value}]
+)
+
 const tryCreateBoxplotData = ({dataRow, columnHeaders}) => {
-  const dataSeries =
+  const boxplotSeries =
     dataRow.expressions
     .map(quartilesFromExpression)
 
-  if(dataSeries.map((e)=>e.length).reduce((l,r)=>l+r, 0)){
+  const loosePointsSeries =
+    [].concat.apply([],
+      dataRow.expressions
+      .map(loosePointsFromExpression)
+    )
+
+  if(boxplotSeries.map((e)=>e.length).reduce((l,r)=>l+r, 0)){
     return {
-        dataSeries,
+        boxplotSeries,
+        loosePointsSeries,
         xAxisCategories: columnHeaders.map((header) => header.factorValue),
         title: dataRow.name === dataRow.id ? dataRow.name : `${dataRow.name} - ${dataRow.id}`,
         unit: dataRow.expressionUnit

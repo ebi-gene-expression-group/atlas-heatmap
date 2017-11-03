@@ -141,12 +141,15 @@ const heatmapDataPropTypes = PropTypes.shape({
     })).isRequired
 })
 
-const boxplotDataPropTypes = PropTypes.shape({
-    dataSeries: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
+const boxplotData = {
+    boxplotSeries: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
+    loosePointsSeries: PropTypes.arrayOf(PropTypes.shape({x:PropTypes.number, y: PropTypes.number})).isRequired,
     xAxisCategories: PropTypes.arrayOf(PropTypes.string).isRequired,
     title: PropTypes.string.isRequired,
     unit: PropTypes.string.isRequired
-})
+}
+
+const boxplotDataPropTypes = PropTypes.shape(boxplotData)
 
 const heatmapConfigPropTypes = PropTypes.shape({
     inProxy: PropTypes.string.isRequired,
@@ -202,6 +205,7 @@ export {
     columnCategoryPropTypes,
     columnGroupsPropTypes,
     heatmapDataPropTypes,
+    boxplotData,
     chartDataPropTypes,
     orderingPropTypes,
     filterPropTypes,

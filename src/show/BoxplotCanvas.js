@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import ReactHighcharts from 'react-highcharts'
 import HighchartsMore from 'highcharts/highcharts-more'
+import {boxplotData as boxplotDataProps} from '../manipulate/chartDataPropTypes.js'
 HighchartsMore(ReactHighcharts.Highcharts)
 
 // Taken from http://jsfiddle.net/gh/get/library/pure/highcharts/highcharts/tree/master/samples/highcharts/yaxis/type-log-negative/
@@ -36,25 +37,36 @@ const allowNegativeLog = (H) => {
 
 allowNegativeLog(ReactHighcharts.Highcharts)
 
-const BoxplotCanvas = ({title, xAxisCategories, dataSeries, unit}) => {
+const BoxplotCanvas = ({title, xAxisCategories, boxplotSeries,loosePointsSeries, unit}) => {
 
     const initialMarginRight = 60
     const marginRight = initialMarginRight * (1 + 10 / Math.pow(1 + xAxisCategories.length, 2))
 
-    // We need to filter because Mat.min(undefined, <any number or anything whatsoever>) returns NaN
-    const min = Math.min(...dataSeries.filter(quartiles => quartiles.length).map(quartiles => quartiles[0]))
-    const max = Math.max(...dataSeries.filter(quartiles => quartiles.length).map(quartiles => quartiles[4]))
-
-    // If no all five points are the same and we want to show the box plot with just points
-    // const scatter = dataSeries.every(quartiles => _.uniq(quartiles).length === 1)
-
-    const series = {
-        name: `Observations`,
-        data: dataSeries,
-        tooltip: {
-            headerFormat: '<em>Factor: {point.key}</em><br/>'
+    const color = ReactHighcharts.Highcharts.getOptions().colors[0]
+    const series = []
+    boxplotSeries.length && series.push(
+        {
+            name: `Observations`,
+            data: boxplotSeries,
+            color,
+            tooltip: {
+                headerFormat: '<em>Factor: {point.key}</em><br/>'
+            }
         }
-    }
+    )
+    loosePointsSeries.length && series.push(
+        {
+            name: `Observations`,
+            color,
+            type: `scatter`,
+            data: loosePointsSeries,
+            tooltip: {
+                headerFormat: '<em>Factor: {point.key}</em><br/>',
+                pointFormat: '<span style="color:{point.color}">\u25CF</span><b> {series.name} </b> <br/>Expression: {point.y}<br/>'
+            }
+        }
+    )
+
 
     const config = {
         chart: {
@@ -73,6 +85,7 @@ const BoxplotCanvas = ({title, xAxisCategories, dataSeries, unit}) => {
                 }
             },
             series: {
+                animation: false,
                 states: {
                     hover: {
                         color: `#eeec38` //#edab12 color cell on mouse over
@@ -81,7 +94,7 @@ const BoxplotCanvas = ({title, xAxisCategories, dataSeries, unit}) => {
                         color: `#eeec38`
                     }
                 }
-            }
+            },
         },
 
         credits: {
@@ -114,22 +127,15 @@ const BoxplotCanvas = ({title, xAxisCategories, dataSeries, unit}) => {
             title: {
                 text: `Expression` + (unit ? ` (${unit})`: ``)
             },
-            min: min,
-            max: max,
             // reversed: true
         },
 
-        series: [series]
+        series: series
     }
 
     return <ReactHighcharts config={config} />
 }
 
-BoxplotCanvas.propTypes = {
-    title: PropTypes.string.isRequired,
-    xAxisCategories: PropTypes.arrayOf(PropTypes.string).isRequired,
-    dataSeries: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
-    unit: PropTypes.string.isRequired
-}
+BoxplotCanvas.propTypes = boxplotDataProps
 
 export default BoxplotCanvas
