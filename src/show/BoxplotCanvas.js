@@ -35,8 +35,6 @@ const allowNegativeLog = (H) => {
   }
 }
 
-allowNegativeLog(ReactHighcharts.Highcharts)
-
 const BoxplotCanvas = ({title, xAxisCategories, boxplotSeries,loosePointsSeries, unit}) => {
     //see also: transcripts colors
     const color = ReactHighcharts.Highcharts.getOptions().colors[0]

@@ -1,12 +1,13 @@
-const quartilesFromExpression = (expression) => (
+const quartilesFromExpression = (expression, ix) => (
   expression.quartiles
-  ? [
-      expression.quartiles.min,
-      expression.quartiles.lower,
-      expression.quartiles.median,
-      expression.quartiles.upper,
-      expression.quartiles.max
-    ]
+  ? [{
+      x: ix,
+      low: expression.quartiles.min,
+      q1: expression.quartiles.lower,
+      median: expression.quartiles.median,
+      q3: expression.quartiles.upper,
+      high: expression.quartiles.max
+    }]
   : []
 )
 
@@ -18,8 +19,10 @@ const loosePointsFromExpression = (expression, ix) => (
 
 const tryCreateBoxplotData = ({dataRow, columnHeaders}) => {
   const boxplotSeries =
-    dataRow.expressions
-    .map(quartilesFromExpression)
+    [].concat.apply([],
+      dataRow.expressions
+      .map(quartilesFromExpression)
+    )
 
   const loosePointsSeries =
     [].concat.apply([],
@@ -27,7 +30,7 @@ const tryCreateBoxplotData = ({dataRow, columnHeaders}) => {
       .map(loosePointsFromExpression)
     )
 
-  if(boxplotSeries.map((e)=>e.length).reduce((l,r)=>l+r, 0)){
+  if(boxplotSeries.length){
     return {
         boxplotSeries,
         loosePointsSeries,
