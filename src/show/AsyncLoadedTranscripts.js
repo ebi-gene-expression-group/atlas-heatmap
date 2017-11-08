@@ -9,7 +9,6 @@ const SUFFIX=" individual"
 
 const baseConfig = ({xAxisCategories}) => ({
 	chart: {
-		marginRight : 60 * (1 + 10 / Math.pow(1 + xAxisCategories.length, 2)),
 		ignoreHiddenSeries: false,
 		type: 'boxplot',
 		zoomType: 'x',

@@ -38,10 +38,6 @@ const allowNegativeLog = (H) => {
 allowNegativeLog(ReactHighcharts.Highcharts)
 
 const BoxplotCanvas = ({title, xAxisCategories, boxplotSeries,loosePointsSeries, unit}) => {
-
-    const initialMarginRight = 60
-    const marginRight = initialMarginRight * (1 + 10 / Math.pow(1 + xAxisCategories.length, 2))
-
     //see also: transcripts colors
     const color = ReactHighcharts.Highcharts.getOptions().colors[0]
     const series = []
@@ -71,9 +67,7 @@ const BoxplotCanvas = ({title, xAxisCategories, boxplotSeries,loosePointsSeries,
 
     const config = {
         chart: {
-            marginRight,
-            type: `boxplot`,
-            spacingRight: xAxisCategories.slice(-1)[0].length > 6 ? 100 : 0
+            type: `boxplot`
         },
 
         plotOptions: {
