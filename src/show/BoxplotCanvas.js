@@ -34,8 +34,9 @@ const allowNegativeLog = (H) => {
     return isNegative ? -result : result
   }
 }
+// allowNegativeLog(ReactHighcharts.Highcharts)
 
-const BoxplotCanvas = ({title, xAxisCategories, boxplotSeries,loosePointsSeries, unit}) => {
+const BoxplotCanvas = ({title, xAxisCategories, boxplotSeries,loosePointsSeries, unit, config:{cutoff}}) => {
     //see also: transcripts colors
     const color = ReactHighcharts.Highcharts.getOptions().colors[0]
     const series = []
@@ -116,6 +117,20 @@ const BoxplotCanvas = ({title, xAxisCategories, boxplotSeries,loosePointsSeries,
 
         yAxis: {
             type: `logarithmic`,
+            plotLines: cutoff > 0.1 ? [{
+               value: cutoff,
+               dashStyle: 'Dash',
+               color: '#333333',
+               width: 1,
+               label: {
+                   text: `Cutoff: ${cutoff}`,
+                   align: 'left',
+                   style: {
+                       color: 'gray'
+                   }
+               }
+           }] : [],
+
             title: {
                 text: `Expression` + (unit ? ` (${unit})`: ``)
             },

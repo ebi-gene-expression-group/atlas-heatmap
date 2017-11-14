@@ -67,10 +67,12 @@ const QuietLoader = ({sourceUrlFetch, keepOnlyTheseColumnIds, shouldDisplayHackF
 						{ sourceUrlFetch.value.geneExpression &&
 							<Boxplot {...tryCreateBoxplotData({
 								dataRow: sourceUrlFetch.value.geneExpression.rows[0],
-								columnHeaders: sourceUrlFetch.value.columnHeaders})} />
+								columnHeaders: sourceUrlFetch.value.columnHeaders})}
+								config={sourceUrlFetch.value.config}
+								/>
 						}
 						{ sourceUrlFetch.value.transcriptExpression &&
-							<Transcripts {...{keepOnlyTheseColumnIds, display: shouldDisplayHackForNotTriggeringTheLoadEventUntilChartIsActuallyVisible}}  {... sourceUrlFetch.value.transcriptExpression} columnHeaders={sourceUrlFetch.value.columnHeaders}/>
+							<Transcripts {...{keepOnlyTheseColumnIds, display: shouldDisplayHackForNotTriggeringTheLoadEventUntilChartIsActuallyVisible}}  {... sourceUrlFetch.value.transcriptExpression} columnHeaders={sourceUrlFetch.value.columnHeaders} config={sourceUrlFetch.value.config}/>
 						}
 						</div>
 					)
