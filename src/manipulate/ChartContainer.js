@@ -1,8 +1,7 @@
 import React from 'react'
 
 import Heatmap from './HeatmapWithControls.js'
-import Boxplot from '../show/BoxplotCanvas.js'
-import Transcripts from '../show/AsyncLoadedTranscripts.js'
+import GeneSpecificResults from './GeneSpecificResults.js'
 import {chartDataPropTypes} from './chartDataPropTypes.js'
 
 class ChartContainer extends React.Component {
@@ -28,7 +27,7 @@ class ChartContainer extends React.Component {
     render() {
         return (
             <div style={{width: `100%`}}>
-              {this.props.chartData.boxplotData &&
+              {this.props.chartData.geneSpecificResults &&
                   <a href="#" onClick={this.handleClick}>
                     {`Switch to ${this._theOtherChartType()} view`}
                   </a>
@@ -36,16 +35,13 @@ class ChartContainer extends React.Component {
               <div style={{display: this.state.chartType === `heatmap` ? `block` : `none`, width: `100%`}} >
                 <Heatmap {...this.props.chartData} />
               </div>
-              { this.props.chartData.boxplotData &&
+              { this.props.chartData.geneSpecificResults &&
                 <div style={{display: this.state.chartType === `boxplot` ? `block` : `none`, width: `100%`}} >
-                    <Boxplot {...this.props.chartData.boxplotData} />
+                    <GeneSpecificResults {...this.props.chartData.geneSpecificResults}
+                        shouldDisplayHackForNotTriggeringTheLoadEventUntilChartIsActuallyVisible={this.state.chartType === `boxplot`} />
                 </div>
               }
-              { this.props.chartData.transcriptsData &&
-                <div style={{display: this.state.chartType === `boxplot` ? `block` : `none`, width: `100%`}} >
-                  <Transcripts {...this.props.chartData.transcriptsData} shouldDisplayHackForNotTriggeringTheLoadEventUntilChartIsActuallyVisible={this.state.chartType === `boxplot`} />
-                </div>
-              }
+
             </div>
         )
     }

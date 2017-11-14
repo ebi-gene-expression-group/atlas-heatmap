@@ -169,7 +169,7 @@ const Chart = ({rows,columnHeaders}) => (
   </div>
 )
 
-const Transcripts = ({keepOnlyTheseColumnIds, columnHeaders, profiles:{rows}, display}) => {
+const Transcripts = ({keepOnlyTheseColumnIds, columnHeaders, rows, display}) => {
 
 	const ixs =
 		columnHeaders
@@ -186,27 +186,5 @@ const Transcripts = ({keepOnlyTheseColumnIds, columnHeaders, profiles:{rows}, di
 		</div>
 	)
 }
-const noData = (msg) => {
-	msg && console.log(msg)
-	return <span/>
-}
 
-const QuietTranscriptsLoader = ({sourceUrlFetch, keepOnlyTheseColumnIds, shouldDisplayHackForNotTriggeringTheLoadEventUntilChartIsActuallyVisible}) => (
-	sourceUrlFetch.pending
-	? noData()
-	: sourceUrlFetch.rejected
-		? noData(sourceUrlFetch)
-		: ! sourceUrlFetch.fulfilled
-			? noData(sourceUrlFetch)
-			: sourceUrlFetch.value.error
-				? noData(sourceUrlFetch.value.error)
-				: (! sourceUrlFetch.value.profiles || ! sourceUrlFetch.value.columnHeaders)
-					? noData(sourceUrlFetch.value)
-					: <Transcripts {...{keepOnlyTheseColumnIds, display: shouldDisplayHackForNotTriggeringTheLoadEventUntilChartIsActuallyVisible}}  {... sourceUrlFetch.value} />
-)
-
-export default connect(props => ({
-    sourceUrlFetch: {
-        url: props.url
-    },
-}))(QuietTranscriptsLoader)
+export default Transcripts
