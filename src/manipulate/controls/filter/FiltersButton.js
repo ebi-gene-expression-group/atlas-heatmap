@@ -8,31 +8,51 @@ import FilterOption from './FilterOption.js'
 import {groupBy, sortBy} from 'lodash'
 
 import '../controlButton.css'
+import CategoryCheckboxes from './CategoryCheckboxes.js'
 
 const groupIntoPairs = (arr,f) => Object.entries(groupBy(arr,f))
 
 import uncontrollable from 'uncontrollable'
 
+
+
+const CategoryCheckboxesFilters = ({allCategories, allValues, onChangeCurrentValues}) => {
+
+	return (
+		<div>
+			<CategoryCheckboxes categories={allCategories}
+								values={allValues}
+								onChangeCurrentValues={onChangeCurrentValues}/>
+		</div>
+
+	)
+}
+
 const navTabs = (className) => (
-  ({allTabs, disabledTabs=[], currentTab, onChangeCurrentTab}) => (
+  ({allTabs, disabledTabs=[], currentTab, onChangeCurrentTab}) => {
   	// Beware: we’re using a custom nav class, it’s just the same as Bootstrap’s but renamed to avoid clashes with
-		// other environemnts where nav is also used
-		<Nav bsClass={`gxa-nav`}
-			   bsStyle={className}
-				 activeKey={currentTab}
-				 onSelect={onChangeCurrentTab}
-		     style={{fontSize: `medium`}}>
-      {
-        allTabs.map((tab) => (
-					<NavItem eventKey={tab}
-									 key={tab}
-									 disabled={disabledTabs.includes(tab)}>
-              {tab}
-					</NavItem>
-        ))
-      }
+		// other environments where nav is also used
+    const _style = className === 'pills' ? {fontSize: `medium`, float: `right`} : {fontSize: `medium`};
+	const classStyle = className === 'pills' ? `columns small-2 gxa-nav` : `gxa-nav`;
+    return (
+		<Nav bsClass={classStyle}
+		     bsStyle={className}
+		     activeKey={currentTab}
+		     onSelect={onChangeCurrentTab}
+		     style={_style}>
+		  {
+			allTabs.map((tab) => (
+				<NavItem eventKey={tab}
+								 key={tab}
+								 disabled={disabledTabs.includes(tab)}>
+					{tab}
+				</NavItem>
+			))
+		  }
 		</Nav>
-  )
+
+	  )
+  }
 )
 
 const topRibbonTabs = navTabs(`tabs`)
@@ -44,7 +64,8 @@ const _FiltersModal = ({
 	tabNames: allTopTabs,
 	currentTopTab,
 	onChangeCurrentTopTab,
-	allCategories,
+	categories,
+	categoryCheckboxes,
 	currentValues,
 	allValues,
 	onChangeCurrentValues
@@ -61,11 +82,17 @@ const _FiltersModal = ({
 		</Modal.Header>
 
 		<Modal.Body >
+			<div className={`row`}>
+				<CategoryCheckboxesFilters allCategories={categoryCheckboxes}
+										   allValues={allValues}
+									       onChangeCurrentValues={onChangeCurrentValues}
+				/>
+
 			{
 				categoryTabs({
-					allTabs: allCategories.map(c => c.name),
-					disabledTabs: allCategories.filter(c => c.disabled).map(c => c.name),
-					currentTab:(allCategories.find(category => allValues.every(value=> (
+					allTabs: categories.map(c => c.name),
+					disabledTabs: categories.filter(c => c.disabled).map(c => c.name),
+					currentTab:(categories.find(category => allValues.every(value=> (
 						currentValues.some(currentValue => currentValue.value === value.value) === value.categories.includes(category.name)
 					)) && !category.disabled) || {name: ``}).name,
 					onChangeCurrentTab: (categoryName) => onChangeCurrentValues(
@@ -74,6 +101,7 @@ const _FiltersModal = ({
 					)
 				})
 			}
+			</div>
 			<div style={{marginLeft: `20px`, columnCount: `2`}}>
 				{
 					sortBy(
@@ -140,13 +168,14 @@ const _Main = props => (
 			{...props}
 			onCloseModal={props.onChangeShowModal.bind(this, false)}
 			defaultCurrentTopTab={props.tabNames[0] || ``}
-			defaultCurrentCategory={props.allCategories.find(c => !c.disabled)}
+			defaultCurrentCategory={props.categories.find(c => !c.disabled)}
 			/>
 	</div>
 )
 
 _Main.propTypes = {
-	allCategories: PropTypes.arrayOf(columnCategoryPropTypes).isRequired,
+	categories: PropTypes.arrayOf(columnCategoryPropTypes).isRequired,
+	categoryCheckboxes: PropTypes.arrayOf(columnCategoryPropTypes).isRequired,
 	allValues: PropTypes.arrayOf(groupedColumnPropTypes).isRequired,
 	currentValues: PropTypes.arrayOf(groupedColumnPropTypes).isRequired,
 	disabled : PropTypes.bool.isRequired,

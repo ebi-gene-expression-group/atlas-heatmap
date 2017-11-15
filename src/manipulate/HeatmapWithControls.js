@@ -110,7 +110,7 @@ const renderDownloadButton = ({
 
 const renderFiltersButton = ({
     heatmapConfig,
-    columnGroups: {groupingNames,categories},
+    columnGroups: {groupingNames, categories, categoryCheckboxes},
     currentZoom,
     allGroupedColumns,
     currentGroupedColumns,
@@ -119,7 +119,8 @@ const renderFiltersButton = ({
     heatmapConfig.isMultiExperiment &&
         <div style={{display: `inline-block`, padding: `5px`}}>
             <FiltersButton
-                allCategories={categories}
+                categories={categories}
+                categoryCheckboxes={categoryCheckboxes}
                 allValues={allGroupedColumns}
                 currentValues={currentGroupedColumns}
                 disabled={currentZoom}

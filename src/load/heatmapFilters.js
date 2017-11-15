@@ -50,17 +50,17 @@ const main = ({heatmapData: {xAxisCategories, dataSeries}, columnGroupings}) => 
     categories:
         [].concat(
             [CATEGORY_ALL],
-            [].concat.apply([],
-                dataSeries
-                .map(ds => ({
-                    name: ds.info.name,
-                    disabled: !ds.data.length
-                }))
-                .reverse()
-            ),
             [CATEGORY_NONE]
         ),
-    data: columnsWithGroupings({xAxisCategories, dataSeries,columnGroupings}),
+    categoryCheckboxes: [].concat.apply([],
+        dataSeries
+            .map(ds => ({
+                name: ds.info.name,
+                disabled: !ds.data.length
+            }))
+            .reverse()
+        ),
+    data: columnsWithGroupings({xAxisCategories, dataSeries, columnGroupings}),
 })
 
 export default main
