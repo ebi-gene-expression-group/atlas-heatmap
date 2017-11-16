@@ -14,19 +14,57 @@ const groupIntoPairs = (arr,f) => Object.entries(groupBy(arr,f))
 
 import uncontrollable from 'uncontrollable'
 
+class CategoryCheckboxesFilters extends React.Component {
 
+	constructor(props) {
+        super(props);
+        this.state = {
+            checkedFilters: []
+        }
 
-const CategoryCheckboxesFilters = ({allCategories, allValues, onChangeCurrentValues}) => {
+        this.onChangeSelectedFilters = this._onChangeSelectedFilters.bind(this)
+    }
 
-	return (
-		<div>
-			<CategoryCheckboxes categories={allCategories}
-								values={allValues}
-								onChangeCurrentValues={onChangeCurrentValues}/>
-		</div>
+    _onChangeSelectedFilters = (filters) => {
+    	this.setState({
+			checkedFilters: filters
+		})
+	}
 
-	)
+	render() {
+    	const {allCategories, allValues, onChangeCurrentValues} = this.props
+    	return (
+			<div>
+				<CategoryCheckboxes categories={allCategories}
+									values={allValues}
+									onChangeCurrentValues={onChangeCurrentValues}
+									onChangedFilters={this.onChangeSelectedFilters}
+									currentFilters={this.state.checkedFilters}
+				/>
+			</div>
+		)
+	}
 }
+
+CategoryCheckboxesFilters.propTypes = {
+    allCategories: PropTypes.arrayOf(columnCategoryPropTypes).isRequired,
+    allValues: PropTypes.arrayOf(groupedColumnPropTypes).isRequired,
+    onChangeCurrentValues: PropTypes.func.isRequired,
+}
+
+// const CategoryCheckboxesFilters = ({allCategories, allValues, onChangeCurrentValues}) => {
+//
+// 	return (
+// 		<div>
+// 			<CategoryCheckboxes categories={allCategories}
+// 								values={allValues}
+// 								onChangeCurrentValues={onChangeCurrentValues}
+// 								onChangedFilters={onChangeSelectedFilters}
+// 			/>
+// 		</div>
+//
+// 	)
+// }
 
 const navTabs = (className) => (
   ({allTabs, disabledTabs=[], currentTab, onChangeCurrentTab}) => {

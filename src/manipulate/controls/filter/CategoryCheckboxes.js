@@ -8,7 +8,7 @@ class Checkbox extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            isChecked: false
+            isChecked: this.props.value
         }
     }
 
@@ -44,6 +44,7 @@ class Checkbox extends Component {
 
 Checkbox.propTypes = {
     label: PropTypes.string.isRequired,
+    value: PropTypes.bool.isRequired,
     handleCheckboxChange: PropTypes.func.isRequired,
 };
 
@@ -54,11 +55,20 @@ Checkbox.propTypes = {
 class CategoryCheckboxes extends React.Component {
 
     constructor(props) {
-        super(props)
+        super(props);
+        this.state = {
+            selected: this.props.currentFilters
+        }
     }
 
     componentWillMount = () => {
         this.selectedCheckboxes = new Set();
+    }
+
+    _updateFiltersSelected = (checked) => {
+        this.setState({selected: checked});
+
+        this.props.onChangedFilters(checked);
     }
 
     toggleCheckbox = label => {
@@ -81,6 +91,8 @@ class CategoryCheckboxes extends React.Component {
             checkboxesSelected.push(checked)
         }
 
+        this._updateFiltersSelected(checkboxesSelected)
+
         const filteredValues = values.filter(item => checkboxesSelected.length > 0 ?
             checkboxesSelected
                 .map(val => item.categories.indexOf(val))
@@ -91,19 +103,25 @@ class CategoryCheckboxes extends React.Component {
         onChangeCurrentValues(filteredValues)
     }
 
-    createCheckbox = label => (
-        <Checkbox key={label}
-                  label={label}
-                  handleCheckboxChange={this.toggleCheckbox}
-        />
-    )
+    createCheckbox = (label) => {
+        const {selected} = this.state;
+        const value = selected ? selected.includes(label) : false
+
+        return (
+            <Checkbox key={label}
+                      label={label}
+                      value={value}
+                      handleCheckboxChange={this.toggleCheckbox}
+            />
+        )
+    }
 
     createCheckboxes = () => {
         const {categories} = this.props;
         const categories_names = categories.map(c => c.name)
 
         return (
-            categories_names.map(this.createCheckbox)
+            categories_names.map(this.createCheckbox.bind(this))
         )
     }
 
@@ -119,7 +137,9 @@ class CategoryCheckboxes extends React.Component {
 CategoryCheckboxes.propTypes = {
     categories: PropTypes.arrayOf(columnCategoryPropTypes).isRequired,
     values: PropTypes.arrayOf(groupedColumnPropTypes).isRequired,
-    onChangeCurrentValues: PropTypes.PropTypes.func.isRequired
+    onChangeCurrentValues: PropTypes.func.isRequired,
+    onChangedFilters: PropTypes.func.isRequired,
+    currentFilters: PropTypes.arrayOf(String).isRequired
 }
 
 export default CategoryCheckboxes
