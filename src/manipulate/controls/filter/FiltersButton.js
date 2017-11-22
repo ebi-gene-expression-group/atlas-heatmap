@@ -46,11 +46,7 @@ class CategoryCheckboxesFilters extends React.Component {
 	}
 }
 
-CategoryCheckboxesFilters.propTypes = {
-    allCategories: PropTypes.arrayOf(columnCategoryPropTypes).isRequired,
-    allValues: PropTypes.arrayOf(groupedColumnPropTypes).isRequired,
-    onChangeCurrentValues: PropTypes.func.isRequired,
-}
+
 
 // const CategoryCheckboxesFilters = ({allCategories, allValues, onChangeCurrentValues}) => {
 //
@@ -121,9 +117,10 @@ const _FiltersModal = ({
 
 		<Modal.Body >
 			<div className={`row`}>
-				<CategoryCheckboxesFilters allCategories={categoryCheckboxes}
-										   allValues={allValues}
-									       onChangeCurrentValues={onChangeCurrentValues}
+				<CategoryCheckboxes categories={categoryCheckboxes}
+								    values={allValues}
+									currentValues={currentValues}
+								    onChangeCurrentValues={onChangeCurrentValues}
 				/>
 
 			{

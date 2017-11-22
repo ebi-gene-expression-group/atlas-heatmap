@@ -12,6 +12,12 @@ class Checkbox extends Component {
         }
     }
 
+    componentDidMount = () => {
+        this.setState({
+            isChecked: this.props.value
+        })
+    }
+
     toggleCheckboxChange = () => {
         const { handleCheckboxChange, label } = this.props;
 
@@ -25,14 +31,14 @@ class Checkbox extends Component {
     }
 
     render() {
-        const { label } = this.props;
+        const { label, actualValue } = this.props;
         const { isChecked } = this.state;
 
         return (
             <div className="checkbox" style={{float: 'left'}}>
                 <input type="checkbox"
                        value={label}
-                       checked={isChecked}
+                       checked={actualValue}
                        onChange={this.toggleCheckboxChange.bind(this)}
                 />
 
@@ -45,19 +51,17 @@ class Checkbox extends Component {
 Checkbox.propTypes = {
     label: PropTypes.string.isRequired,
     value: PropTypes.bool.isRequired,
+    actualValue: PropTypes.bool.isRequired,
     handleCheckboxChange: PropTypes.func.isRequired,
 };
 
-// const categories = [
-//     'Low', 'Medium', 'High', 'Below cutoff'
-// ];
 
 class CategoryCheckboxes extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            selected: this.props.currentFilters
+            selected: []
         }
     }
 
@@ -65,10 +69,13 @@ class CategoryCheckboxes extends React.Component {
         this.selectedCheckboxes = new Set();
     }
 
+    componentDidMount = () => {
+        this.handleCurrentCheckboxSelection()
+    }
+
     _updateFiltersSelected = (checked) => {
         this.setState({selected: checked});
 
-        this.props.onChangedFilters(checked);
     }
 
     toggleCheckbox = label => {
@@ -103,6 +110,29 @@ class CategoryCheckboxes extends React.Component {
         onChangeCurrentValues(filteredValues)
     }
 
+    handleCurrentCheckboxSelection = () => {
+        const {currentValues, categories} = this.props
+
+        const currentChecked = []
+        let existCategory = true;
+
+        categories.forEach(category => {
+            currentValues.forEach(value => {
+                if (!value.categories.includes(category)) {
+                    existCategory = false
+                }
+            });
+
+            if (existCategory) {
+                currentChecked.push(category)
+            }
+        });
+
+
+        this._updateFiltersSelected(currentChecked);
+
+    }
+
     createCheckbox = (label) => {
         const {selected} = this.state;
         const value = selected ? selected.includes(label) : false
@@ -111,6 +141,7 @@ class CategoryCheckboxes extends React.Component {
             <Checkbox key={label}
                       label={label}
                       value={value}
+                      actualValue={value}
                       handleCheckboxChange={this.toggleCheckbox}
             />
         )
@@ -137,9 +168,9 @@ class CategoryCheckboxes extends React.Component {
 CategoryCheckboxes.propTypes = {
     categories: PropTypes.arrayOf(columnCategoryPropTypes).isRequired,
     values: PropTypes.arrayOf(groupedColumnPropTypes).isRequired,
-    onChangeCurrentValues: PropTypes.func.isRequired,
-    onChangedFilters: PropTypes.func.isRequired,
-    currentFilters: PropTypes.arrayOf(String).isRequired
+    currentValues: PropTypes.arrayOf(groupedColumnPropTypes).isRequired,
+    onChangeCurrentValues: PropTypes.func.isRequired
+    // onChangedFilters: PropTypes.func.isRequired,
 }
 
 export default CategoryCheckboxes
