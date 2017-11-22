@@ -118,14 +118,16 @@ class CategoryCheckboxes extends React.Component {
 
         categories.forEach(category => {
             currentValues.forEach(value => {
-                if (!value.categories.includes(category)) {
+                if (!value.categories.includes(category.name)) {
                     existCategory = false
                 }
             });
 
             if (existCategory) {
-                currentChecked.push(category)
+                currentChecked.push(category.name)
             }
+
+            existCategory = true;
         });
 
 
