@@ -32,7 +32,7 @@ class Checkbox extends Component {
 
     render() {
         const { label, actualValue } = this.props;
-        const { isChecked } = this.state;
+        const { isChecked } = this.state.isChecked ? this.state.isChecked : actualValue;
 
         return (
             <div className="checkbox" style={{float: 'left'}}>
@@ -61,7 +61,8 @@ class CategoryCheckboxes extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            selected: []
+            selected: [],
+            unselected: []
         }
     }
 
@@ -73,12 +74,20 @@ class CategoryCheckboxes extends React.Component {
         this.handleCurrentCheckboxSelection()
     }
 
-    _updateFiltersSelected = (checked) => {
-        this.setState({selected: checked});
+    _updateFiltersSelected = (checked, unchecked) => {
+        this.setState({
+            selected: checked,
+            unselected: unchecked});
 
     }
 
     toggleCheckbox = label => {
+        const {selected} = this.state
+
+        //First time is empty
+        if (this.selectedCheckboxes.size === 0) {
+            selected.forEach(item => this.selectedCheckboxes.add(item))
+        }
         //Checks if a specific checkbox label is in the set
         if (this.selectedCheckboxes.has(label)) {
             this.selectedCheckboxes.delete(label);
@@ -91,52 +100,66 @@ class CategoryCheckboxes extends React.Component {
     }
 
     handleFiltersSelection = () => {
-        const {onChangeCurrentValues, values} = this.props
+        const {onChangeCurrentValues, allValues} = this.props
 
-        const checkboxesSelected = []
+        let checkboxesSelected = []
+
         for (const checked of this.selectedCheckboxes) {
-            checkboxesSelected.push(checked)
+            !checkboxesSelected.includes(checked) ? checkboxesSelected.push(checked) : null
         }
 
         this._updateFiltersSelected(checkboxesSelected)
 
-        const filteredValues = values.filter(item => checkboxesSelected.length > 0 ?
+        const filteredValues = allValues.filter(item => checkboxesSelected.length > 0 ?
             checkboxesSelected
                 .map(val => item.categories.indexOf(val))
                 .map(val => (val > -1))
-                .reduce((acc, cum) => acc && cum) : ""
+                .reduce((acc, cum) => acc || cum) : ""
         );
 
         onChangeCurrentValues(filteredValues)
     }
 
     handleCurrentCheckboxSelection = () => {
-        const {currentValues, categories} = this.props
+        const {currentValues, allValues, categories} = this.props
 
-        const currentChecked = []
-        let existCategory = true;
+        const checkedCategories = []
+        let uncheckedCategories = []
+        let existCurrentCategory = true;
 
         categories.forEach(category => {
+            //TODO: when two selected and modal is open checkboxes not selected, review this part of the code
             currentValues.forEach(value => {
                 if (!value.categories.includes(category.name)) {
-                    existCategory = false
+                    existCurrentCategory = false
                 }
             });
 
-            if (existCategory) {
-                currentChecked.push(category.name)
+            if (existCurrentCategory) {
+                checkedCategories.push(category.name)
             }
 
-            existCategory = true;
+            existCurrentCategory = true;
+        });
+
+        allValues.forEach(value => {
+            if (!currentValues.includes(value)) { //value is unchecked
+                //uncheckCategories array does not contain value categories
+                value.categories.forEach(item => {
+                    if (!uncheckedCategories.includes(item)) {
+                        uncheckedCategories.push(item)
+                    }
+                })
+            }
         });
 
 
-        this._updateFiltersSelected(currentChecked);
+        this._updateFiltersSelected(checkedCategories, uncheckedCategories);
 
     }
 
     createCheckbox = (label) => {
-        const {selected} = this.state;
+        const {selected, unselected} = this.state;
         const value = selected ? selected.includes(label) : false
 
         return (
@@ -169,7 +192,7 @@ class CategoryCheckboxes extends React.Component {
 
 CategoryCheckboxes.propTypes = {
     categories: PropTypes.arrayOf(columnCategoryPropTypes).isRequired,
-    values: PropTypes.arrayOf(groupedColumnPropTypes).isRequired,
+    allValues: PropTypes.arrayOf(groupedColumnPropTypes).isRequired,
     currentValues: PropTypes.arrayOf(groupedColumnPropTypes).isRequired,
     onChangeCurrentValues: PropTypes.func.isRequired
     // onChangedFilters: PropTypes.func.isRequired,

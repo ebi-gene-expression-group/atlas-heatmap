@@ -118,7 +118,7 @@ const _FiltersModal = ({
 		<Modal.Body >
 			<div className={`row`}>
 				<CategoryCheckboxes categories={categoryCheckboxes}
-								    values={allValues}
+								    allValues={allValues}
 									currentValues={currentValues}
 								    onChangeCurrentValues={onChangeCurrentValues}
 				/>
