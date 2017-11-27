@@ -123,23 +123,23 @@ class CategoryCheckboxes extends React.Component {
     handleCurrentCheckboxSelection = () => {
         const {currentValues, allValues, categories} = this.props
 
+        const commonCategories = []
         const checkedCategories = []
         let uncheckedCategories = []
-        let existCurrentCategory = true;
+        let existCurrentCategory = false;
 
         categories.forEach(category => {
-            //TODO: when two selected and modal is open checkboxes not selected, review this part of the code
             currentValues.forEach(value => {
-                if (!value.categories.includes(category.name)) {
-                    existCurrentCategory = false
+                if (value.categories.includes(category.name)) {
+                    existCurrentCategory = true
                 }
             });
 
             if (existCurrentCategory) {
-                checkedCategories.push(category.name)
+                commonCategories.push(category.name)
             }
 
-            existCurrentCategory = true;
+            existCurrentCategory = false;
         });
 
         allValues.forEach(value => {
@@ -153,6 +153,10 @@ class CategoryCheckboxes extends React.Component {
             }
         });
 
+
+        commonCategories.forEach(category => {
+            !uncheckedCategories.includes(category) ? checkedCategories.push(category) : ""
+        })
 
         this._updateFiltersSelected(checkedCategories, uncheckedCategories);
 
