@@ -120,6 +120,9 @@ const _FiltersModal = ({
 				<CategoryCheckboxes categories={categoryCheckboxes}
 								    allValues={allValues}
 									currentValues={currentValues}
+									currentTab={(categories.find(category => allValues.every(value=> (
+                                        currentValues.some(currentValue => currentValue.value === value.value) === value.categories.includes(category.name)
+                                    )) && !category.disabled) || {name: ``}).name}
 								    onChangeCurrentValues={onChangeCurrentValues}
 				/>
 

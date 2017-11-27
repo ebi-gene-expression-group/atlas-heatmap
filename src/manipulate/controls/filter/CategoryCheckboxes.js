@@ -31,15 +31,16 @@ class Checkbox extends Component {
     }
 
     render() {
-        const { label, actualValue } = this.props;
+        const { label, actualValue, indeterminate } = this.props;
         const { isChecked } = this.state.isChecked ? this.state.isChecked : actualValue;
 
         return (
             <div className="checkbox" style={{float: 'left'}}>
-                <input type="checkbox"
+                <input type={`checkbox`}
                        value={label}
                        checked={actualValue}
                        onChange={this.toggleCheckboxChange.bind(this)}
+                       ref={checkbox => {checkbox ? checkbox.indeterminate = indeterminate : null}}
                 />
 
                 <label>{label}</label>
@@ -52,6 +53,7 @@ Checkbox.propTypes = {
     label: PropTypes.string.isRequired,
     value: PropTypes.bool.isRequired,
     actualValue: PropTypes.bool.isRequired,
+    indeterminate: PropTypes.bool.isRequired,
     handleCheckboxChange: PropTypes.func.isRequired,
 };
 
@@ -121,7 +123,7 @@ class CategoryCheckboxes extends React.Component {
     }
 
     handleCurrentCheckboxSelection = () => {
-        const {currentValues, allValues, categories} = this.props
+        const {currentValues, allValues, categories, currentTab} = this.props
 
         const commonCategories = []
         const checkedCategories = []
@@ -155,7 +157,7 @@ class CategoryCheckboxes extends React.Component {
 
 
         commonCategories.forEach(category => {
-            !uncheckedCategories.includes(category) ? checkedCategories.push(category) : ""
+            !uncheckedCategories.includes(category) && currentTab === "" ? checkedCategories.push(category) : ""
         })
 
         this._updateFiltersSelected(checkedCategories, uncheckedCategories);
@@ -163,14 +165,17 @@ class CategoryCheckboxes extends React.Component {
     }
 
     createCheckbox = (label) => {
-        const {selected, unselected} = this.state;
-        const value = selected ? selected.includes(label) : false
+        const {selected} = this.state;
+        const {currentTab} = this.props
+
+        const value = currentTab === "All" ? true : (currentTab === "None" ? false : (selected ? selected.includes(label) : false))
 
         return (
             <Checkbox key={label}
                       label={label}
                       value={value}
                       actualValue={value}
+                      indeterminate={false}
                       handleCheckboxChange={this.toggleCheckbox}
             />
         )
@@ -198,8 +203,8 @@ CategoryCheckboxes.propTypes = {
     categories: PropTypes.arrayOf(columnCategoryPropTypes).isRequired,
     allValues: PropTypes.arrayOf(groupedColumnPropTypes).isRequired,
     currentValues: PropTypes.arrayOf(groupedColumnPropTypes).isRequired,
+    currentTab: PropTypes.string.isRequired,
     onChangeCurrentValues: PropTypes.func.isRequired
-    // onChangedFilters: PropTypes.func.isRequired,
 }
 
 export default CategoryCheckboxes
