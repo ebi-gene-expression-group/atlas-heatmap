@@ -64,7 +64,8 @@ class CategoryCheckboxes extends React.Component {
         super(props);
         this.state = {
             selected: [],
-            unselected: []
+            unselected: [],
+            indeterminate: []
         }
     }
 
@@ -122,12 +123,8 @@ class CategoryCheckboxes extends React.Component {
         onChangeCurrentValues(filteredValues)
     }
 
-    handleCurrentCheckboxSelection = () => {
-        const {currentValues, allValues, categories, currentTab} = this.props
-
+    _manageCheckedCategories = (currentValues, categories) => {
         const commonCategories = []
-        const checkedCategories = []
-        let uncheckedCategories = []
         let existCurrentCategory = false;
 
         categories.forEach(category => {
@@ -144,6 +141,12 @@ class CategoryCheckboxes extends React.Component {
             existCurrentCategory = false;
         });
 
+        return commonCategories;
+    }
+
+    _manageUncheckedCategories = (allValues, currentValues) => {
+        let uncheckedCategories = []
+
         allValues.forEach(value => {
             if (!currentValues.includes(value)) { //value is unchecked
                 //uncheckCategories array does not contain value categories
@@ -155,7 +158,18 @@ class CategoryCheckboxes extends React.Component {
             }
         });
 
+        return uncheckedCategories;
+    }
 
+    handleCurrentCheckboxSelection = () => {
+        const {currentValues, allValues, categories, currentTab} = this.props
+
+        const commonCategories = this._manageCheckedCategories(currentValues, categories);
+        const uncheckedCategories = this._manageUncheckedCategories(allValues, currentValues);
+
+        const checkedCategories = []
+        //Some of the values have more than one category, but only one is selected, in this case we need to check
+        //that this category isn't in the unchecked ones
         commonCategories.forEach(category => {
             !uncheckedCategories.includes(category) && currentTab === "" ? checkedCategories.push(category) : ""
         })
@@ -164,18 +178,41 @@ class CategoryCheckboxes extends React.Component {
 
     }
 
+    _manageIndeterminates = (allValues, currentValues, categories, selected) => {
+        const commonCategories = this._manageCheckedCategories(currentValues, categories);
+        const uncheckedCategories = this._manageUncheckedCategories(allValues, currentValues);
+
+        //Some of the values have more than one category, but only one is selected, in this case we need to check
+        //that this category isn't in the unchecked ones
+        const realCommonCategories = commonCategories.filter(e => selected.includes(e))
+
+        let indeterminateCategories = []
+
+        realCommonCategories.forEach(category => {
+            uncheckedCategories.includes(category)  ? indeterminateCategories.push(category) : ""
+        })
+
+        return indeterminateCategories
+
+        // const v = currentValues.filter(cv => cv.categories.includes("Medium") && !cv.categories.includes("Low"));
+    }
+
     createCheckbox = (label) => {
         const {selected} = this.state;
-        const {currentTab} = this.props
+        const {currentTab} = this.props;
+        const {categories, allValues, currentValues} = this.props;
 
         const value = currentTab === "All" ? true : (currentTab === "None" ? false : (selected ? selected.includes(label) : false))
+        const indeterminates = this._manageIndeterminates(allValues, currentValues, categories, selected)
+
+        const indeterminateValue = indeterminates.includes(label);
 
         return (
             <Checkbox key={label}
                       label={label}
                       value={value}
                       actualValue={value}
-                      indeterminate={false}
+                      indeterminate={indeterminateValue}
                       handleCheckboxChange={this.toggleCheckbox}
             />
         )
