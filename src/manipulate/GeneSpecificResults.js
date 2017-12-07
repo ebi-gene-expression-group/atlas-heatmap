@@ -37,7 +37,7 @@ const tryCreateBoxplotData = ({dataRow, columnHeaders}) => {
     return {
         boxplotSeries,
         loosePointsSeries,
-        xAxisCategories: columnHeaders.map((header) => header.factorValue),
+        xAxisCategories: columnHeaders.map((header) => header.name),
         title: dataRow.name === dataRow.id ? dataRow.name : `${dataRow.name} - ${dataRow.id}`,
         unit: dataRow.expressionUnit
     }
