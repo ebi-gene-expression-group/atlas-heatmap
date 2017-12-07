@@ -50,6 +50,9 @@ const noData = (msg) => {
 	msg && console.log(msg)
 	return <span/>
 }
+const makeBoxplot = (data, config ) => (
+    data && config && <Boxplot {...data} config={config} />
+)
 
 const QuietLoader = ({sourceUrlFetch, keepOnlyTheseColumnIds, shouldDisplayHackForNotTriggeringTheLoadEventUntilChartIsActuallyVisible}) => (
 	sourceUrlFetch.pending
@@ -64,12 +67,11 @@ const QuietLoader = ({sourceUrlFetch, keepOnlyTheseColumnIds, shouldDisplayHackF
 					? noData(sourceUrlFetch.value)
 					: (
 						<div>
-						{ sourceUrlFetch.value.geneExpression &&
-							<Boxplot {...tryCreateBoxplotData({
+						{ sourceUrlFetch.value.geneExpression && makeBoxplot(
+                            tryCreateBoxplotData({
 								dataRow: sourceUrlFetch.value.geneExpression.rows[0],
-								columnHeaders: sourceUrlFetch.value.columnHeaders})}
-								config={sourceUrlFetch.value.config}
-								/>
+								columnHeaders: sourceUrlFetch.value.columnHeaders}),
+                            sourceUrlFetch.value.config)
 						}
 						{ sourceUrlFetch.value.transcriptExpression &&
 							<Transcripts {...{keepOnlyTheseColumnIds, display: shouldDisplayHackForNotTriggeringTheLoadEventUntilChartIsActuallyVisible}}  {... sourceUrlFetch.value.transcriptExpression} columnHeaders={sourceUrlFetch.value.columnHeaders} config={sourceUrlFetch.value.config}/>
