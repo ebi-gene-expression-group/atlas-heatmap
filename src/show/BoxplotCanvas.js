@@ -96,7 +96,7 @@ const BoxplotCanvas = ({title, xAxisCategories, boxplotSeries,loosePointsSeries,
         },
 
         title: {
-            text: title
+            text: "Gene expression"
         },
 
         legend: {

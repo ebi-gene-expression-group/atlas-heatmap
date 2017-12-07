@@ -152,7 +152,6 @@ const boxplotData = {
     })).isRequired,
     loosePointsSeries: PropTypes.arrayOf(PropTypes.shape({x:PropTypes.number, y: PropTypes.number})).isRequired,
     xAxisCategories: PropTypes.arrayOf(PropTypes.string).isRequired,
-    title: PropTypes.string.isRequired,
     unit: PropTypes.string.isRequired
 }
 

@@ -38,7 +38,6 @@ const tryCreateBoxplotData = ({dataRow, columnHeaders}) => {
         boxplotSeries,
         loosePointsSeries,
         xAxisCategories: columnHeaders.map((header) => header.name),
-        title: dataRow.name === dataRow.id ? dataRow.name : `${dataRow.name} - ${dataRow.id}`,
         unit: dataRow.expressionUnit
     }
   } else {
@@ -50,6 +49,12 @@ const noData = (msg) => {
 	msg && console.log(msg)
 	return <span/>
 }
+
+const title = ({name, id}) => (
+    <h3>
+        {name === id ? name : `${name} - ${id}`}
+    </h3>
+)
 const makeBoxplot = (data, config ) => (
     data && config && <Boxplot {...data} config={config} />
 )
@@ -67,6 +72,9 @@ const QuietLoader = ({sourceUrlFetch, keepOnlyTheseColumnIds, shouldDisplayHackF
 					? noData(sourceUrlFetch.value)
 					: (
 						<div>
+                        {
+                            title(sourceUrlFetch.value.geneExpression.rows[0])
+                        }
 						{ sourceUrlFetch.value.geneExpression && makeBoxplot(
                             tryCreateBoxplotData({
 								dataRow: sourceUrlFetch.value.geneExpression.rows[0],
