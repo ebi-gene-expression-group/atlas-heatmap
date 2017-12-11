@@ -5,7 +5,7 @@ import ReactHighcharts from 'react-highcharts'
 import HighchartsMore from 'highcharts/highcharts-more'
 HighchartsMore(ReactHighcharts.Highcharts)
 
-import {sortBy} from 'lodash'
+import {unzip, sortBy, groupBy, sum} from 'lodash'
 import {groupIntoPairs} from '../utils.js'
 
 const SUFFIX=" individual"
@@ -256,6 +256,23 @@ const assignSeries = ({values}) => {
 }
 
 const DominantTranscriptsChart = ({rows,xAxisCategories}) => {
+	const unrolledRows = [].concat.apply([], [].concat.apply([], rows.map(r => r.expressions.map((expressionPerReplicate,column_ix) => !expressionPerReplicate.values? [] : expressionPerReplicate.values.map(replicate => ({replicate: replicate.id, assay_group: xAxisCategories[column_ix], value: replicate.value.expression_absolute_units
+, transcript: r.name}))))))
+
+
+  const expressionFractionsPerReplicate = [].concat.apply([], Object.entries(groupBy(unrolledRows, o => o.assay_group)).map(a => {
+	  const total = sum(a[1].map(x => x.value))
+	  return (
+		  a[1]
+		  .map(x => Object.assign({}, x, {
+			  total: total,
+			  fraction_of_expression: x.value ? x.value / total : 0
+		  }))
+	  )
+  }))
+
+
+	//debugger;
 	const dataSeries =
 		groupIntoPairs([].concat.apply([], rows.map((r,r_ix) => (r.expressions.map((e, e_ix) =>
 		[assignSeries(e),
