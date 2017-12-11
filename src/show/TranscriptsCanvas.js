@@ -5,7 +5,7 @@ import ReactHighcharts from 'react-highcharts'
 import HighchartsMore from 'highcharts/highcharts-more'
 HighchartsMore(ReactHighcharts.Highcharts)
 
-import {unzip, sortBy, groupBy, sum} from 'lodash'
+import {unzip, sortBy, groupBy, sum, meanBy} from 'lodash'
 import {groupIntoPairs} from '../utils.js'
 
 const SUFFIX=" individual"
@@ -32,16 +32,31 @@ const dominanceHeatmapConfig = ({xAxisCategories, yAxisCategories, dataSeries}) 
   yAxis: {
 	  categories: yAxisCategories
   },
+  colorAxis: { //lightblue for present but not dominant, plus two tints for "barely present"
+	  dataClasses:[{
+		  from: 0,
+		  to: 0.05,
+		  color: '#EAF5F9',
+		  name: ''
+	  },{
+		  from: 0.05,
+		  to: 0.15,
+		  color: '#E0F0F6',
+		  name: ''
+	  },
+	  {
+		  from: 0.15,
+		  to: 0.5,
+		  color: '#ADD8E6',
+		  name: 'present'
+	  }]
+  },
   tooltip: {
 	formatter: function() {
 	  return (
-		  this.series.name + "<br>" +
-		  "Expression fraction per replicate: <br>" +
+		  "Expression value: <br>" +
 		  this.point.info
-		  .map(v => v.replicate + " " + (Math.round(v.fractionOfExpression * 1000) / 10 ) + "%" ).join("<br>")+
-		  "<br> Expression values per replicate: <br>" +
-		  this.point.info
-		  .map(v => v.replicate + " " + v.value +"TPM").join("<br>")
+		  .map(v => `${v.replicate} <b>${Math.round(v.fractionOfExpression * 1000) / 10 }% </b> (${v.value} TPM)`).join("<br>")
 	  )
 	}
   },
@@ -227,13 +242,14 @@ const EXPRESSION_DOMINANCE = {
 	present: "present",
 	absent: "absent"
 }
-EXPRESSION_DOMINANCE.ambiguous = `${EXPRESSION_DOMINANCE.dominant}/${EXPRESSION_DOMINANCE.present}`
+EXPRESSION_DOMINANCE.ambiguous = `ambiguous`
 
 const COLORS = {}
 COLORS[EXPRESSION_DOMINANCE.dominant] = "darkblue"
 COLORS[EXPRESSION_DOMINANCE.ambiguous] = "mediumblue"
+//use global color axis
 COLORS[EXPRESSION_DOMINANCE.present] = "lightblue"
-COLORS[EXPRESSION_DOMINANCE.absent] = "lightgray"
+COLORS[EXPRESSION_DOMINANCE.absent] = "white" //not used
 
 
 const assignSeries = ({values}) => {
@@ -288,7 +304,6 @@ const DominantTranscriptsChart = ({rows,xAxisCategories}) => {
 	  return (
 		  a[1]
 		  .map(x => Object.assign({}, x, {
-			  total: total,
 			  value: x.value,
 			  fractionOfExpression: x.value ? x.value / total : 0,
 			  isDominant: x.value == topValue && topTranscriptIsDominant
@@ -297,29 +312,52 @@ const DominantTranscriptsChart = ({rows,xAxisCategories}) => {
   }))
 
   const expressionPerAssayGroupAndTranscript =
-  	groupIntoPairs(
-	  expressionFractionsPerReplicate,
-	  o => JSON.stringify({x: o.x, y: o.y})
-  	).map(a => Object.assign(JSON.parse(a[0]), {
-		series: assignDataSeries(a[1]),
-		info: a[1]
-	}))
+	  [].concat.apply([], groupIntoPairs(
+			expressionFractionsPerReplicate,
+			o => o.x
+		).map(a => {
+			const x = a[0]
+			const allReplicatesForThisAssayGroup = a[1].map(e => e.replicate).filter((e,ix,self)=> self.indexOf(e)==ix).sort()
+
+			return (
+				groupIntoPairs(
+					a[1],
+					o => o.y
+				).map (aa =>  ({
+				  x: a[0],
+				  y: aa[0],
+				  series: assignDataSeries(aa[1]),
+				  info: allReplicatesForThisAssayGroup.map(replicate => (
+					  aa[1].find(e => e.replicate == replicate) || {
+					  replicate: replicate,
+					  isDominant:false,
+					  value: 0,
+					  fractionOfExpression: 0
+				  }))
+			  })
+			)
+		  )
+		})
+  )
 
   const dataSeries = groupIntoPairs(
 	  expressionPerAssayGroupAndTranscript,
 	  o => o.series
-  ).map(a => ({
+  ).map(a => Object.assign({
 	  name: a[0],
+	  data:a[1].map(e => { return {x: +e.x, y: +e.y, value: meanBy(e.info, 'fractionOfExpression'), info: e.info}}),
 	  color: COLORS[a[0]],
-	  data:a[1].map(e => { return {x:e.x, y: e.y, value: 1, info: e.info}})
-  }))
+
+  }, a[0] == EXPRESSION_DOMINANCE.present ? {} : {
+	  colorAxis: false,
+  } ))
 	return (
 	<div>
 	{
 		<ReactHighcharts config={dominanceHeatmapConfig({
   		  xAxisCategories,
 		  yAxisCategories,
-  		  dataSeries: sortBy(dataSeries, '.name')
+  		  dataSeries: sortBy(dataSeries, '.name').reverse()
   	  })}/>
 	}
 	</div>
