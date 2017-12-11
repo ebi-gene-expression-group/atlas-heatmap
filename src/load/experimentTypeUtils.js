@@ -4,10 +4,8 @@ import PropTypes from 'prop-types'
 const experimentPropTypes = PropTypes.shape({
     accession: PropTypes.string.isRequired,   // Is it worth to enumerate the experiment types?
     type: PropTypes.string.isRequired,
-    relUrl: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
-    species: PropTypes.string.isRequired,
-    accessKey: PropTypes.string.isRequired
+    species: PropTypes.string.isRequired
 })
 
 const isMultiExperiment = experiment => !Boolean(experiment)

@@ -142,7 +142,14 @@ const heatmapDataPropTypes = PropTypes.shape({
 })
 
 const boxplotData = {
-    boxplotSeries: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
+    boxplotSeries: PropTypes.arrayOf(PropTypes.shape({
+        x: PropTypes.number,
+        low: PropTypes.number,
+        q1: PropTypes.number,
+        median: PropTypes.number,
+        q3: PropTypes.number,
+        high: PropTypes.number
+    })).isRequired,
     loosePointsSeries: PropTypes.arrayOf(PropTypes.shape({x:PropTypes.number, y: PropTypes.number})).isRequired,
     xAxisCategories: PropTypes.arrayOf(PropTypes.string).isRequired,
     title: PropTypes.string.isRequired,

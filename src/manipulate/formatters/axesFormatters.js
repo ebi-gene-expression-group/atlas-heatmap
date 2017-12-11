@@ -27,7 +27,6 @@ YAxisLabel.propTypes = {
     experiment: PropTypes.shape({
       accession: PropTypes.string.isRequired,
       type: PropTypes.string.isRequired,
-      relUrl: PropTypes.string.isRequired,
       description: PropTypes.string.isRequired,
       species: PropTypes.string.isRequired
     })

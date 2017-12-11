@@ -14,7 +14,7 @@ Visualizations optionally include, where available, an anatomogram to the left o
 ## Atlas Widget
 
 The heatmap can be included as a widget in your website.
-[Demo](https://www.ebi.ac.uk/gxa/resources/test/widget/showcase/index.html)
+Please visit the [demo showcase page](https://www.ebi.ac.uk/gxa/resources/test/widget/showcase/index.html).
 
 ### What you need
 You must add the following to your environment:
@@ -56,7 +56,6 @@ expressionAtlasHeatmapHighcharts.render({
     target: "heatmapContainer"
 });
 ```
-[Lots of examples](https://www.ebi.ac.uk/gxa/resources/test/widget/showcase/index.html)
 
 Tell us about any problems by raising an issue in this repository.
 
@@ -80,10 +79,26 @@ expressionAtlasHeatmapRender({...})
 
 For all the options available visit the [examples showcase](http://www.ebi.ac.uk/gxa/resources/test/widget/showcase/index.html).
 
-##### Notes for developers
+### Notes for developers
 The authoritative docs are the code itself, here is the main function: [here](https://github.com/gxa/atlas-heatmap/blob/master/src/Main.js)
 
-#### Licence
+## Stay in touch
+Besides raising an issue in GitHub, another means of communication with the Expression Atlas development team is the following mailing list:
+https://listserver.ebi.ac.uk/mailman/listinfo/atlas-widget
 
-Apache 2.0.
+It is intended for all developers who integrate the heatmap (we  informally refer to it as “the widget”) in their services.
+
+The mailing list is the best way to be informed of official releases of Expression Atlas which are always accompanied by a new supported release of the widget. We also announce new features and (sometimes breaking) changes. We use it also as a channel to make pre-release versions available so that third party services can test the heatmap prior to an Expression Atlas release.
+
+
+---
+
+**Licence**
+
+Source code is licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0). This does not include the dependencies used by this package, which can be found in the file `package.json`, and they are covered by the license specified by the corresponding author. This licence extends also to transpiled code as produced by Webpack, Babel or similar tools.
+
 When including the widget on your website, please keep the attribution footer linking to the results in Expression Atlas.
+
+All copyrightable material is licensed under the [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/) as detailed in [Expression Atlas licence page](https://www.ebi.ac.uk/gxa/licence.html).
+
+<small>Last updated on 23rd of November, 2017.</small>

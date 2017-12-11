@@ -7,9 +7,8 @@ HighchartsMore(ReactHighcharts.Highcharts)
 
 const SUFFIX=" individual"
 
-const baseConfig = ({xAxisCategories}) => ({
+const baseConfig = ({xAxisCategories, config: {cutoff}}) => ({
 	chart: {
-		marginRight : 60 * (1 + 10 / Math.pow(1 + xAxisCategories.length, 2)),
 		ignoreHiddenSeries: false,
 		type: 'boxplot',
 		zoomType: 'x',
@@ -60,6 +59,20 @@ const baseConfig = ({xAxisCategories}) => ({
 		title: {
 			text: 'Expression (TPM)'
 		},
+		plotLines: cutoff > 0.1 ? [{
+		   value: cutoff,
+		   dashStyle: 'Dash',
+		   color: '#333333',
+		   width: 1,
+		   label: {
+			   text: `Cutoff: ${cutoff}`,
+			   align: 'left',
+			   style: {
+				   color: 'gray'
+			   }
+		   }
+	   }] : [],
+
 		type:'logarithmic',
 		min:0.1
 	}
@@ -99,8 +112,8 @@ const baseConfig = ({xAxisCategories}) => ({
 	   }
 	},
 })
-const plotConfig = ({xAxisCategories, dataSeries}) => Object.assign(
-	baseConfig({xAxisCategories}),{
+const plotConfig = ({xAxisCategories, dataSeries, config}) => Object.assign(
+	baseConfig({xAxisCategories,config}),{
     series: dataSeries
 })
 
@@ -153,11 +166,12 @@ const scatterDataSeries = ({rows}) => { return (
 	}))
 )}
 
-const Chart = ({rows,columnHeaders}) => (
+const Chart = ({rows,columnHeaders, config}) => (
   	<div>
 	<br/>
 	<div key={`chart`}>
 	  {rows.length && <ReactHighcharts config={plotConfig({
+		  config,
 		  xAxisCategories: columnHeaders.map(({id,name})=>name || id),
 		  dataSeries:
 			  [].concat(
@@ -170,7 +184,7 @@ const Chart = ({rows,columnHeaders}) => (
   </div>
 )
 
-const Transcripts = ({keepOnlyTheseColumnIds, columnHeaders, profiles:{rows}, display}) => {
+const Transcripts = ({keepOnlyTheseColumnIds, columnHeaders, rows, display, config}) => {
 
 	const ixs =
 		columnHeaders
@@ -181,33 +195,12 @@ const Transcripts = ({keepOnlyTheseColumnIds, columnHeaders, profiles:{rows}, di
 	return ( !!display &&
 		<div>
 			<Chart
+				config={config}
 				columnHeaders={columnHeaders.filter((e,ix) => ixs.includes(ix))}
 				rows={rows.map(row => Object.assign(row, {expressions: row.expressions.filter((e,ix) => ixs.includes(ix))}))}
 				/>
 		</div>
 	)
 }
-const noData = (msg) => {
-	msg && console.log(msg)
-	return <span/>
-}
 
-const QuietTranscriptsLoader = ({sourceUrlFetch, keepOnlyTheseColumnIds, shouldDisplayHackForNotTriggeringTheLoadEventUntilChartIsActuallyVisible}) => (
-	sourceUrlFetch.pending
-	? noData()
-	: sourceUrlFetch.rejected
-		? noData(sourceUrlFetch)
-		: ! sourceUrlFetch.fulfilled
-			? noData(sourceUrlFetch)
-			: sourceUrlFetch.value.error
-				? noData(sourceUrlFetch.value.error)
-				: (! sourceUrlFetch.value.profiles || ! sourceUrlFetch.value.columnHeaders)
-					? noData(sourceUrlFetch.value)
-					: <Transcripts {...{keepOnlyTheseColumnIds, display: shouldDisplayHackForNotTriggeringTheLoadEventUntilChartIsActuallyVisible}}  {... sourceUrlFetch.value} />
-)
-
-export default connect(props => ({
-    sourceUrlFetch: {
-        url: props.url
-    },
-}))(QuietTranscriptsLoader)
+export default Transcripts

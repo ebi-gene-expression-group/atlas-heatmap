@@ -3,7 +3,6 @@ import {anatomogramSpecies} from 'anatomogram'
 import getChartConfiguration from './chartConfiguration.js'
 
 import getHeatmapData from './heatmapData.js'
-import getBoxplotData from './boxplotData.js'
 
 import createOrderingsForData from './heatmapOrderings.js'
 import getColourAxisFromDataSeries from './heatmapColourAxis.js'
@@ -32,13 +31,12 @@ export default function({data, inProxy, outProxy, atlasUrl, showAnatomogram, isW
         hoveredTissueColour: data.experiment ? `red` : `purple`,
     }
 
-    const transcriptsData =
-        Array.isArray(data.profiles.rows)
-        && data.profiles.rows.length ==1
-        && data.experiment
-        && data.experiment.accession
+    const geneSpecificResults =
+        data.experiment
+        && data.experiment.urls
+        && data.experiment.urls.gene_specific_results
         ? {
-            url: inProxy + URI(`json/debug-experiments/${data.experiment.accession}/genes/${data.profiles.rows[0].id}/transcripts?type=RNASEQ_MRNA_BASELINE`, atlasUrl).toString(),
+            url: inProxy + URI(data.experiment.urls.gene_specific_results, atlasUrl).toString(),
             keepOnlyTheseColumnIds:data.columnHeaders.map(e => e.assayGroupId).filter((e,ix, self) => self.indexOf(e) == ix ).filter(e=>e)
         }
         : null
@@ -46,8 +44,7 @@ export default function({data, inProxy, outProxy, atlasUrl, showAnatomogram, isW
     return {
         anatomogramConfig,
         heatmapData,
-        transcriptsData,
-        boxplotData: getBoxplotData(data),
+        geneSpecificResults,
         heatmapConfig: getChartConfiguration(data, inProxy, outProxy, atlasUrl, isWidget),
         colourAxis : getColourAxisFromDataSeries(data.experiment, heatmapData.dataSeries),
         orderings: createOrderingsForData(data.experiment, allRows, data.columnHeaders),
