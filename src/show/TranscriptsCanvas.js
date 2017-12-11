@@ -5,9 +5,50 @@ import ReactHighcharts from 'react-highcharts'
 import HighchartsMore from 'highcharts/highcharts-more'
 HighchartsMore(ReactHighcharts.Highcharts)
 
+import {sortBy} from 'lodash'
+import {groupIntoPairs} from '../utils.js'
+
 const SUFFIX=" individual"
 
-const baseConfig = ({xAxisCategories, config: {cutoff}}) => ({
+const dominanceHeatmapConfig = ({xAxisCategories, yAxisCategories, dataSeries}) => ({
+	chart: {
+	  type: `heatmap`
+  },
+  credits: {
+	enabled: false
+  },
+
+  legend: {
+	enabled: true
+  },
+
+  title: {
+	  text: 'Dominant transcripts'
+  },
+
+  xAxis: {
+	  categories: xAxisCategories
+  },
+  yAxis: {
+	  categories: yAxisCategories
+  },
+  tooltip: {
+	formatter: function() {
+	  return (
+		  this.series.name + "<br>" +
+		  "Expression fraction per replicate: <br>" +
+		  this.point.info.values
+		  .map(v => v.id + " " + (Math.round(v.value.expression_as_fraction_of_total * 1000) / 10 ) + "%" ).join("<br>")+
+		  "<br> Expression values per replicate: <br>" +
+		  this.point.info.values
+		  .map(v => v.id + " " + v.value.expression_absolute_units).join("<br>")
+	  )
+	}
+  },
+  series: dataSeries
+})
+
+const expressionPlotConfig = ({xAxisCategories, config: {cutoff}, dataSeries}) => ({
 	chart: {
 		ignoreHiddenSeries: false,
 		type: 'boxplot',
@@ -32,7 +73,7 @@ const baseConfig = ({xAxisCategories, config: {cutoff}}) => ({
 	},
 
 	title: {
-		text: 'Transcripts'
+		text: 'Expression per transcript'
 	},
 
 	credits: {
@@ -75,9 +116,9 @@ const baseConfig = ({xAxisCategories, config: {cutoff}}) => ({
 
 		type:'logarithmic',
 		min:0.1
-	}
-	,
+	},
 
+	series: dataSeries,
 
 	plotOptions: {
 		column: {
@@ -111,10 +152,6 @@ const baseConfig = ({xAxisCategories, config: {cutoff}}) => ({
 		   }
 	   }
 	},
-})
-const plotConfig = ({xAxisCategories, dataSeries, config}) => Object.assign(
-	baseConfig({xAxisCategories,config}),{
-    series: dataSeries
 })
 
 /*
@@ -166,13 +203,13 @@ const scatterDataSeries = ({rows}) => { return (
 	}))
 )}
 
-const Chart = ({rows,columnHeaders, config}) => (
+const ExpressionChart = ({rows,xAxisCategories, config}) => (
   	<div>
 	<br/>
 	<div key={`chart`}>
-	  {rows.length && <ReactHighcharts config={plotConfig({
+	  {rows.length && <ReactHighcharts config={expressionPlotConfig({
 		  config,
-		  xAxisCategories: columnHeaders.map(({id,name})=>name || id),
+		  xAxisCategories,
 		  dataSeries:
 			  [].concat(
 				  boxPlotDataSeries({rows})
@@ -184,6 +221,71 @@ const Chart = ({rows,columnHeaders, config}) => (
   </div>
 )
 
+// See: BaselineExpressionPerBiologicalReplicate.dominanceAmongRelatedValues
+const EXPRESSION_DOMINANCE = {
+	dominant: "dominant",
+	present: "present",
+	absent: "absent"
+}
+EXPRESSION_DOMINANCE.ambiguous = `${EXPRESSION_DOMINANCE.dominant}/${EXPRESSION_DOMINANCE.present}`
+
+const COLORS = {}
+COLORS[EXPRESSION_DOMINANCE.dominant] = "darkblue"
+COLORS[EXPRESSION_DOMINANCE.ambiguous] = "mediumblue"
+COLORS[EXPRESSION_DOMINANCE.present] = "lightblue"
+COLORS[EXPRESSION_DOMINANCE.absent] = "lightgray"
+
+
+const assignSeries = ({values}) => {
+	if(!values){
+		return EXPRESSION_DOMINANCE.absent;
+	}
+	const hasAllDominant = values.every(v => v.value.expression_dominance == EXPRESSION_DOMINANCE.dominant )
+	const hasDominant = values.find(v => v.value.expression_dominance == EXPRESSION_DOMINANCE.dominant )
+	const hasPresent = values.find(v => v.value.expression_dominance == EXPRESSION_DOMINANCE.present )
+
+	return (
+		hasDominant
+		? hasAllDominant
+			? EXPRESSION_DOMINANCE.dominant
+			: EXPRESSION_DOMINANCE.ambiguous
+		: hasPresent
+			? EXPRESSION_DOMINANCE.present
+			: EXPRESSION_DOMINANCE.absent
+	)
+}
+
+const DominantTranscriptsChart = ({rows,xAxisCategories}) => {
+	const dataSeries =
+		groupIntoPairs([].concat.apply([], rows.map((r,r_ix) => (r.expressions.map((e, e_ix) =>
+		[assignSeries(e),
+			{
+				x: e_ix,
+				y: r_ix,
+				value: 1,
+				info: e
+			}
+		])))), `0`)
+		.map((a,ix,self)=>({
+			name: a[0],
+			color: COLORS[a[0]],
+			data:a[1]
+		}))
+
+	const yAxisCategories = rows.map((r) => (r.name))
+
+	return (
+	<div>
+	{
+		<ReactHighcharts config={dominanceHeatmapConfig({
+  		  xAxisCategories,
+		  yAxisCategories,
+  		  dataSeries: sortBy(dataSeries, '.name')
+  	  })}/>
+	}
+	</div>
+)
+}
 const Transcripts = ({keepOnlyTheseColumnIds, columnHeaders, rows, display, config}) => {
 
 	const ixs =
@@ -192,13 +294,24 @@ const Transcripts = ({keepOnlyTheseColumnIds, columnHeaders, rows, display, conf
 		.filter((eix) => keepOnlyTheseColumnIds.includes(eix[0].id))
 		.map((eix) => eix[1])
 
+	const xAxisCategories =
+		columnHeaders
+		.filter((e,ix) => ixs.includes(ix))
+		.map(({id,name})=>name || id)
+
 	return ( !!display &&
 		<div>
-			<Chart
+			<ExpressionChart
 				config={config}
-				columnHeaders={columnHeaders.filter((e,ix) => ixs.includes(ix))}
+				xAxisCategories={xAxisCategories}
 				rows={rows.map(row => Object.assign(row, {expressions: row.expressions.filter((e,ix) => ixs.includes(ix))}))}
 				/>
+			<DominantTranscriptsChart
+				config={config}
+				xAxisCategories={xAxisCategories}
+				rows={rows}
+
+			/>
 		</div>
 	)
 }

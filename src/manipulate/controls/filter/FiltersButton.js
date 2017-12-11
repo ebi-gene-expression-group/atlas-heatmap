@@ -5,11 +5,11 @@ import {Modal, Button, Glyphicon, Nav, NavItem} from 'react-bootstrap/lib'
 import {groupedColumnPropTypes,columnCategoryPropTypes} from '../../chartDataPropTypes.js'
 
 import FilterOption from './FilterOption.js'
-import {groupBy, sortBy} from 'lodash'
+import {sortBy} from 'lodash'
 
 import '../controlButton.css'
 
-const groupIntoPairs = (arr,f) => Object.entries(groupBy(arr,f))
+import {groupIntoPairs} from '../../../utils.js'
 
 import uncontrollable from 'uncontrollable'
 
