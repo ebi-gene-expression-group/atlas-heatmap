@@ -37,11 +37,11 @@ const dominanceHeatmapConfig = ({xAxisCategories, yAxisCategories, dataSeries}) 
 	  return (
 		  this.series.name + "<br>" +
 		  "Expression fraction per replicate: <br>" +
-		  this.point.info.values
-		  .map(v => v.id + " " + (Math.round(v.value.expression_as_fraction_of_total * 1000) / 10 ) + "%" ).join("<br>")+
+		  this.point.info
+		  .map(v => v.replicate + " " + (Math.round(v.fractionOfExpression * 1000) / 10 ) + "%" ).join("<br>")+
 		  "<br> Expression values per replicate: <br>" +
-		  this.point.info.values
-		  .map(v => v.id + " " + v.value.expression_absolute_units).join("<br>")
+		  this.point.info
+		  .map(v => v.replicate + " " + v.value +"TPM").join("<br>")
 	  )
 	}
   },
@@ -255,42 +255,64 @@ const assignSeries = ({values}) => {
 	)
 }
 
+const assignDataSeries = (values) => (
+  values.find(v=> v.isDominant)
+	? values.every(v => v.isDominant)
+		? EXPRESSION_DOMINANCE.dominant
+		: EXPRESSION_DOMINANCE.ambiguous
+	: values.find(v => v.value)
+		? EXPRESSION_DOMINANCE.present
+		: EXPRESSION_DOMINANCE.absent
+)
+
+
 const DominantTranscriptsChart = ({rows,xAxisCategories}) => {
-	const unrolledRows = [].concat.apply([], [].concat.apply([], rows.map(r => r.expressions.map((expressionPerReplicate,column_ix) => !expressionPerReplicate.values? [] : expressionPerReplicate.values.map(replicate => ({replicate: replicate.id, assay_group: xAxisCategories[column_ix], value: replicate.value.expression_absolute_units
-, transcript: r.name}))))))
+
+	const yAxisCategories = rows.map((r) => (r.name))
+
+	const unrolledRows = [].concat.apply([], [].concat.apply([], rows.map((r, row_ix) =>
+		r.expressions.map((expressionPerReplicate, column_ix) => !expressionPerReplicate.values ? [] : expressionPerReplicate.values.map(replicate => ({
+		    replicate: replicate.id,
+		    x: column_ix,
+		    value: replicate.value.expression_absolute_units,
+		    y: row_ix
+	}))))))
 
 
-  const expressionFractionsPerReplicate = [].concat.apply([], Object.entries(groupBy(unrolledRows, o => o.assay_group)).map(a => {
-	  const total = sum(a[1].map(x => x.value))
+  const expressionFractionsPerReplicate = [].concat.apply([], groupIntoPairs(unrolledRows, o => JSON.stringify({assay_group: o.x, replicate: o.replicate})).map(a => {
+	  const values = a[1].map(x => x.value).sort((a,b)=>b-a)
+	  const total = sum(values)
+	  const topValue = values[0]
+	  const secondValue = values[1]
+	  const topTranscriptIsDominant = topValue && (!secondValue || topValue > secondValue * 2 )
 	  return (
 		  a[1]
 		  .map(x => Object.assign({}, x, {
 			  total: total,
-			  fraction_of_expression: x.value ? x.value / total : 0
+			  value: x.value,
+			  fractionOfExpression: x.value ? x.value / total : 0,
+			  isDominant: x.value == topValue && topTranscriptIsDominant
 		  }))
 	  )
   }))
 
+  const expressionPerAssayGroupAndTranscript =
+  	groupIntoPairs(
+	  expressionFractionsPerReplicate,
+	  o => JSON.stringify({x: o.x, y: o.y})
+  	).map(a => Object.assign(JSON.parse(a[0]), {
+		series: assignDataSeries(a[1]),
+		info: a[1]
+	}))
 
-	//debugger;
-	const dataSeries =
-		groupIntoPairs([].concat.apply([], rows.map((r,r_ix) => (r.expressions.map((e, e_ix) =>
-		[assignSeries(e),
-			{
-				x: e_ix,
-				y: r_ix,
-				value: 1,
-				info: e
-			}
-		])))), `0`)
-		.map((a,ix,self)=>({
-			name: a[0],
-			color: COLORS[a[0]],
-			data:a[1]
-		}))
-
-	const yAxisCategories = rows.map((r) => (r.name))
-
+  const dataSeries = groupIntoPairs(
+	  expressionPerAssayGroupAndTranscript,
+	  o => o.series
+  ).map(a => ({
+	  name: a[0],
+	  color: COLORS[a[0]],
+	  data:a[1].map(e => { return {x:e.x, y: e.y, value: 1, info: e.info}})
+  }))
 	return (
 	<div>
 	{

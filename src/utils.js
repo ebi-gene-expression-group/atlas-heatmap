@@ -1,6 +1,6 @@
 import {groupBy} from 'lodash'
 
-const groupIntoPairs = (arr,f) => Object.entries(groupBy(arr,f)).map(a => [a[0], [].concat.apply([], a[1].map(aa=> aa[1]))])
+const groupIntoPairs = (arr,f) => Object.entries(groupBy(arr,f))
 
 const capitalizeFirstLetter = str => str.charAt(0).toUpperCase() + str.substr(1)
 
