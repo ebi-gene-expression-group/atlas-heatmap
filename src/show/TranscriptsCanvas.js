@@ -10,59 +10,6 @@ import {groupIntoPairs} from '../utils.js'
 
 const SUFFIX=" individual"
 
-const dominanceHeatmapConfig = ({xAxisCategories, yAxisCategories, dataSeries}) => ({
-	chart: {
-	  type: `heatmap`
-  },
-  credits: {
-	enabled: false
-  },
-
-  legend: {
-	enabled: true
-  },
-
-  title: {
-	  text: 'Dominant transcripts'
-  },
-
-  xAxis: {
-	  categories: xAxisCategories
-  },
-  yAxis: {
-	  categories: yAxisCategories
-  },
-  colorAxis: { //lightblue for present but not dominant, plus two tints for "barely present"
-	  dataClasses:[{
-		  from: 0,
-		  to: 0.05,
-		  color: '#EAF5F9',
-		  name: ''
-	  },{
-		  from: 0.05,
-		  to: 0.15,
-		  color: '#E0F0F6',
-		  name: ''
-	  },
-	  {
-		  from: 0.15,
-		  to: 0.5,
-		  color: '#ADD8E6',
-		  name: 'present'
-	  }]
-  },
-  tooltip: {
-	formatter: function() {
-	  return (
-		  "Expression value: <br>" +
-		  this.point.info
-		  .map(v => `${v.replicate} <b>${Math.round(v.fractionOfExpression * 1000) / 10 }% </b> (${v.value} TPM)`).join("<br>")
-	  )
-	}
-  },
-  series: dataSeries
-})
-
 const expressionPlotConfig = ({xAxisCategories, config: {cutoff}, dataSeries}) => ({
 	chart: {
 		ignoreHiddenSeries: false,
@@ -251,6 +198,65 @@ COLORS[EXPRESSION_DOMINANCE.ambiguous] = "mediumblue"
 COLORS[EXPRESSION_DOMINANCE.present] = "lightblue"
 COLORS[EXPRESSION_DOMINANCE.absent] = "white" //not used
 
+const dominanceHeatmapConfig = ({xAxisCategories, yAxisCategories, dataSeries}) => ({
+	chart: {
+	  type: `heatmap`
+  },
+  credits: {
+	enabled: false
+  },
+
+  legend: {
+	enabled: true
+  },
+
+  title: {
+	  text: 'Dominant transcripts'
+  },
+
+  xAxis: {
+	  categories: xAxisCategories
+  },
+  yAxis: {
+	  categories: yAxisCategories,
+	  title: {
+		  text: ''
+	  },
+  },
+  colorAxis: { //lightblue for present but not dominant, plus two tints for "barely present"
+	  dataClasses:[{
+		  from: 0,
+		  to: 0.05,
+		  color: '#EAF5F9',
+		  name: ''
+	  },{
+		  from: 0.05,
+		  to: 0.15,
+		  color: '#E0F0F6',
+		  name: ''
+	  },
+	  {
+		  from: 0.15,
+		  to: 0.5,
+		  color: '#ADD8E6',
+		  name: 'present'
+	  }]
+  },
+  tooltip: {
+	useHTML: true,
+	padding: 0,
+	formatter: function() {
+	  const r = (a,b,c,d) => `<tr><th>${a}</th><th>${b}</th><th>${c}</th><th>${d}</th></tr>`
+	  return (
+		  "<table><thead>"+ r("Replicate", "Rel isoform usage", "Expression", "Dominant?") + "</thead><tbody>" +
+		  	this.point.info
+		  	.map(v => r(v.replicate, `${Math.round(v.fractionOfExpression * 1000) / 10} %` ,`${v.value} TPM ` , v.isDominant)).join("") +
+		  "</tbody></table>"
+	  )
+	}
+  },
+  series: dataSeries
+})
 
 const assignSeries = ({values}) => {
 	if(!values){
