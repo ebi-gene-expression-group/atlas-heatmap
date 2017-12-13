@@ -97,7 +97,7 @@ const createOrderings = (expressions, columnHeaders, rows, experiment) => {
                 rows: createAlphabeticalOrdering(`name`, rows)
             },
             {
-                name: `Gene expression rank`,
+                name: `Expression rank`,
                 columns: createOrdering(
                     combineRanks([
                         [rankColumnsByWhereTheyAppearFirst(expressions), 1],

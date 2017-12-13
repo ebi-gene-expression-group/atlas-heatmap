@@ -17,7 +17,7 @@ const orderingIcon = (ordering) => {
     switch (ordering) {
         case `Alphabetical order`:
             return `sort-by-alphabet`
-        case `Gene expression rank`:
+        case `Expression rank`:
             return `sort-by-attributes-alt`
         case `By experiment type`:
             return `sort-by-order`
