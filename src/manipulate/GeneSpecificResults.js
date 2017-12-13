@@ -37,8 +37,7 @@ const tryCreateBoxplotData = ({dataRow, columnHeaders}) => {
     return {
         boxplotSeries,
         loosePointsSeries,
-        xAxisCategories: columnHeaders.map((header) => header.factorValue),
-        title: dataRow.name === dataRow.id ? dataRow.name : `${dataRow.name} - ${dataRow.id}`,
+        xAxisCategories: columnHeaders.map((header) => header.name),
         unit: dataRow.expressionUnit
     }
   } else {
@@ -50,6 +49,15 @@ const noData = (msg) => {
 	msg && console.log(msg)
 	return <span/>
 }
+
+const title = ({name, id}) => (
+    <h3>
+        {name === id ? name : `${name} - ${id}`}
+    </h3>
+)
+const makeBoxplot = (data, config ) => (
+    data && config && <Boxplot {...data} config={config} />
+)
 
 const QuietLoader = ({sourceUrlFetch, keepOnlyTheseColumnIds, shouldDisplayHackForNotTriggeringTheLoadEventUntilChartIsActuallyVisible}) => (
 	sourceUrlFetch.pending
@@ -64,12 +72,14 @@ const QuietLoader = ({sourceUrlFetch, keepOnlyTheseColumnIds, shouldDisplayHackF
 					? noData(sourceUrlFetch.value)
 					: (
 						<div>
-						{ sourceUrlFetch.value.geneExpression &&
-							<Boxplot {...tryCreateBoxplotData({
+                        {
+                            title(sourceUrlFetch.value.geneExpression.rows[0])
+                        }
+						{ sourceUrlFetch.value.geneExpression && makeBoxplot(
+                            tryCreateBoxplotData({
 								dataRow: sourceUrlFetch.value.geneExpression.rows[0],
-								columnHeaders: sourceUrlFetch.value.columnHeaders})}
-								config={sourceUrlFetch.value.config}
-								/>
+								columnHeaders: sourceUrlFetch.value.columnHeaders}),
+                            sourceUrlFetch.value.config)
 						}
 						{ sourceUrlFetch.value.transcriptExpression &&
 							<Transcripts {...{keepOnlyTheseColumnIds, display: shouldDisplayHackForNotTriggeringTheLoadEventUntilChartIsActuallyVisible}}  {... sourceUrlFetch.value.transcriptExpression} columnHeaders={sourceUrlFetch.value.columnHeaders} config={sourceUrlFetch.value.config}/>
