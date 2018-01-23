@@ -199,17 +199,17 @@ const ExpressionChart = ({rows, xAxisCategories, config}) => (
 const EXPRESSION_DOMINANCE = {
   dominant: `dominant`,
   present: `present`,
-  absent: `absent`
+  absent: `absent`,
+  ambiguous: `ambiguous`
 }
 
-EXPRESSION_DOMINANCE.ambiguous = `ambiguous`
-
-const COLORS = {}
-COLORS[EXPRESSION_DOMINANCE.dominant] = `darkblue`
-COLORS[EXPRESSION_DOMINANCE.ambiguous] = `mediumblue`
-//use global color axis
-COLORS[EXPRESSION_DOMINANCE.present] = `lightblue`
-COLORS[EXPRESSION_DOMINANCE.absent] = `white` //not used
+const COLORS = {
+  [EXPRESSION_DOMINANCE.dominant]: `rgb(0, 0, 115)`,
+  [EXPRESSION_DOMINANCE.ambiguous]: `rgb(0, 85, 225)`,
+  //use global color axis
+  [EXPRESSION_DOMINANCE.present]: `rgb(179, 218, 255)`,
+  [EXPRESSION_DOMINANCE.absent]: `white` //not use
+}
 
 const dominanceHeatmapConfig = ({xAxisCategories, yAxisCategories, dataSeries}) => ({
   chart: {
@@ -239,25 +239,6 @@ const dominanceHeatmapConfig = ({xAxisCategories, yAxisCategories, dataSeries}) 
     },
   },
 
-  colorAxis: { //lightblue for present but not dominant, plus two tints for "barely present"
-    dataClasses: [{
-      from: 0,
-      to: 0.05,
-      color: `#EAF5F9`,
-      name: ``
-    }, {
-      from: 0.05,
-      to: 0.15,
-      color: `#E0F0F6`,
-      name: ``
-    }, {
-      from: 0.15,
-      to: 0.5,
-      color: `#ADD8E6`,
-      name: `present`
-    }]
-  },
-
   tooltip: {
     useHTML: true,
     padding: 0,
@@ -265,7 +246,7 @@ const dominanceHeatmapConfig = ({xAxisCategories, yAxisCategories, dataSeries}) 
       const rowHead = (a, b, c, d) => `<tr><th>${a}</th><th>${b}</th><th>${c}</th><th>${d}</th></tr>`
       const rowData = (a, b, c, d) => `<tr><td>${a}</td><td>${b}</td><td>${c}</td><td>${d}</td></tr>`
       return (
-        `<table>` +
+        `<table style="margin-bottom: 0;">` +
           `<thead>` +
             rowHead(`Replicate`, `Rel isoform usage`, `Expression`, `Dominant`) +
           `</thead>` +
@@ -274,8 +255,7 @@ const dominanceHeatmapConfig = ({xAxisCategories, yAxisCategories, dataSeries}) 
             this.point.info.map(
               v =>
                 rowData(
-                  v.replicate,
-                  `${Math.round(v.fractionOfExpression * 1000) / 10} %` ,`${v.value} TPM ` , v.isDominant)
+                  v.replicate, `${Math.round(v.fractionOfExpression * 1000) / 10} %`, `${v.value} TPM`, v.isDominant)
             ).join(``) +
           `</tbody>` +
         `</table>`
@@ -350,16 +330,11 @@ const DominantTranscriptsChart = ({rows,xAxisCategories}) => {
 
             return (
               a[1].map(
-                x =>
-                  Object.assign(
-                    {},
-                    x,
-                    {
-                      value: x.value,
-                      fractionOfExpression: x.value ? x.value / total : 0,
-                      isDominant: x.value == topValue && topTranscriptIsDominant
-                    }
-                  )
+                x => ({
+                  ...x,
+                  fractionOfExpression: x.value ? x.value / total : 0,
+                  isDominant: x.value == topValue && topTranscriptIsDominant
+                })
               )
             )
           }
@@ -395,13 +370,20 @@ const DominantTranscriptsChart = ({rows,xAxisCategories}) => {
   )
 
   const dataSeries = groupIntoPairs(expressionPerAssayGroupAndTranscript, o => o.series).map(
-    a => Object.assign({
-      name: a[0],
-      data: a[1].map(e => { return {x: +e.x, y: +e.y, value: meanBy(e.info, 'fractionOfExpression'), info: e.info}}),
-      color: COLORS[a[0]]
-    },
-    a[0] == EXPRESSION_DOMINANCE.present ? {} : {colorAxis: false}
-  ))
+    a =>
+      Object.assign(
+        {
+          name: a[0],
+          data: a[1].map(
+            e => ({
+              x: +e.x,
+              y: +e.y,
+              value: meanBy(e.info, `fractionOfExpression`),
+              info: e.info})
+          ),
+          color: COLORS[a[0]]
+        },
+        a[0] === EXPRESSION_DOMINANCE.present ? {} : {colorAxis: false} ))
 
   return (
     <div>
@@ -409,7 +391,7 @@ const DominantTranscriptsChart = ({rows,xAxisCategories}) => {
         <ReactHighcharts config={dominanceHeatmapConfig({
             xAxisCategories,
             yAxisCategories,
-            dataSeries: sortBy(dataSeries, '.name').reverse()
+            dataSeries: sortBy(dataSeries, `.name`).reverse()
           })}/>
       }
     </div>
@@ -432,7 +414,12 @@ const Transcripts = ({keepOnlyTheseColumnIds, columnHeaders, rows, display, conf
     <div>
       <ExpressionChart config={config}
                        xAxisCategories={xAxisCategories}
-                       rows={rows.map(row => Object.assign(row, {expressions: row.expressions.filter((e,ix) => ixs.includes(ix))}))}/>
+                       rows={rows.map(
+                         row => ({
+                           ...row,
+                           expressions: row.expressions.filter((e,ix) => ixs.includes(ix))
+                         })
+                       )}/>
 
       <DominantTranscriptsChart config={config} xAxisCategories={xAxisCategories} rows={rows}/>
     </div>
