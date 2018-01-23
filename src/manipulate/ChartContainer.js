@@ -16,7 +16,7 @@ class ChartContainer extends React.Component {
     }
 
     _theOtherChartType() {
-        return this.state.chartType === `heatmap` ? `boxplot` : `heatmap`
+        return this.state.chartType === `heatmap` ? `boxplot and transcripts` : `heatmap`
     }
 
     _handleClick(e) {
@@ -29,19 +29,18 @@ class ChartContainer extends React.Component {
             <div style={{width: `100%`}}>
               {this.props.chartData.geneSpecificResults &&
                   <a href="#" onClick={this.handleClick}>
-                    {`Switch to ${this._theOtherChartType()} view`}
+                    {`Show ${this._theOtherChartType()} view`}
                   </a>
               }
               <div style={{display: this.state.chartType === `heatmap` ? `block` : `none`, width: `100%`}} >
                 <Heatmap {...this.props.chartData} />
               </div>
               { this.props.chartData.geneSpecificResults &&
-                <div style={{display: this.state.chartType === `boxplot` ? `block` : `none`, width: `100%`}} >
+                <div style={{display: this.state.chartType === `boxplot and transcripts` ? `block` : `none`, width: `100%`}} >
                     <GeneSpecificResults {...this.props.chartData.geneSpecificResults}
-                        shouldDisplayHackForNotTriggeringTheLoadEventUntilChartIsActuallyVisible={this.state.chartType === `boxplot`} />
+                        shouldDisplayHackForNotTriggeringTheLoadEventUntilChartIsActuallyVisible={this.state.chartType === `boxplot and transcripts`} />
                 </div>
               }
-
             </div>
         )
     }
