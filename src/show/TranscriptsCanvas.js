@@ -9,6 +9,8 @@ import Color from 'color'
 import {unzip, sortBy, groupBy, sum, meanBy} from 'lodash'
 import {groupIntoPairs} from '../utils.js'
 
+import Legend from '../manipulate/heatmap-legend/DataSeriesHeatmapLegend'
+
 const SUFFIX = ` individual`
 
 const expressionPlotConfig = ({xAxisCategories, config: {cutoff}, dataSeries}) => ({
@@ -196,24 +198,36 @@ const ExpressionChart = ({rows, xAxisCategories, config}) => (
 )
 
 // See: BaselineExpressionPerBiologicalReplicate.dominanceAmongRelatedValues
-const EXPRESSION_DOMINANCE = {
-  dominant: `dominant`,
-  present: `present`,
-  absent: `absent`,
-  ambiguous: `ambiguous`
-}
-
-const COLORS = {
-  [EXPRESSION_DOMINANCE.dominant]: `rgb(0, 0, 115)`,
-  [EXPRESSION_DOMINANCE.ambiguous]: `rgb(0, 85, 225)`,
-  //use global color axis
-  [EXPRESSION_DOMINANCE.present]: `rgb(179, 218, 255)`,
-  [EXPRESSION_DOMINANCE.absent]: `white` //not use
+const DATA_SERIES = {
+  dominant: {
+    key: `dominant`,
+    name: `Dominant`,
+    colour: `rgb(0, 0, 115)`,
+    on: true
+  },
+  ambiguous: {
+    key: `ambiguous`,
+    name: `Ambiguous`,
+    colour: `rgb(0, 85, 225)`,
+    on: true
+  },
+  present: {
+    key: `present`,
+    name: `Present`,
+    colour: `rgb(179, 218, 255)`,
+    on: true
+  },
+  // Not used; we plot missing values with plotBackgroundColor
+  absent: {
+    key: `absent`
+  }
 }
 
 const dominanceHeatmapConfig = ({xAxisCategories, yAxisCategories, dataSeries}) => ({
   chart: {
-    type: `heatmap`
+    type: `heatmap`,
+    plotBackgroundColor: `rgb(235, 235, 235)`,  // Colour for non-expressed transcripts (aka absent)
+    plotBorderColor: `darkgray`
   },
 
   credits: {
@@ -221,7 +235,7 @@ const dominanceHeatmapConfig = ({xAxisCategories, yAxisCategories, dataSeries}) 
   },
 
   legend: {
-    enabled: true
+    enabled: false
   },
 
   title: {
@@ -238,6 +252,8 @@ const dominanceHeatmapConfig = ({xAxisCategories, yAxisCategories, dataSeries}) 
       text: ``
     },
   },
+
+  color: `#000000`,
 
   tooltip: {
     useHTML: true,
@@ -266,27 +282,15 @@ const dominanceHeatmapConfig = ({xAxisCategories, yAxisCategories, dataSeries}) 
   series: dataSeries
 })
 
-const assignSeries = ({values}) => {
-  if (!values){
-    return EXPRESSION_DOMINANCE.absent
+const assignDataSeries = (values) => {
+  if (!values) {
+    return DATA_SERIES.absent.key
   }
 
-  const hasAllDominant = values.every(v => v.value.expression_dominance === EXPRESSION_DOMINANCE.dominant)
-  const hasDominant = values.find(v => v.value.expression_dominance === EXPRESSION_DOMINANCE.dominant)
-  const hasPresent = values.find(v => v.value.expression_dominance === EXPRESSION_DOMINANCE.present)
-
-  return (
-    hasDominant ?
-      hasAllDominant ? EXPRESSION_DOMINANCE.dominant : EXPRESSION_DOMINANCE.ambiguous :
-      hasPresent ? EXPRESSION_DOMINANCE.present : EXPRESSION_DOMINANCE.absent
-  )
+  return (values.find(v => v.isDominant) ?
+    values.every(v => v.isDominant) ? DATA_SERIES.dominant.key : DATA_SERIES.ambiguous.key :
+    values.find(v => v.value) ? DATA_SERIES.present.key : DATA_SERIES.absent.key)
 }
-
-const assignDataSeries = (values) => (
-  values.find(v => v.isDominant) ?
-    values.every(v => v.isDominant) ? EXPRESSION_DOMINANCE.dominant : EXPRESSION_DOMINANCE.ambiguous :
-    values.find(v => v.value) ? EXPRESSION_DOMINANCE.present : EXPRESSION_DOMINANCE.absent
-)
 
 const DominantTranscriptsChart = ({rows,xAxisCategories}) => {
   const yAxisCategories = rows.map((r) => (r.name))
@@ -370,20 +374,18 @@ const DominantTranscriptsChart = ({rows,xAxisCategories}) => {
   )
 
   const dataSeries = groupIntoPairs(expressionPerAssayGroupAndTranscript, o => o.series).map(
-    a =>
-      Object.assign(
-        {
-          name: a[0],
-          data: a[1].map(
-            e => ({
-              x: +e.x,
-              y: +e.y,
-              value: meanBy(e.info, `fractionOfExpression`),
-              info: e.info})
-          ),
-          color: COLORS[a[0]]
-        },
-        a[0] === EXPRESSION_DOMINANCE.present ? {} : {colorAxis: false} ))
+    a => ({
+      name: a[0],
+      data: a[1].map(
+        e => ({
+          x: +e.x,
+          y: +e.y,
+          value: meanBy(e.info, `fractionOfExpression`),
+          info: e.info})
+      ),
+      color: DATA_SERIES[a[0]].colour
+    })
+  )
 
   return (
     <div>
@@ -421,7 +423,12 @@ const Transcripts = ({keepOnlyTheseColumnIds, columnHeaders, rows, display, conf
                          })
                        )}/>
 
-      <DominantTranscriptsChart config={config} xAxisCategories={xAxisCategories} rows={rows}/>
+      <div>
+        <DominantTranscriptsChart config={config} xAxisCategories={xAxisCategories} rows={rows}/>
+        <Legend legendItems={Object.keys(DATA_SERIES).map((key) => DATA_SERIES[key]).filter(o => o.name && o.colour)}
+                title={`Dominant: dominant in all samples. Ambiguous: dominant in some samples. Present: non-dominant in all samples`}
+                missingValueColour={`rgb(235, 235, 235)`}/>
+      </div>
     </div>
   )
 }
