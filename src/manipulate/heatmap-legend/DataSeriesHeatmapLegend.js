@@ -23,21 +23,28 @@ const DataSeriesHeatmapLegend = props =>
         <div className="legend-item">
             <span className="icon icon-generic gxaInfoIcon"
                   data-icon="i" data-toggle="tooltip" data-placement="bottom"
-                  title="Baseline expression levels in RNA-seq experiments are in FPKM or TPM. Low: 0.5-10,
-                         Medium: 11-1,000,  High: >1,000. Proteomics expression levels are mapped to low, medium, high
-                         per experiment basis.">
-            </span>
+                  title={props.title}/>
         </div>
 
         <DataSeriesHeatmapLegendBox key={`No data available`}
                                     name={`No data available`}
-                                    colour={`white`}
+                                    colour={props.missingValueColour}
                                     on={true}
         />
     </div>
 
 DataSeriesHeatmapLegend.propTypes = {
-    legendItems: PropTypes.arrayOf(PropTypes.shape(DataSeriesHeatmapLegendBox.propTypes)).isRequired
+    legendItems: PropTypes.arrayOf(PropTypes.shape(DataSeriesHeatmapLegendBox.propTypes)).isRequired,
+    title: PropTypes.string,
+    missingValueColour: PropTypes.string
+}
+
+DataSeriesHeatmapLegend.defaultProps = {
+  title: "Baseline expression levels in RNA-seq experiments are in FPKM or TPM. " +
+         "Low: 0.5-10, Medium: 11-1,000, " +
+         "High: >1,000. " +
+         "Proteomics expression levels are mapped to low, medium, high per experiment basis.",
+  missingValueColour: `white`
 }
 
 export default DataSeriesHeatmapLegend
