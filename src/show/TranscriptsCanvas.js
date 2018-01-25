@@ -179,23 +179,19 @@ const scatterDataSeries = ({rows}) =>
     })
   )
 
-const ExpressionChart = ({rows, xAxisCategories, config}) => (
-  <div>
-    <br/>
-    <div key={`chart`}>
-      {rows.length &&
-        <ReactHighcharts
-          config={
-            expressionPlotConfig({
-              config,
-              xAxisCategories,
-              dataSeries: [].concat(boxPlotDataSeries({rows})).concat(scatterDataSeries({rows}))
-            })
-          }/>
-      }
-    </div>
+const ExpressionChart = ({rows, xAxisCategories, config}) =>
+  <div key={`chart`}>
+    {rows.length &&
+      <ReactHighcharts
+        config={
+          expressionPlotConfig({
+            config,
+            xAxisCategories,
+            dataSeries: [].concat(boxPlotDataSeries({rows})).concat(scatterDataSeries({rows}))
+          })
+        }/>
+    }
   </div>
-)
 
 // See: BaselineExpressionPerBiologicalReplicate.dominanceAmongRelatedValues
 const DATA_SERIES = {
