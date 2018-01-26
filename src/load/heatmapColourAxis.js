@@ -2,7 +2,7 @@ import Colour from 'color'
 
 import {isMultiExperiment} from './experimentTypeUtils.js'
 
-const highlightColour = c => c.light() ? Colour(c).lighten(0.5) : Colour(c).saturate(0.3).darken(0.5)
+const highlightColour = c => c.isLight() ? Colour(c).lighten(0.5) : Colour(c).saturate(0.3).darken(0.5)
 
 const dataClassesFromSeries = dataSeries => {
     // No need to validate here, as it’s already been done in Container.jsx (cf. with previous version of ColorAxis.js)
