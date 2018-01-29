@@ -50,14 +50,11 @@ const noData = (msg) => {
 	return <span/>
 }
 
-const title = ({name, id}) => (
-    <h3>
-        {name === id ? name : `${name} - ${id}`}
-    </h3>
+const makeBoxplot = (geneNameOrId, data, config) => (
+    data && config && <Boxplot {...data} config={config} titleSuffix={geneNameOrId} />
 )
-const makeBoxplot = (data, config ) => (
-    data && config && <Boxplot {...data} config={config} />
-)
+
+const getGeneNameOrId = ({name, id}) => name ? name : id
 
 const QuietLoader = ({sourceUrlFetch, keepOnlyTheseColumnIds, shouldDisplayHackForNotTriggeringTheLoadEventUntilChartIsActuallyVisible}) => (
 	sourceUrlFetch.pending
@@ -72,17 +69,22 @@ const QuietLoader = ({sourceUrlFetch, keepOnlyTheseColumnIds, shouldDisplayHackF
 					? noData(sourceUrlFetch.value)
 					: (
 						<div>
-                        {
-                            title(sourceUrlFetch.value.geneExpression.rows[0])
-                        }
-						{ sourceUrlFetch.value.geneExpression && makeBoxplot(
-                            tryCreateBoxplotData({
-								dataRow: sourceUrlFetch.value.geneExpression.rows[0],
-								columnHeaders: sourceUrlFetch.value.columnHeaders}),
-                            sourceUrlFetch.value.config)
+						{ sourceUrlFetch.value.geneExpression &&
+              makeBoxplot(
+                getGeneNameOrId(sourceUrlFetch.value.geneExpression.rows[0]),
+                tryCreateBoxplotData(
+                  {
+                    dataRow: sourceUrlFetch.value.geneExpression.rows[0],
+                    columnHeaders: sourceUrlFetch.value.columnHeaders
+                  }),
+                  sourceUrlFetch.value.config)
 						}
 						{ sourceUrlFetch.value.transcriptExpression &&
-							<Transcripts {...{keepOnlyTheseColumnIds, display: shouldDisplayHackForNotTriggeringTheLoadEventUntilChartIsActuallyVisible}}  {... sourceUrlFetch.value.transcriptExpression} columnHeaders={sourceUrlFetch.value.columnHeaders} config={sourceUrlFetch.value.config}/>
+							<Transcripts {...{keepOnlyTheseColumnIds, display: shouldDisplayHackForNotTriggeringTheLoadEventUntilChartIsActuallyVisible}}
+                           {... sourceUrlFetch.value.transcriptExpression}
+                           columnHeaders = {sourceUrlFetch.value.columnHeaders}
+                           config = {sourceUrlFetch.value.config}
+                           titleSuffix = {getGeneNameOrId(sourceUrlFetch.value.geneExpression.rows[0])} />
 						}
 						</div>
 					)

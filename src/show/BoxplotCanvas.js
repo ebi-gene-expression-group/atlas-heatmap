@@ -36,7 +36,7 @@ const allowNegativeLog = (H) => {
 }
 // allowNegativeLog(ReactHighcharts.Highcharts)
 
-const BoxplotCanvas = ({title, xAxisCategories, boxplotSeries,loosePointsSeries, unit, config:{cutoff}}) => {
+const BoxplotCanvas = ({titleSuffix, xAxisCategories, boxplotSeries,loosePointsSeries, unit, config:{cutoff}}) => {
     //see also: transcripts colors
     const color = ReactHighcharts.Highcharts.getOptions().colors[0]
     const series = []
@@ -62,7 +62,6 @@ const BoxplotCanvas = ({title, xAxisCategories, boxplotSeries,loosePointsSeries,
             }
         }
     )
-
 
     const config = {
         chart: {
@@ -96,7 +95,7 @@ const BoxplotCanvas = ({title, xAxisCategories, boxplotSeries,loosePointsSeries,
         },
 
         title: {
-            text: "Gene expression"
+            text: `Gene expression – ${titleSuffix}`
         },
 
         legend: {

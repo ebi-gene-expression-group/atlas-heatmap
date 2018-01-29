@@ -13,7 +13,7 @@ import Legend from '../manipulate/heatmap-legend/DataSeriesHeatmapLegend'
 
 const SUFFIX = ` individual`
 
-const expressionPlotConfig = ({xAxisCategories, config: {cutoff}, dataSeries}) => ({
+const expressionPlotConfig = ({titleSuffix, xAxisCategories, config: {cutoff}, dataSeries}) => ({
   chart: {
     ignoreHiddenSeries: false,
     type: `boxplot`,
@@ -43,7 +43,7 @@ const expressionPlotConfig = ({xAxisCategories, config: {cutoff}, dataSeries}) =
   },
 
   title: {
-    text: `Expression per transcript`
+    text: `Expression per transcript – ${titleSuffix}`
   },
 
   credits: {
@@ -179,12 +179,13 @@ const scatterDataSeries = ({rows}) =>
     })
   )
 
-const ExpressionChart = ({rows, xAxisCategories, config}) =>
+const ExpressionChart = ({rows, xAxisCategories, config, titleSuffix}) =>
   <div key={`chart`}>
     {rows.length &&
       <ReactHighcharts
         config={
           expressionPlotConfig({
+            titleSuffix,
             config,
             xAxisCategories,
             dataSeries: [].concat(boxPlotDataSeries({rows})).concat(scatterDataSeries({rows}))
@@ -219,7 +220,7 @@ const DATA_SERIES = {
   }
 }
 
-const dominanceHeatmapConfig = ({xAxisCategories, yAxisCategories, dataSeries}) => ({
+const dominanceHeatmapConfig = ({titleSuffix, xAxisCategories, yAxisCategories, dataSeries}) => ({
   chart: {
     type: `heatmap`,
     plotBackgroundColor: `rgb(235, 235, 235)`,  // Colour for non-expressed transcripts (aka absent)
@@ -235,7 +236,7 @@ const dominanceHeatmapConfig = ({xAxisCategories, yAxisCategories, dataSeries}) 
   },
 
   title: {
-    text: `Dominant transcripts`
+    text: `Dominant transcripts – ${titleSuffix}`
   },
 
   xAxis: {
@@ -288,7 +289,7 @@ const assignDataSeries = (values) => {
     values.find(v => v.value) ? DATA_SERIES.present.key : DATA_SERIES.absent.key)
 }
 
-const DominantTranscriptsChart = ({rows,xAxisCategories}) => {
+const DominantTranscriptsChart = ({titleSuffix, rows, xAxisCategories}) => {
   const yAxisCategories = rows.map((r) => (r.name))
 
   const unrolledRows =
@@ -387,6 +388,7 @@ const DominantTranscriptsChart = ({rows,xAxisCategories}) => {
     <div>
       {
         <ReactHighcharts config={dominanceHeatmapConfig({
+            titleSuffix,
             xAxisCategories,
             yAxisCategories,
             dataSeries: sortBy(dataSeries, `.name`).reverse()
@@ -396,7 +398,7 @@ const DominantTranscriptsChart = ({rows,xAxisCategories}) => {
   )
 }
 
-const Transcripts = ({keepOnlyTheseColumnIds, columnHeaders, rows, display, config}) => {
+const Transcripts = ({keepOnlyTheseColumnIds, columnHeaders, rows, display, config, titleSuffix}) => {
   const ixs =
     columnHeaders
       .map((e,ix) => [e, ix])
@@ -410,7 +412,8 @@ const Transcripts = ({keepOnlyTheseColumnIds, columnHeaders, rows, display, conf
 
   return (Boolean(display) &&
     <div>
-      <ExpressionChart config={config}
+      <ExpressionChart titleSuffix={titleSuffix}
+                       config={config}
                        xAxisCategories={xAxisCategories}
                        rows={rows.map(
                          row => ({
@@ -420,7 +423,9 @@ const Transcripts = ({keepOnlyTheseColumnIds, columnHeaders, rows, display, conf
                        )}/>
 
       <div>
-        <DominantTranscriptsChart config={config} xAxisCategories={xAxisCategories} rows={rows}/>
+        <DominantTranscriptsChart titleSuffix={titleSuffix}
+                                  xAxisCategories={xAxisCategories}
+                                  rows={rows}/>
         <Legend legendItems={Object.keys(DATA_SERIES).map((key) => DATA_SERIES[key]).filter(o => o.name && o.colour)}
                 title={`Dominant: dominant in all samples. Ambiguous: dominant in some samples. Present: non-dominant in all samples`}
                 missingValueColour={`rgb(235, 235, 235)`}/>
