@@ -17,6 +17,7 @@ const expressionPlotConfig = ({titleSuffix, xAxisCategories, config: {cutoff}, d
   chart: {
     ignoreHiddenSeries: false,
     type: `boxplot`,
+    inverted: true,
     zoomType: `x`,
     events: {
       load: function() {
@@ -208,9 +209,9 @@ const DATA_SERIES = {
     colour: `rgb(0, 85, 225)`,
     on: true
   },
-  present: {
-    key: `present`,
-    name: `Present`,
+  nonDominant: {
+    key: `nonDominant`,
+    name: `Non-dominant`,
     colour: `rgb(179, 218, 255)`,
     on: true
   },
@@ -223,6 +224,7 @@ const DATA_SERIES = {
 const dominanceHeatmapConfig = ({titleSuffix, xAxisCategories, yAxisCategories, dataSeries}) => ({
   chart: {
     type: `heatmap`,
+    inverted: true,
     plotBackgroundColor: `rgb(235, 235, 235)`,  // Colour for non-expressed transcripts (aka absent)
     plotBorderColor: `darkgray`
   },
@@ -286,7 +288,7 @@ const assignDataSeries = (values) => {
 
   return (values.find(v => v.isDominant) ?
     values.every(v => v.isDominant) ? DATA_SERIES.dominant.key : DATA_SERIES.ambiguous.key :
-    values.find(v => v.value) ? DATA_SERIES.present.key : DATA_SERIES.absent.key)
+    values.find(v => v.value) ? DATA_SERIES.nonDominant.key : DATA_SERIES.absent.key)
 }
 
 const DominantTranscriptsChart = ({titleSuffix, rows, xAxisCategories}) => {
@@ -427,7 +429,7 @@ const Transcripts = ({keepOnlyTheseColumnIds, columnHeaders, rows, display, conf
                                   xAxisCategories={xAxisCategories}
                                   rows={rows}/>
         <Legend legendItems={Object.keys(DATA_SERIES).map((key) => DATA_SERIES[key]).filter(o => o.name && o.colour)}
-                title={`Dominant: dominant in all samples. Ambiguous: dominant in some samples. Present: non-dominant in all samples`}
+                title={`Dominant: dominant in all samples.\nAmbiguous: dominant in some samples.\nNon-dominant: non-dominant in all samples.`}
                 missingValueColour={`rgb(235, 235, 235)`}/>
       </div>
     </div>
