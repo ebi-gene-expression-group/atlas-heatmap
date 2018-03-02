@@ -17,6 +17,7 @@ const expressionPlotConfig = ({titleSuffix, xAxisCategories, config: {cutoff}, d
   chart: {
     ignoreHiddenSeries: false,
     type: `boxplot`,
+    inverted: true,
     zoomType: `x`,
     events: {
       load: function() {
@@ -223,6 +224,7 @@ const DATA_SERIES = {
 const dominanceHeatmapConfig = ({titleSuffix, xAxisCategories, yAxisCategories, dataSeries}) => ({
   chart: {
     type: `heatmap`,
+    inverted: true,
     plotBackgroundColor: `rgb(235, 235, 235)`,  // Colour for non-expressed transcripts (aka absent)
     plotBorderColor: `darkgray`
   },

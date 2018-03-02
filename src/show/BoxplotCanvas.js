@@ -65,7 +65,8 @@ const BoxplotCanvas = ({titleSuffix, xAxisCategories, boxplotSeries,loosePointsS
 
     const config = {
         chart: {
-            type: `boxplot`
+            type: `boxplot`,
+            inverted: true
         },
 
         plotOptions: {
