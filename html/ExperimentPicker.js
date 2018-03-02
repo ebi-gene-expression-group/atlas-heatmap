@@ -14,8 +14,8 @@ class ExperimentPicker extends React.Component {
             isWidget: null,
             showAnatomogram: null,
             submitAtlasUrl: `http://ves-hx-77:8080/gxa/`,
-            submitExperimentAccession: `E-MTAB-513`,
-            submitGeneQuery: `[{"value":"ENSG00000024862","category":"ensgene"}]`,
+            submitExperimentAccession: `E-MTAB-4484`,
+            submitGeneQuery: `[{"value":"TRIAE_CS42_1AL_TGACv1_000002_AA0000030","category":"ensgene"}]`,
             submitIsWidget: true,
             submitShowAnatomogram: false
         }
