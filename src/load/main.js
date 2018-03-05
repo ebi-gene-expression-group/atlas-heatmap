@@ -25,6 +25,7 @@ export default function({data, inProxy, outProxy, atlasUrl, showAnatomogram, isW
     //misses: idsExpressedInExperiment
     //show is extra
     const anatomogramConfig = {
+        atlasUrl: atlasUrl,
         show: showAnatomogram && !! data.anatomogram && anatomogramSpecies.includes(data.anatomogram.species),
         anatomogramData: data.anatomogram,
         expressedTissueColour: data.experiment ? `gray` : `red`,

@@ -306,6 +306,7 @@ class _HeatmapWithControls extends React.Component {
       const heatmapData= heatmapDataToPresent(args)
       const anatomogramArgs = this.props.anatomogramConfig.show
         ? {
+            atlasUrl: this.props.anatomogramConfig.atlasUrl,
             species: this.props.anatomogramConfig.anatomogramData.species,
             showIds: heatmapData.xAxisCategories.map(e => e.id),
             highlightIds: heatmapData.xAxisCategories.map(e => e.id).filter(id => this.state.highlightIds.includes(id)),
