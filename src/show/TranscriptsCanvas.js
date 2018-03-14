@@ -307,7 +307,7 @@ const DominantTranscriptsChart = ({titleSuffix, rows, xAxisCategories}) => {
                   [] :
                   expressionPerReplicate.values.map(
                     replicate => ({
-                      replicate: replicate.id,
+                      replicate: replicate.assays.join(`, `),
                       x: column_ix,
                       value: replicate.value.expression_absolute_units,
                       y: row_ix
