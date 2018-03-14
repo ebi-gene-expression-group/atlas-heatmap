@@ -36,15 +36,14 @@
 <script src="/gxa/resources/js-bundles/vendorCommons.bundle.js"></script>
 <script src="/gxa/resources/js-bundles/heatmapHighcharts.bundle.js"></script>
 <script>
-    // http://www-test.ebi.ac.uk/gxa/json/baseline_experiments?species=homo+sapiens&geneQuery=[{"value":"zinc+finger"}]
     heatmapHighcharts.render(
         {
             target: 'highchartsContainer',
-            atlasUrl: 'http://localhost:8080/gxa/',
+            atlasUrl: 'https://www-test.ebi.ac.uk/gxa/',
+            showControlMenu: false,
             query: {
-                species: 'homo sapiens',
-                gene: [{value: 'zinc finger'}, {value: 'zinc'}],
-                condition: [{value: 'homo'}, {value: 'sapiens'}]
+                species: 'schistosoma mansoni',
+                gene: [{value: 'Smp_089700'}],
             }
         }
     );

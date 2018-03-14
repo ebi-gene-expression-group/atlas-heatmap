@@ -10,6 +10,7 @@ import ContainerLoader from './layout/ContainerLoader.js'
  * @param {Object}          options
  * @param {string | Object} options.target - a <div> id or a DOM element, as returned by ReactDOM.findDOMNode()
  * @param {boolean}         options.disableGoogleAnalytics - Disable Google Analytics
+ * @param {boolean}         options.showControlMenu - Show menu with sorting, filtering and download options
  * @param {function}        options.fail - Callback to run if the AJAX request to the server fails. (jqXHR, textStatus)
  * @param {function}        options.render - Callback to run after each render
  * @param {boolean}         options.showAnatomogram - optionally hide the anatomogram
@@ -30,6 +31,7 @@ const DEFAULT_OPTIONS = {
     showAnatomogram: true,
     isWidget: true,
     disableGoogleAnalytics: false,
+    showControlMenu: true,
     atlasUrl: `https://www.ebi.ac.uk/gxa/`,
     inProxy: ``,
     outProxy: ``,

@@ -169,7 +169,7 @@ const heatmapConfigPropTypes = PropTypes.shape({
     yAxisLegendName: PropTypes.string.isRequired,
 
     experiment: experimentPropTypes,
-
+    showControlMenu: PropTypes.bool.isRequired,
     disclaimer: PropTypes.string.isRequired,
     coexpressionsAvailable: PropTypes.bool.isRequired,
     isMultiExperiment: PropTypes.bool.isRequired,

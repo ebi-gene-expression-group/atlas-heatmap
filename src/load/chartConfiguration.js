@@ -38,7 +38,7 @@ const singleExperimentQueryDescription = ({geneQuery, experiment:{description, a
     )
 }
 
-const getChartConfiguration = (data, inProxy, outProxy, atlasUrl, isWidget) => {
+const getChartConfiguration = (data, inProxy, outProxy, atlasUrl, isWidget, showControlMenu) => {
     const {experiment, profiles} = data
     const {geneQuery, conditionQuery, species, disclaimer, columnType, resources} = data.config
 
@@ -64,6 +64,7 @@ const getChartConfiguration = (data, inProxy, outProxy, atlasUrl, isWidget) => {
         atlasUrl,
         experiment,
         isWidget,
+        showControlMenu,
         description,
         shortDescription,
         disclaimer,

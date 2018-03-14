@@ -240,12 +240,12 @@ const renderAnatomogramControlsAndCanvas = (args, heatmapDataToPresent, anatomog
             <div style={{display: `inline-block`, width: `30%`}}>
                 {args.heatmapConfig.introductoryMessage}
             </div>
-            <div style={{display: `inline-block`, width: `70%`, textAlign: `right`}}>
+            { args.heatmapConfig.showControlMenu && <div style={{display: `inline-block`, width: `70%`, textAlign: `right`}}>
                 {renderGenomeBrowsersDropdown(args)}
                 {renderOrderings(args)}
                 {renderFiltersButton(args)}
                 {renderDownloadButton(args,heatmapDataToPresent)}
-            </div>
+            </div> }
         </div>
         {
             renderGenomeBrowserHint(args)

@@ -9,7 +9,7 @@ import getColourAxisFromDataSeries from './heatmapColourAxis.js'
 import columnsWithGroupings from './heatmapFilters.js'
 import URI from 'urijs'
 
-export default function({data, inProxy, outProxy, atlasUrl, showAnatomogram, isWidget}) {
+export default function({data, inProxy, outProxy, atlasUrl, showAnatomogram, showControlMenu, isWidget}) {
     const pathToResources = inProxy + URI(`resources/js-bundles/`, atlasUrl).toString()
 
     // This ensures that adding or removing coexpressed genes doesn’t change the colours in the heat map. Colours are
@@ -46,7 +46,7 @@ export default function({data, inProxy, outProxy, atlasUrl, showAnatomogram, isW
         anatomogramConfig,
         heatmapData,
         geneSpecificResults,
-        heatmapConfig: getChartConfiguration(data, inProxy, outProxy, atlasUrl, isWidget),
+        heatmapConfig: getChartConfiguration(data, inProxy, outProxy, atlasUrl, isWidget, showControlMenu),
         colourAxis : getColourAxisFromDataSeries(data.experiment, heatmapData.dataSeries),
         orderings: createOrderingsForData(data.experiment, allRows, data.columnHeaders),
         columnGroups: columnsWithGroupings({heatmapData, columnGroupings: data.columnGroupings})
