@@ -13,6 +13,9 @@ import Legend from '../manipulate/heatmap-legend/DataSeriesHeatmapLegend'
 
 const SUFFIX = ` individual`
 
+import allowNegativeLog from './HighchartsAllowNegativeLog'
+allowNegativeLog(ReactHighcharts.Highcharts)
+
 const expressionPlotConfig = ({titleSuffix, xAxisCategories, config: {cutoff}, dataSeries}) => ({
   chart: {
     ignoreHiddenSeries: false,
