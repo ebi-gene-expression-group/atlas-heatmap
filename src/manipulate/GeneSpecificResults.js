@@ -33,7 +33,7 @@ const tryCreateBoxplotData = ({dataRow, columnHeaders}) => {
       ))
     )
 
-  if(boxplotSeries.length){
+  if(boxplotSeries.length || loosePointsSeries.length){
     return {
         boxplotSeries,
         loosePointsSeries,
@@ -45,10 +45,7 @@ const tryCreateBoxplotData = ({dataRow, columnHeaders}) => {
   }
 }
 
-const noData = (msg) => {
-	msg && console.log(msg)
-	return <span/>
-}
+const noData = (msg) => <span>{msg}</span>
 
 const makeBoxplot = (geneNameOrId, data, config) => (
     data && config && <Boxplot {...data} config={config} titleSuffix={geneNameOrId} />
@@ -56,20 +53,20 @@ const makeBoxplot = (geneNameOrId, data, config) => (
 
 const getGeneNameOrId = ({name, id}) => name ? name : id
 
-const QuietLoader = ({sourceUrlFetch, keepOnlyTheseColumnIds, shouldDisplayHackForNotTriggeringTheLoadEventUntilChartIsActuallyVisible}) => (
-	sourceUrlFetch.pending
-	? noData()
-	: sourceUrlFetch.rejected
-		? noData(sourceUrlFetch)
-		: ! sourceUrlFetch.fulfilled
-			? noData(sourceUrlFetch)
-			: sourceUrlFetch.value.error
-				? noData(sourceUrlFetch.value.error)
-				: (! sourceUrlFetch.value.geneExpression || ! sourceUrlFetch.value.transcriptExpression)
-					? noData(sourceUrlFetch.value)
-					: (
-						<div>
-						{ sourceUrlFetch.value.geneExpression &&
+const QuietLoader = ({sourceUrlFetch, keepOnlyTheseColumnIds}) => (
+  sourceUrlFetch.pending
+  ? noData()
+  : sourceUrlFetch.rejected
+  ? noData(sourceUrlFetch)
+  : ! sourceUrlFetch.fulfilled
+  ? noData(sourceUrlFetch)
+  : sourceUrlFetch.value.error
+  ? noData(sourceUrlFetch.value.error)
+  : (! sourceUrlFetch.value.geneExpression && ! sourceUrlFetch.value.transcriptExpression)
+  ? noData(sourceUrlFetch.value)
+  : (
+  <div>
+  { sourceUrlFetch.value.geneExpression &&
               makeBoxplot(
                 getGeneNameOrId(sourceUrlFetch.value.geneExpression.rows[0]),
                 tryCreateBoxplotData(
@@ -78,16 +75,16 @@ const QuietLoader = ({sourceUrlFetch, keepOnlyTheseColumnIds, shouldDisplayHackF
                     columnHeaders: sourceUrlFetch.value.columnHeaders
                   }),
                   sourceUrlFetch.value.config)
-						}
-						{ sourceUrlFetch.value.transcriptExpression &&
-							<Transcripts {...{keepOnlyTheseColumnIds, display: shouldDisplayHackForNotTriggeringTheLoadEventUntilChartIsActuallyVisible}}
-                           {... sourceUrlFetch.value.transcriptExpression}
+  }
+  { sourceUrlFetch.value.transcriptExpression &&
+  <Transcripts {... sourceUrlFetch.value.transcriptExpression}
+                           keepOnlyTheseColumnIds = {keepOnlyTheseColumnIds}
                            columnHeaders = {sourceUrlFetch.value.columnHeaders}
                            config = {sourceUrlFetch.value.config}
                            titleSuffix = {getGeneNameOrId(sourceUrlFetch.value.geneExpression.rows[0])} />
-						}
-						</div>
-					)
+  }
+  </div>
+  )
 )
 
 export default connect(props => ({

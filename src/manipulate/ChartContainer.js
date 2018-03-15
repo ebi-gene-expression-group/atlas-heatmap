@@ -37,8 +37,7 @@ class ChartContainer extends React.Component {
               </div>
               { this.props.chartData.geneSpecificResults &&
                 <div style={{display: this.state.chartType === `boxplot and transcripts` ? `block` : `none`, width: `100%`}} >
-                    <GeneSpecificResults {...this.props.chartData.geneSpecificResults}
-                        shouldDisplayHackForNotTriggeringTheLoadEventUntilChartIsActuallyVisible={this.state.chartType === `boxplot and transcripts`} />
+                    <GeneSpecificResults {...this.props.chartData.geneSpecificResults} />
                 </div>
               }
             </div>
