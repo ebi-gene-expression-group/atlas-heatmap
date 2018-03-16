@@ -182,6 +182,7 @@ const heatmapExtraArgs = ({
     heatmapConfig,
     onChangeCurrentZoom,
     ontologyIdsToHighlight} ) => ({
+      noDataCellsColour: heatmapConfig.isMultiExperiment ? `white` : `rgb(235, 235, 235)`,
       ontologyIdsToHighlight,
       onZoom:onChangeCurrentZoom,
       events:

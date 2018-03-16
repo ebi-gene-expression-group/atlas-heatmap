@@ -117,7 +117,7 @@ class HeatmapCanvas extends React.Component {
     const marginRight = this._getAdjustedMarginRight()
     const height = this._getHeight(marginBottom)
 
-    const {cellTooltipFormatter, xAxisFormatter, yAxisFormatter, events, onZoom} = this.props
+    const {cellTooltipFormatter, xAxisFormatter, yAxisFormatter, events, onZoom, noDataCellsColour} = this.props
 
     const highchartsConfig = {
       chart: {
@@ -125,6 +125,7 @@ class HeatmapCanvas extends React.Component {
         marginRight,
         height,
         type: `heatmap`,
+        plotBackgroundColor: noDataCellsColour,
         spacingTop: 0,
         plotBorderWidth: 1,
         events: {
@@ -284,6 +285,7 @@ class HeatmapCanvas extends React.Component {
 
 HeatmapCanvas.propTypes = {
   heatmapData: heatmapDataPropTypes.isRequired,
+  noDataCellsColour: PropTypes.string,
   colourAxis: colourAxisPropTypes,    // Only for experiment heatmap
   cellTooltipFormatter: PropTypes.func.isRequired,
   xAxisFormatter: PropTypes.func.isRequired,
@@ -300,6 +302,10 @@ HeatmapCanvas.propTypes = {
   }),
   onZoom: PropTypes.func.isRequired,
   withAnatomogram: PropTypes.bool.isRequired
+}
+
+HeatmapCanvas.defaultProps = {
+  noDataCellsColour: `white`
 }
 
 const Main = props => (
