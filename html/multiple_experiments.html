@@ -34,13 +34,14 @@
 </body>
 
 <script src="/gxa/resources/js-bundles/vendorCommons.bundle.js"></script>
-<script src="/gxa/resources/js-bundles/experimentPicker.bundle.js"></script>
+<script src="/gxa/resources/js-bundles/heatmapHighcharts.bundle.js"></script>
 <script>
     // http://www-test.ebi.ac.uk/gxa/json/baseline_experiments?species=homo+sapiens&geneQuery=[{"value":"zinc+finger"}]
     heatmapHighcharts.render(
         {
             target: 'highchartsContainer',
-            atlasUrl: 'http://localhost:8080/gxa/',
+            // atlasUrl: 'http://localhost:8080/gxa/',
+            atlasUrl: 'http://ves-hx-77:8080/gxa/',
             query: {
                 species: 'homo sapiens',
                 gene: [{value: 'zinc finger'}, {value: 'zinc'}],
