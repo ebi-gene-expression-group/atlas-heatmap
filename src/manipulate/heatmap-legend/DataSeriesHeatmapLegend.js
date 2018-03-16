@@ -26,8 +26,8 @@ const DataSeriesHeatmapLegend = props =>
                   title={props.title}/>
         </div>
 
-        <DataSeriesHeatmapLegendBox key={`No data available`}
-                                    name={`No data available`}
+        <DataSeriesHeatmapLegendBox key={props.missingValueLabel}
+                                    name={props.missingValueLabel}
                                     colour={props.missingValueColour}
                                     on={true}
         />
@@ -36,7 +36,8 @@ const DataSeriesHeatmapLegend = props =>
 DataSeriesHeatmapLegend.propTypes = {
     legendItems: PropTypes.arrayOf(PropTypes.shape(DataSeriesHeatmapLegendBox.propTypes)).isRequired,
     title: PropTypes.string,
-    missingValueColour: PropTypes.string
+    missingValueColour: PropTypes.string,
+    missingValueLabel: PropTypes.string
 }
 
 DataSeriesHeatmapLegend.defaultProps = {
@@ -44,7 +45,8 @@ DataSeriesHeatmapLegend.defaultProps = {
          "Low: 0.5-10, Medium: 11-1,000, " +
          "High: >1,000. " +
          "Proteomics expression levels are mapped to low, medium, high per experiment basis.",
-  missingValueColour: `white`
+  missingValueColour: `white`,
+  missingValueLabel: `No data available`
 }
 
 export default DataSeriesHeatmapLegend

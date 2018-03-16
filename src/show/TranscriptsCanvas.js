@@ -415,7 +415,7 @@ const Transcripts = ({keepOnlyTheseColumnIds, columnHeaders, rows, display, conf
       .filter((e,ix) => ixs.includes(ix))
       .map(({id,name}) => name || id)
 
-  return (Boolean(display) &&
+  return (
     <div>
       <ExpressionChart titleSuffix={titleSuffix}
                        config={config}
@@ -433,7 +433,8 @@ const Transcripts = ({keepOnlyTheseColumnIds, columnHeaders, rows, display, conf
                                   rows={rows}/>
         <Legend legendItems={Object.keys(DATA_SERIES).map((key) => DATA_SERIES[key]).filter(o => o.name && o.colour)}
                 title={`Dominant: dominant in all samples.\nAmbiguous: dominant in some samples.\nNon-dominant: non-dominant in all samples.`}
-                missingValueColour={`rgb(235, 235, 235)`}/>
+                missingValueColour={`rgb(235, 235, 235)`}
+                missingValueLabel={`Not expressed`}/>
       </div>
     </div>
   )
