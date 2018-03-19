@@ -21,7 +21,7 @@ const expressionPlotConfig = ({titleSuffix, xAxisCategories, config: {cutoff}, d
     ignoreHiddenSeries: false,
     type: `boxplot`,
     inverted: true,
-    zoomType: `x`,
+    zoomType: `y`,
     events: {
       load: function() {
         //works apart from when you later take some series out with the menu http://jsfiddle.net/sza4odkz/1/
@@ -245,7 +245,10 @@ const dominanceHeatmapConfig = ({titleSuffix, xAxisCategories, yAxisCategories, 
   },
 
   xAxis: {
-    categories: xAxisCategories
+    categories: xAxisCategories,
+    // Force-display leading and trailing categories, even if they have no data
+    min: 0,
+    max: xAxisCategories.length
   },
 
   yAxis: {
