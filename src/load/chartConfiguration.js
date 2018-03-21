@@ -8,7 +8,10 @@ const introductoryMessage = (experiment, profiles) => {
 
     const what = (experiment ? `gene` : `experiment`) + (totalRows > 1 ? `s` : ``)
 
-    return `Showing ${numberWithCommas(shownRows)} ` + (totalRows === shownRows ? what + `:` : `of ${numberWithCommas(totalRows)} ${what} found:`)
+    return shownRows > 0 ?
+      `Showing ${numberWithCommas(shownRows)} ` +
+      (totalRows === shownRows ? what + `:` : `of ${numberWithCommas(totalRows)} ${what} found:`) :
+      ``
 }
 
 const plusDecode = str => decodeURIComponent(str.replace(/\+/g, `%20`))

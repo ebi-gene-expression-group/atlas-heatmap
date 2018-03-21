@@ -22,27 +22,21 @@ const renderGradient = ({fromValue, toValue, colours}, index) => {
 }
 
 const GradientHeatmapLegend = ({gradients, unit}) => (
-  <div className="gxaGradientLegend">
-    <div>
+    gradients.some((gradient) => gradient.fromValue > 0 || gradient.toValue > 0) &&
+    <div className="gxaGradientLegend">
+      <div>
+        {
+          ! unit ?
+            <span>Expression level</span> :
+            unit.includes(`fold change`) ?
+              <span>Log<sub>2</sub>-fold change</span> :
+              <span>Expression level in {unit}</span>
+        }
+      </div>
       {
-        ! unit
-        ? <span>
-            Expression level
-          </span>
-        : unit.indexOf("fold change") > -1
-          ? <span>
-              Log<sub>2</sub>-fold change
-            </span>
-          : <span>
-              Expression level in {unit}
-            </span>
+        gradients.map(renderGradient)
       }
     </div>
-    {
-      gradients
-      .map(renderGradient)
-    }
-  </div>
 )
 
 GradientHeatmapLegend.propTypes = {
