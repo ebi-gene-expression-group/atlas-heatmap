@@ -22,7 +22,7 @@ const renderGradient = ({fromValue, toValue, colours}, index) => {
 }
 
 const GradientHeatmapLegend = ({gradients, unit}) => (
-    gradients.some((gradient) => gradient.fromValue > 0 || gradient.toValue > 0) &&
+    gradients.some((gradient) => gradient.fromValue != 0 || gradient.toValue != 0) &&
     <div className="gxaGradientLegend">
       <div>
         {
