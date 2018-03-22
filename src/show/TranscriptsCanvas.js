@@ -92,7 +92,7 @@ const expressionPlotConfig = ({titleSuffix, xAxisCategories, config: {cutoff}, d
       title: {
         text: `Expression (TPM)`
       },
-      
+
       min: 0.1
     },
 
@@ -411,37 +411,39 @@ const expressionPlotConfig = ({titleSuffix, xAxisCategories, config: {cutoff}, d
 
               const Transcripts = ({keepOnlyTheseColumnIds, columnHeaders, rows, display, config, titleSuffix}) => {
                 const ixs =
-                columnHeaders
-                .map((e,ix) => [e, ix])
-                .filter((eix) => keepOnlyTheseColumnIds.includes(eix[0].id))
-                .map((eix) => eix[1])
+                  columnHeaders
+                    .map((e,ix) => [e, ix])
+                    .filter((eix) => keepOnlyTheseColumnIds.includes(eix[0].id))
+                    .map((eix) => eix[1])
 
                 const xAxisCategories =
-                columnHeaders
-                .filter((e,ix) => ixs.includes(ix))
-                .map(({id,name}) => name || id)
+                  columnHeaders
+                    .filter((e,ix) => ixs.includes(ix))
+                    .map(({id,name}) => name || id)
 
                 return (
                   <div>
-                  <ExpressionChart titleSuffix={titleSuffix}
-                  config={config}
-                  xAxisCategories={xAxisCategories}
-                  rows={rows.map(
-                    row => ({
-                      ...row,
-                      expressions: row.expressions.filter((e,ix) => ixs.includes(ix))
-                    })
-                  )}/>
+                    <ExpressionChart titleSuffix={titleSuffix}
+                                     config={config}
+                                     xAxisCategories={xAxisCategories}
+                                     rows={rows.map(
+                                       row => ({
+                                         ...row,
+                                         expressions: row.expressions.filter((e,ix) => ixs.includes(ix))
+                                       })
+                                     )}/>
 
-                  <div>
-                  <DominantTranscriptsChart titleSuffix={titleSuffix}
-                  xAxisCategories={xAxisCategories}
-                  rows={rows}/>
-                  <Legend legendItems={Object.keys(DATA_SERIES).map((key) => DATA_SERIES[key]).filter(o => o.name && o.colour)}
-                  title={`Dominant: dominant in all samples.\nAmbiguous: dominant in some samples.\nNon-dominant: non-dominant in all samples.`}
-                  missingValueColour={`rgb(235, 235, 235)`}
-                  missingValueLabel={`Not expressed`}/>
-                  </div>
+                    { false &&
+                      <div>
+                        <DominantTranscriptsChart titleSuffix={titleSuffix}
+                                                  xAxisCategories={xAxisCategories}
+                                                  rows={rows}/>
+
+                        <Legend legendItems={Object.keys(DATA_SERIES).map((key) => DATA_SERIES[key]).filter(o => o.name && o.colour)}
+                                title={`Dominant: dominant in all samples.\nAmbiguous: dominant in some samples.\nNon-dominant: non-dominant in all samples.`}
+                                missingValueColour={`rgb(235, 235, 235)`}
+                                missingValueLabel={`Not expressed`}/>
+                      </div> }
                   </div>
                 )
               }
