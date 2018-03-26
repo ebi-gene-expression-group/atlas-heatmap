@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "webpack-dev-server -d",
     "prepack": "rm -rf lib && babel src -d lib --ignore '**/*.less' --copy-files",
-    "postversion": "publish",
+    "postversion": "npm publish",
     "postpublish": "git push && git push --tags"
   },
   "repository": "https://github.com/gxa/atlas-heatmap",
