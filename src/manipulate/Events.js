@@ -10,24 +10,22 @@ const onlyUnique = (e, i, arr) => arr.indexOf(e) === i
 
 const _ontologyIdsForColumnIndex = (heatmapData, x) => [heatmapData.xAxisCategories[x].id]
 
-const _ontologyIdsForColumnLabel = (heatmapData, lbl) => [heatmapData.xAxisCategories.find((cat) => cat.label === lbl).id]
-
 const _ontologyIdsForRowIndex = (heatmapData, y) => (
   [].concat.apply([],
-      [].concat.apply([],
-          heatmapData
-          .dataSeries
-          .map(series => series.data)
-      )
+    [].concat.apply([],
+      heatmapData
+        .dataSeries
+        .map(series => series.data)
+    )
       .filter(point => point.y === y && !!point.value)
       .map(point => _ontologyIdsForColumnIndex(heatmapData, point.x))
       .map(e => Array.isArray(e) ? e : [e])
   )
-  .filter(onlyUnique)
+    .filter(onlyUnique)
 )
 
 const onClickUseGenomeBrowser = ({heatmapData, currentGenomeBrowser,heatmapConfig: {experiment, atlasUrl, outProxy}}) => (
-    currentGenomeBrowser && experiment && currentGenomeBrowser !== `none`
+  currentGenomeBrowser && experiment && currentGenomeBrowser !== `none`
     ? (x, y) => {
       window.open(outProxy + URI(experiment.urls.genome_browsers, atlasUrl).addSearch({
         experimentAccession: experiment.accession,

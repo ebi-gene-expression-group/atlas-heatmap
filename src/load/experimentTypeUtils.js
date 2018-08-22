@@ -1,11 +1,10 @@
-import React from 'react'
 import PropTypes from 'prop-types'
 
 const experimentPropTypes = PropTypes.shape({
-    accession: PropTypes.string.isRequired,   // Is it worth to enumerate the experiment types?
-    type: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    species: PropTypes.string.isRequired
+  accession: PropTypes.string.isRequired,   // Is it worth to enumerate the experiment types?
+  type: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+  species: PropTypes.string.isRequired
 })
 
 const isMultiExperiment = experiment => !Boolean(experiment)
@@ -20,22 +19,22 @@ const isMultiExperiment = experiment => !Boolean(experiment)
 // PROTEOMICS_BASELINE("proteomics_baseline")
 // SINGLE_CELL_RNASEQ_MRNA_BASELINE("scrnaseq_mrna_baseline")
 const isDifferential = experiment =>
-!isMultiExperiment(experiment) && experiment.type.toUpperCase().endsWith(`DIFFERENTIAL`)
+  !isMultiExperiment(experiment) && experiment.type.toUpperCase().endsWith(`DIFFERENTIAL`)
 
 const isBaseline = experiment =>
-!isMultiExperiment(experiment) && experiment.type.toUpperCase().endsWith(`BASELINE`)
+  !isMultiExperiment(experiment) && experiment.type.toUpperCase().endsWith(`BASELINE`)
 
 const isRnaSeqBaseline = experiment =>
-!isMultiExperiment(experiment) && experiment.type.toUpperCase() === `RNASEQ_MRNA_BASELINE`
+  !isMultiExperiment(experiment) && experiment.type.toUpperCase() === `RNASEQ_MRNA_BASELINE`
 
 const getUnits = experiment => {
-    if (isDifferential(experiment)) {
-        return `Log2-fold change`  // What we use for point.value, we don't use it for display. See Formatters.jsx.
-    } else if (isRnaSeqBaseline(experiment)) {
-        return experiment.description.toUpperCase().includes(`FANTOM`) ? `TPM` : `FPKM`
-    } else {
-        return ``
-    }
+  if (isDifferential(experiment)) {
+    return `Log2-fold change`  // What we use for point.value, we don't use it for display. See Formatters.jsx.
+  } else if (isRnaSeqBaseline(experiment)) {
+    return experiment.description.toUpperCase().includes(`FANTOM`) ? `TPM` : `FPKM`
+  } else {
+    return ``
+  }
 }
 
 export {experimentPropTypes, isMultiExperiment, isDifferential, isBaseline, isRnaSeqBaseline, getUnits}

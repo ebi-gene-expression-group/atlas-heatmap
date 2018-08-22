@@ -11,37 +11,39 @@ import DataPropTypes from './jsonPayloadPropTypes.js'
 import loadChartData from '../load/main.js'
 
 const Container = (props) => {
-    const {data, outProxy, atlasUrl, isWidget} = props
-    const {geneQuery, conditionQuery, species} = data.config
+  const {data, outProxy, atlasUrl, isWidget} = props
+  const {geneQuery, conditionQuery, species} = data.config
 
-    const moreInformationUrl = data.experiment ?    // single experiment?
-        URI(data.experiment.urls.main_page, atlasUrl) :
-        URI(atlasUrl).segment(`query`).search({geneQuery, conditionQuery, species})
+  const moreInformationUrl = data.experiment ?    // single experiment?
+    URI(data.experiment.urls.main_page, atlasUrl) :
+    URI(atlasUrl).segment(`query`).search({geneQuery, conditionQuery, species})
 
-    return (
-        <div style={{width: `100%`}}>
-            { isWidget && data.experiment &&
-              <ExperimentDescription outProxy={outProxy}
-                                     experimentUrl={URI(data.experiment.urls.main_page, atlasUrl).toString()}
-                                     description={data.experiment.description} /> }
+  return (
+    <div style={{width: `100%`}}>
+      { isWidget && data.experiment &&
+      <ExperimentDescription
+        outProxy={outProxy}
+        experimentUrl={URI(data.experiment.urls.main_page, atlasUrl).toString()}
+        description={data.experiment.description} /> }
 
-            <ChartContainer chartData={loadChartData(props)} />
+      <ChartContainer chartData={loadChartData(props)} />
 
-            { isWidget &&
-              <Footer outProxy={outProxy}
-                      atlasUrl={atlasUrl}
-                      moreInformationUrl={moreInformationUrl.toString()} /> }
-        </div>
-    )
+      { isWidget &&
+      <Footer
+        outProxy={outProxy}
+        atlasUrl={atlasUrl}
+        moreInformationUrl={moreInformationUrl.toString()} /> }
+    </div>
+  )
 }
 
 Container.propTypes = {
-    inProxy: PropTypes.string.isRequired,
-    outProxy: PropTypes.string.isRequired,
-    atlasUrl: PropTypes.string.isRequired,
-    showAnatomogram: PropTypes.bool.isRequired,
-    isWidget: PropTypes.bool.isRequired,
-    data: DataPropTypes.isRequired
+  inProxy: PropTypes.string.isRequired,
+  outProxy: PropTypes.string.isRequired,
+  atlasUrl: PropTypes.string.isRequired,
+  showAnatomogram: PropTypes.bool.isRequired,
+  isWidget: PropTypes.bool.isRequired,
+  data: DataPropTypes.isRequired
 }
 
 export default Container

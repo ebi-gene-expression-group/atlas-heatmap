@@ -55,23 +55,23 @@ const ContainerLoader = (props) => {
 }
 
 ContainerLoader.propTypes = {
-    inProxy: PropTypes.string.isRequired,
-    atlasUrl: PropTypes.string.isRequired,
-    source: PropTypes.shape({
-        endpoint: PropTypes.string.isRequired,
-        params: PropTypes.object.isRequired
-    }).isRequired,
-    fail: PropTypes.func
+  inProxy: PropTypes.string.isRequired,
+  atlasUrl: PropTypes.string.isRequired,
+  source: PropTypes.shape({
+    endpoint: PropTypes.string.isRequired,
+    params: PropTypes.object.isRequired
+  }).isRequired,
+  fail: PropTypes.func
 }
 
 export default connect(props => ({
-    sourceUrlFetch: {
-        headers: {
-            //the Atlas webapp is based on Spring; given this header it'll understand the body content to be equivalent to query parameters
-            'Content-Type': "application/x-www-form-urlencoded"
-        },
-        url: props.inProxy + URI(props.source.endpoint, props.atlasUrl),
-        method: "POST", //the webapp also supports GET - we do POST in case the parameters get very large
-        body: Object.entries(props.source.params).map(p =>`${p[0]}=${typeof p[1] === 'string' ? p[1] : JSON.stringify(p[1])}`).join("&")
+  sourceUrlFetch: {
+    headers: {
+      //the Atlas webapp is based on Spring; given this header it'll understand the body content to be equivalent to query parameters
+      'Content-Type': `application/x-www-form-urlencoded`
     },
+    url: props.inProxy + URI(props.source.endpoint, props.atlasUrl),
+    method: `POST`, //the webapp also supports GET - we do POST in case the parameters get very large
+    body: Object.entries(props.source.params).map(p =>`${p[0]}=${typeof p[1] === `string` ? p[1] : JSON.stringify(p[1])}`).join(`&`)
+  },
 }))(ContainerLoader)

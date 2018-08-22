@@ -12,10 +12,11 @@ import '../controlButton.css'
 
 const _DownloadWithModal = ({showModal, onChangeShowModal, disclaimer: {title, content}, downloadOptions}) => (
   <div>
-    <Button bsSize={`small`}
-            onClick={onChangeShowModal.bind(this, true)}
-            title={`Download`}
-            className={`gxaButtonUnset`}>
+    <Button
+      bsSize={`small`}
+      onClick={onChangeShowModal.bind(this, true)}
+      title={`Download`}
+      className={`gxaButtonUnset`}>
       <Glyphicon glyph={`download`} /> Download
     </Button>
 
@@ -36,12 +37,13 @@ const _DownloadWithModal = ({showModal, onChangeShowModal, disclaimer: {title, c
         </Button>
         {
           downloadOptions.map(o => (
-            <Button key={o.description}
-                    bsStyle={`primary`}
-                    onClick={() => {
-                      o.onClick()
-                      onChangeShowModal(false)
-                    }}>
+            <Button
+              key={o.description}
+              bsStyle={`primary`}
+              onClick={() => {
+                o.onClick()
+                onChangeShowModal(false)
+              }}>
               {`Download: ${o.description}`}
             </Button>
           ))
@@ -51,7 +53,6 @@ const _DownloadWithModal = ({showModal, onChangeShowModal, disclaimer: {title, c
   </div>
 )
 
-
 const DownloadWithModal = uncontrollable(_DownloadWithModal, { showModal: `onChangeShowModal` })
 
 DownloadWithModal.defaultProps = {
@@ -59,18 +60,20 @@ DownloadWithModal.defaultProps = {
 }
 
 const SplitDownloadButton = ({downloadOptions}) => (
-  <SplitButton id={`download-button`}
-               className={`gxaButtonUnset`}
-               bsSize={`small`}
-               onClick={downloadOptions[0].onClick}
-               title={`Download`}>
+  <SplitButton
+    id={`download-button`}
+    className={`gxaButtonUnset`}
+    bsSize={`small`}
+    onClick={downloadOptions[0].onClick}
+    title={`Download`}>
     {
       downloadOptions.map((o,ix) => (
-        <MenuItem key={ix}
-                  eventKey={ix}
-                  id={o.description}
-                  onClick={o.onClick}
-                  className={`gxaButtonUnset`}>
+        <MenuItem
+          key={ix}
+          eventKey={ix}
+          id={o.description}
+          onClick={o.onClick}
+          className={`gxaButtonUnset`}>
           <Glyphicon glyph={`download-alt`}/> {o.description}
         </MenuItem>
       ))
@@ -95,8 +98,10 @@ const DownloadButton = ({currentlyShownContent, fullDatasetUrl, disclaimer}) => 
 
   return (
     disclaimer && Disclaimers[disclaimer] ?
-      <DownloadWithModal disclaimer={Disclaimers[disclaimer]}
-                         downloadOptions={downloadOptions}/> :
+      <DownloadWithModal
+        disclaimer={Disclaimers[disclaimer]}
+        downloadOptions={downloadOptions}
+      /> :
       <SplitDownloadButton downloadOptions={downloadOptions}/>
   )
 }
