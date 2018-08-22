@@ -42,9 +42,9 @@ import {
 
 
 const renderGenomeBrowsersDropdown = ({
-                                        allGenomeBrowsers,
-                                        currentGenomeBrowser,
-                                        onChangeCurrentGenomeBrowser }) => (
+  allGenomeBrowsers,
+  currentGenomeBrowser,
+  onChangeCurrentGenomeBrowser }) => (
   allGenomeBrowsers.length
     ?   <div style={{display: `inline-block`, padding: `5px`}}>
       <GenomeBrowsersDropdown
@@ -74,18 +74,18 @@ const renderOrderings = ({heatmapData,heatmapConfig,allOrderings,currentOrdering
 }
 
 const renderDownloadButton = ({
-                                heatmapConfig:{
-                                  shortDescription,
-                                  description,
-                                  disclaimer,
-                                  experiment,
-                                  atlasUrl,
-                                  outProxy
-                                },
-                                currentOrdering,
-                                allNumCoexpressions,
-                                currentNumCoexpressions}
-  ,heatmapData) => (
+  heatmapConfig:{
+    shortDescription,
+    description,
+    disclaimer,
+    experiment,
+    atlasUrl,
+    outProxy
+  },
+  currentOrdering,
+  allNumCoexpressions,
+  currentNumCoexpressions}
+,heatmapData) => (
   <div style={{display: `inline-block`, padding: `5px`}}>
     <DownloadButton
       disclaimer={disclaimer}
@@ -109,13 +109,13 @@ const renderDownloadButton = ({
 )
 
 const renderFiltersButton = ({
-                               heatmapConfig,
-                               columnGroups: {groupingNames, categories, categoryCheckboxes},
-                               currentZoom,
-                               allGroupedColumns,
-                               currentGroupedColumns,
-                               onChangeCurrentGroupedColumns
-                             }) => (
+  heatmapConfig,
+  columnGroups: {groupingNames, categories, categoryCheckboxes},
+  currentZoom,
+  allGroupedColumns,
+  currentGroupedColumns,
+  onChangeCurrentGroupedColumns
+}) => (
   heatmapConfig.isMultiExperiment &&
   <div style={{display: `inline-block`, padding: `5px`}}>
     <FiltersButton
@@ -133,9 +133,9 @@ const renderFiltersButton = ({
 const renderCoexpressionOption = ({heatmapConfig,heatmapData,allNumCoexpressions,currentNumCoexpressions,onChangeCurrentNumCoexpressions}) => (
   heatmapConfig.coexpressionsAvailable && !heatmapConfig.isWidget ?
     <CoexpressionOption geneName={heatmapData.yAxisCategories[0].label}
-                        numCoexpressionsVisible={currentNumCoexpressions}
-                        numCoexpressionsAvailable={allNumCoexpressions}
-                        showCoexpressionsCallback={onChangeCurrentNumCoexpressions}
+      numCoexpressionsVisible={currentNumCoexpressions}
+      numCoexpressionsAvailable={allNumCoexpressions}
+      showCoexpressionsCallback={onChangeCurrentNumCoexpressions}
     /> :
     null
 )
@@ -176,12 +176,12 @@ CanvasLegend.propTypes = {
 }
 
 const heatmapExtraArgs = ({
-                            heatmapData,
-                            onOntologyIdIsUnderFocus,
-                            currentGenomeBrowser,
-                            heatmapConfig,
-                            onChangeCurrentZoom,
-                            ontologyIdsToHighlight} ) => ({
+  heatmapData,
+  onOntologyIdIsUnderFocus,
+  currentGenomeBrowser,
+  heatmapConfig,
+  onChangeCurrentZoom,
+  ontologyIdsToHighlight} ) => ({
   noDataCellsColour: heatmapConfig.isMultiExperiment ? `white` : `rgb(235, 235, 235)`,
   ontologyIdsToHighlight,
   onZoom:onChangeCurrentZoom,
@@ -196,11 +196,11 @@ const heatmapExtraArgs = ({
 })
 
 const heatmapDataToPresent = ({
-                                heatmapConfig,
-                                heatmapData,
-                                currentNumCoexpressions,
-                                currentGroupedColumns,
-                                currentOrdering}) => manipulate (
+  heatmapConfig,
+  heatmapData,
+  currentNumCoexpressions,
+  currentGroupedColumns,
+  currentOrdering}) => manipulate (
   {
     keepSeries: () => true,
     keepRow: heatmapConfig.coexpressionsAvailable

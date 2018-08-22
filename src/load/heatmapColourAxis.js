@@ -23,25 +23,25 @@ const dataClassesFromSeries = dataSeries => {
       })
       .filter(series => series.data.length > 0)
       .map((series, ix, self) => {
-          const theseSeriesValuesSorted = series.data.map(point => point.value)
-          theseSeriesValuesSorted.sort((l,r) => l - r)
+        const theseSeriesValuesSorted = series.data.map(point => point.value)
+        theseSeriesValuesSorted.sort((l,r) => l - r)
 
-          return {
-            min: theseSeriesValuesSorted[0],
-            minColour:
+        return {
+          min: theseSeriesValuesSorted[0],
+          minColour:
               ix === 0 ?
                 highlightColour(Colour(self[ix].colour)) :
                 Colour(self[ix].colour).mix(Colour(self[ix-1].colour)),
-            max: theseSeriesValuesSorted[theseSeriesValuesSorted.length-1],
-            maxColour:
+          max: theseSeriesValuesSorted[theseSeriesValuesSorted.length-1],
+          maxColour:
               ix === self.length-1 ?
                 highlightColour(Colour(self[ix].colour)) :
                 Colour(self[ix].colour).mix(Colour(self[ix+1].colour)),
-            median: theseSeriesValuesSorted[Math.floor(series.data.length/2)],
-            medianColour: Colour(self[ix].colour),
-            sortedValues: theseSeriesValuesSorted
-          }
+          median: theseSeriesValuesSorted[Math.floor(series.data.length/2)],
+          medianColour: Colour(self[ix].colour),
+          sortedValues: theseSeriesValuesSorted
         }
+      }
       )
 
   const needToSplit = x =>

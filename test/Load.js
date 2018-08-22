@@ -26,9 +26,9 @@ describe(`Experiment page baseline one gene with coexpressions`, function() {
       let result = subject(config, data.actual)
       assert.deepEqual(
         [].concat.apply([],result.heatmapData.dataSeries.map((series)=>series.data))
-        .map((point)=>point.info.index)
-        .filter((el,ix,self)=>self.indexOf(el)===ix)
-        .length
+          .map((point)=>point.info.index)
+          .filter((el,ix,self)=>self.indexOf(el)===ix)
+          .length
         ,50
       )
     })

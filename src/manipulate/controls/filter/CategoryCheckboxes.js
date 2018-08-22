@@ -35,11 +35,12 @@ class Checkbox extends Component {
 
     return (
       <div className="checkbox" style={{float: `left`}}>
-        <input type={`checkbox`}
-               value={label}
-               checked={actualValue}
-               onChange={this.toggleCheckboxChange.bind(this)}
-               ref={checkbox => {checkbox ? checkbox.indeterminate = indeterminate : null}}
+        <input
+          type={`checkbox`}
+          value={label}
+          checked={actualValue}
+          onChange={this.toggleCheckboxChange.bind(this)}
+          ref={checkbox => {checkbox ? checkbox.indeterminate = indeterminate : null}}
         />
 
         <label>{label}</label>
@@ -205,12 +206,13 @@ class CategoryCheckboxes extends React.Component {
     const indeterminateValue = indeterminates.includes(label)
 
     return (
-      <Checkbox key={label}
-                label={label}
-                value={value}
-                actualValue={value}
-                indeterminate={indeterminateValue}
-                handleCheckboxChange={this.toggleCheckbox}
+      <Checkbox
+        key={label}
+        label={label}
+        value={value}
+        actualValue={value}
+        indeterminate={indeterminateValue}
+        handleCheckboxChange={this.toggleCheckbox}
       />
     )
   }

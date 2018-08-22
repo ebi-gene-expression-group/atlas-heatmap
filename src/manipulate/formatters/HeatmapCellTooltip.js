@@ -9,14 +9,14 @@ const roundTStat = (n) => (n ? +n.toFixed(4) : ``)
 const _tinySquare= (colour) => {
   return (
     <span key={`Tiny ${colour} square`}
-          style={{
-            border: `1px rgb(192, 192, 192) solid`,
-            marginRight: `0.25rem`,
-            width: `0.6rem`,
-            height: `0.6rem`,
-            display: `inline-block`,
-            backgroundColor: colour
-          }}
+      style={{
+        border: `1px rgb(192, 192, 192) solid`,
+        marginRight: `0.25rem`,
+        width: `0.6rem`,
+        height: `0.6rem`,
+        display: `inline-block`,
+        backgroundColor: colour
+      }}
     />
   )
 }

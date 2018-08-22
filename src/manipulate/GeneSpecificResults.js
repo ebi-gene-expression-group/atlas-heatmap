@@ -57,16 +57,16 @@ const QuietLoader = ({sourceUrlFetch, keepOnlyTheseColumnIds}) => (
   sourceUrlFetch.pending
     ? noData()
     : sourceUrlFetch.rejected
-    ? noData(sourceUrlFetch)
-    : !sourceUrlFetch.fulfilled
       ? noData(sourceUrlFetch)
-      : sourceUrlFetch.value.error
-        ? noData(sourceUrlFetch.value.error)
-        : (!sourceUrlFetch.value.geneExpression && !sourceUrlFetch.value.transcriptExpression)
-          ? noData(sourceUrlFetch.value)
-          : (
-            <div>
-              { sourceUrlFetch.value.geneExpression &&
+      : !sourceUrlFetch.fulfilled
+        ? noData(sourceUrlFetch)
+        : sourceUrlFetch.value.error
+          ? noData(sourceUrlFetch.value.error)
+          : (!sourceUrlFetch.value.geneExpression && !sourceUrlFetch.value.transcriptExpression)
+            ? noData(sourceUrlFetch.value)
+            : (
+              <div>
+                { sourceUrlFetch.value.geneExpression &&
               makeBoxplot(
                 getGeneNameOrId(sourceUrlFetch.value.geneExpression.rows[0]),
                 tryCreateBoxplotData(
@@ -75,16 +75,16 @@ const QuietLoader = ({sourceUrlFetch, keepOnlyTheseColumnIds}) => (
                     columnHeaders: sourceUrlFetch.value.columnHeaders
                   }),
                 sourceUrlFetch.value.config)
-              }
-              { sourceUrlFetch.value.transcriptExpression &&
+                }
+                { sourceUrlFetch.value.transcriptExpression &&
               <Transcripts {... sourceUrlFetch.value.transcriptExpression}
-                           keepOnlyTheseColumnIds = {keepOnlyTheseColumnIds}
-                           columnHeaders = {sourceUrlFetch.value.columnHeaders}
-                           config = {sourceUrlFetch.value.config}
-                           titleSuffix = {getGeneNameOrId(sourceUrlFetch.value.geneExpression.rows[0])} />
-              }
-            </div>
-          )
+                keepOnlyTheseColumnIds = {keepOnlyTheseColumnIds}
+                columnHeaders = {sourceUrlFetch.value.columnHeaders}
+                config = {sourceUrlFetch.value.config}
+                titleSuffix = {getGeneNameOrId(sourceUrlFetch.value.geneExpression.rows[0])} />
+                }
+              </div>
+            )
 )
 
 export default connect(props => ({

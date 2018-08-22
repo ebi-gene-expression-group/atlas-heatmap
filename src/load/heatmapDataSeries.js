@@ -12,18 +12,18 @@ const buildHeatMapDataPointFromExpression = ({rowInfo, rowIndex, expression, exp
       info: rowInfo
     }
     : expression.hasOwnProperty(`foldChange`)
-    ? {
-      x: expressionIndex,
-      y: rowIndex,
-      value: expression.foldChange,
-      info: {
-        pValue: expression.pValue,
-        foldChange: expression.foldChange,
-        tStat: expression.tStat,
-        ...rowInfo
+      ? {
+        x: expressionIndex,
+        y: rowIndex,
+        value: expression.foldChange,
+        info: {
+          pValue: expression.pValue,
+          foldChange: expression.foldChange,
+          tStat: expression.tStat,
+          ...rowInfo
+        }
       }
-    }
-    : null
+      : null
 )
 
 const buildDataPointsFromRowExpressions = ({rowInfo, row: {expressions}, rowIndex}) => (
@@ -88,7 +88,7 @@ const _splitDataSetByProportion = (data, names, colours) => {
         .map(point =>
           [ Math.floor(
             _.sortedIndex(sortedValues, point.value) / howManyPointsInTotal * howManyDataSetsToSplitIn),
-            point ]
+          point ]
         )
     ).value()
   )

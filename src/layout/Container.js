@@ -21,16 +21,18 @@ const Container = (props) => {
   return (
     <div style={{width: `100%`}}>
       { isWidget && data.experiment &&
-      <ExperimentDescription outProxy={outProxy}
-                             experimentUrl={URI(data.experiment.urls.main_page, atlasUrl).toString()}
-                             description={data.experiment.description} /> }
+      <ExperimentDescription
+        outProxy={outProxy}
+        experimentUrl={URI(data.experiment.urls.main_page, atlasUrl).toString()}
+        description={data.experiment.description} /> }
 
       <ChartContainer chartData={loadChartData(props)} />
 
       { isWidget &&
-      <Footer outProxy={outProxy}
-              atlasUrl={atlasUrl}
-              moreInformationUrl={moreInformationUrl.toString()} /> }
+      <Footer
+        outProxy={outProxy}
+        atlasUrl={atlasUrl}
+        moreInformationUrl={moreInformationUrl.toString()} /> }
     </div>
   )
 }

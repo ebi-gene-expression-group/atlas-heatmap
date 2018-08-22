@@ -6,13 +6,13 @@ import './Filter.css'
 import uncontrollable from 'uncontrollable'
 
 const _FilterOption = ({
-                         name,
-                         allValues,
-                         currentValues,
-                         isOpen,
-                         onChangeIsOpen,
-                         onChangeCurrentValues
-                       }) => {
+  name,
+  allValues,
+  currentValues,
+  isOpen,
+  onChangeIsOpen,
+  onChangeCurrentValues
+}) => {
   const allChecked = allValues.every(v => currentValues.includes(v))
   const allUnchecked = allValues.every(v => !currentValues.includes(v))
 
@@ -20,17 +20,17 @@ const _FilterOption = ({
   return (
     <div>
       <input type={`checkbox`}
-             style={{margin: `10px 0 0 `}}
-             value={name}
-             onChange={
-               onChangeCurrentValues.bind(this, xor(allValues, currentValues).length ? allValues: [])
-             }
-             checked={allChecked}
-             ref={checkbox => {checkbox ? checkbox.indeterminate = !allChecked && !allUnchecked : null}} />
+        style={{margin: `10px 0 0 `}}
+        value={name}
+        onChange={
+          onChangeCurrentValues.bind(this, xor(allValues, currentValues).length ? allValues: [])
+        }
+        checked={allChecked}
+        ref={checkbox => {checkbox ? checkbox.indeterminate = !allChecked && !allUnchecked : null}} />
 
       <div onClick={openable ? onChangeIsOpen.bind(this, !isOpen) : () => {}}
-           href={`#`}
-           className={`gxaCapitalize gxaInline gxaPaddingLeftSmall`}>{name}
+        href={`#`}
+        className={`gxaCapitalize gxaInline gxaPaddingLeftSmall`}>{name}
         {openable && <Glyphicon style={{fontSize: `x-small`, paddingLeft: `5px`}} glyph={isOpen ? `menu-up` : `menu-down`}/>}
       </div>
 
@@ -39,10 +39,10 @@ const _FilterOption = ({
         {allValues.map(value => (
           <div key={value} style={{marginLeft: `20px`, fontSize: `smaller`}}>
             <input type={`checkbox`}
-                   value={value}
-                   onChange={onChangeCurrentValues.bind(this, xor([value], currentValues))}
-                   checked={currentValues.includes(value)}
-                   style={{margin: `0`}}/>
+              value={value}
+              onChange={onChangeCurrentValues.bind(this, xor([value], currentValues))}
+              checked={currentValues.includes(value)}
+              style={{margin: `0`}}/>
             <span> {value}</span>
           </div>
         ))}

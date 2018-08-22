@@ -18,10 +18,10 @@ class GenomeBrowsersDropdown extends React.Component {
 
   _genomeBrowserIcon(genomeBrowser) {
     switch (genomeBrowser) {
-      case `none`:
-        return `eye-close`
-      default:
-        return `eye-open`
+    case `none`:
+      return `eye-close`
+    default:
+      return `eye-open`
     }
   }
 
@@ -41,11 +41,11 @@ class GenomeBrowsersDropdown extends React.Component {
     return (
       <div>
         <Dropdown id="genome-browsers-dropdown"
-                  onSelect={(key, e) => this.handleChange(key, e)}
-                  title={`Choose genome browser`}>
+          onSelect={(key, e) => this.handleChange(key, e)}
+          title={`Choose genome browser`}>
 
           <Dropdown.Toggle bsSize="small"
-                           className={`gxaButtonUnset`}>
+            className={`gxaButtonUnset`}>
             <Glyphicon glyph={this._genomeBrowserIcon(this.props.selected)}/>
             &nbsp;{genomeBrowsers.find(gb => this.props.selected === gb.id).label}
           </Dropdown.Toggle>

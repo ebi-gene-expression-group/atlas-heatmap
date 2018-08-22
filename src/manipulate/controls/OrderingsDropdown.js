@@ -15,25 +15,27 @@ const callWithEventTargetText = (f) => (
 
 const orderingIcon = (ordering) => {
   switch (ordering) {
-    case `Alphabetical order`:
-      return `sort-by-alphabet`
-    case `Expression rank`:
-      return `sort-by-attributes-alt`
-    case `By experiment type`:
-      return `sort-by-order`
-    default:
-      return `sort-by-order`
+  case `Alphabetical order`:
+    return `sort-by-alphabet`
+  case `Expression rank`:
+    return `sort-by-attributes-alt`
+  case `By experiment type`:
+    return `sort-by-order`
+  default:
+    return `sort-by-order`
   }
 }
 
 const OrderingsDropdown = ({allOptions,currentOption,onChangeCurrentOption,title,disabled}) => (
   <div>
-    <Dropdown id="orderings-dropdown"
-              onSelect={callWithEventTargetText(onChangeCurrentOption)}
-              {...{title,disabled}}>
+    <Dropdown
+      id="orderings-dropdown"
+      onSelect={callWithEventTargetText(onChangeCurrentOption)}
+      {...{title,disabled}}>
 
-      <Dropdown.Toggle bsSize="small"
-                       className={`gxaButtonUnset`}>
+      <Dropdown.Toggle
+        bsSize="small"
+        className={`gxaButtonUnset`}>
         <Glyphicon glyph={orderingIcon(currentOption)} />
         {currentOption}
       </Dropdown.Toggle>

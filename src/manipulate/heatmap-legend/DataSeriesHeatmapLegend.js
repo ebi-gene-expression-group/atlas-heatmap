@@ -21,15 +21,17 @@ const DataSeriesHeatmapLegend = props =>
     {props.legendItems.map(legendItemProps => <DataSeriesHeatmapLegendBox {...legendItemProps} />)}
 
     <div className="legend-item">
-            <span className="icon icon-generic gxaInfoIcon"
-                  data-icon="i" data-toggle="tooltip" data-placement="bottom"
-                  title={props.title}/>
+      <span
+        className="icon icon-generic gxaInfoIcon"
+        data-icon="i" data-toggle="tooltip" data-placement="bottom"
+        title={props.title}/>
     </div>
 
-    <DataSeriesHeatmapLegendBox key={props.missingValueLabel}
-                                name={props.missingValueLabel}
-                                colour={props.missingValueColour}
-                                on={true}
+    <DataSeriesHeatmapLegendBox
+      key={props.missingValueLabel}
+      name={props.missingValueLabel}
+      colour={props.missingValueColour}
+      on={true}
     />
   </div>
 

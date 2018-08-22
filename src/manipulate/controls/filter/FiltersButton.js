@@ -21,16 +21,17 @@ const navTabs = (className) => (
     const _style = className === `pills` ? {fontSize: `medium`, float: `right`} : {fontSize: `medium`}
     const classStyle = className === `pills` ? `columns small-2 gxa-nav` : `gxa-nav`
     return (
-      <Nav bsClass={classStyle}
-           bsStyle={className}
-           activeKey={currentTab}
-           onSelect={onChangeCurrentTab}
-           style={_style}>
+      <Nav
+        bsClass={classStyle}
+        bsStyle={className}
+        activeKey={currentTab}
+        onSelect={onChangeCurrentTab}
+        style={_style}>
         {
           allTabs.map((tab) => (
             <NavItem eventKey={tab}
-                     key={tab}
-                     disabled={disabledTabs.includes(tab)}>
+              key={tab}
+              disabled={disabledTabs.includes(tab)}>
               {tab}
             </NavItem>
           ))
@@ -45,21 +46,21 @@ const topRibbonTabs = navTabs(`tabs`)
 const categoryTabs = navTabs(`pills`)
 
 const _FiltersModal = ({
-                         showModal,
-                         onCloseModal,
-                         tabNames: allTopTabs,
-                         currentTopTab,
-                         onChangeCurrentTopTab,
-                         categories,
-                         categoryCheckboxes,
-                         currentValues,
-                         allValues,
-                         onChangeCurrentValues
-                       }) => (
+  showModal,
+  onCloseModal,
+  tabNames: allTopTabs,
+  currentTopTab,
+  onChangeCurrentTopTab,
+  categories,
+  categoryCheckboxes,
+  currentValues,
+  allValues,
+  onChangeCurrentValues
+}) => (
   <Modal show={showModal}
-         onHide={onCloseModal}
-         bsSize={`large`}
-         style={{opacity: 0.95}} >
+    onHide={onCloseModal}
+    bsSize={`large`}
+    style={{opacity: 0.95}} >
     <Modal.Header closeButton>
       {allTopTabs.length > 1
         ? topRibbonTabs({allTabs: allTopTabs, currentTab: currentTopTab, onChangeCurrentTab: onChangeCurrentTopTab})
@@ -70,12 +71,12 @@ const _FiltersModal = ({
     <Modal.Body >
       <div className={`row`}>
         <CategoryCheckboxes categories={categoryCheckboxes}
-                            allValues={allValues}
-                            currentValues={currentValues}
-                            currentTab={(categories.find(category => allValues.every(value=> (
-                              currentValues.some(currentValue => currentValue.value === value.value) === value.categories.includes(category.name)
-                            )) && !category.disabled) || {name: ``}).name}
-                            onChangeCurrentValues={onChangeCurrentValues}
+          allValues={allValues}
+          currentValues={currentValues}
+          currentTab={(categories.find(category => allValues.every(value=> (
+            currentValues.some(currentValue => currentValue.value === value.value) === value.categories.includes(category.name)
+          )) && !category.disabled) || {name: ``}).name}
+          onChangeCurrentValues={onChangeCurrentValues}
         />
 
         {
@@ -128,7 +129,7 @@ const _FiltersModal = ({
 
     <Modal.Footer>
       <Button onClick={onCloseModal}
-              className={`gxaButtonUnset`}>
+        className={`gxaButtonUnset`}>
         Close
       </Button>
     </Modal.Footer>
@@ -141,10 +142,10 @@ const FiltersModal = uncontrollable(_FiltersModal, {
 
 const FiltersButton = ({disabled,onClickButton}) => (
   <Button bsSize={`small`}
-          onClick={onClickButton}
-          disabled={disabled}
-          title={disabled ? `Reset zoom to enable filters` : ``}
-          className={`gxaButtonUnset`}>
+    onClick={onClickButton}
+    disabled={disabled}
+    title={disabled ? `Reset zoom to enable filters` : ``}
+    className={`gxaButtonUnset`}>
     <Glyphicon glyph={`equalizer`}/><span style={{verticalAlign: `middle`}}> Filters</span>
   </Button>
 )
