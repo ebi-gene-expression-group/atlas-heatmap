@@ -1,12 +1,9 @@
 import React from 'react'
-import { connect } from 'react-refetch'
-
 import ReactHighcharts from 'react-highcharts'
 import HighchartsMore from 'highcharts/highcharts-more'
 HighchartsMore(ReactHighcharts.Highcharts)
 
-import Color from 'color'
-import {unzip, sortBy, groupBy, sum, meanBy} from 'lodash'
+import {sortBy, sum, meanBy} from 'lodash'
 import {groupIntoPairs} from '../utils.js'
 
 import Legend from '../manipulate/heatmap-legend/DataSeriesHeatmapLegend'
@@ -146,11 +143,11 @@ const expressionPlotConfig = ({titleSuffix, xAxisCategories, config: {cutoff}, d
 
     const boxPlotDataSeries = ({rows}) =>
     rows.map(
-      ({id, name, expressions}, rowIndex, self) => ({
+      ({id, expressions}, rowIndex, self) => ({
         name: id,
         color: colorForSeries(rowIndex, self.length),
         data: expressions.map(
-          ({values, stats}) =>
+          ({stats}) =>
           (stats ? [stats.min, stats.lower_quartile, stats.median, stats.upper_quartile, stats.max] : [])
         )
       })
@@ -158,7 +155,7 @@ const expressionPlotConfig = ({titleSuffix, xAxisCategories, config: {cutoff}, d
 
     const scatterDataSeries = ({rows}) =>
     rows.map(
-      ({id, name, expressions}, rowIndex, self) => ({
+      ({id, expressions}, rowIndex, self) => ({
         type: `scatter`,
         name: `${id}${SUFFIX}`,
         color: colorForSeries(rowIndex, self.length),
@@ -166,7 +163,7 @@ const expressionPlotConfig = ({titleSuffix, xAxisCategories, config: {cutoff}, d
         [].concat.apply(
           [],
           expressions.map(
-            ({values, stats}, ix) =>
+            ({values}, ix) =>
             (values ?
               values.filter(({value}) => value > 0).map(({value, id, assays}) => ({
                 x: ix,
@@ -345,7 +342,7 @@ const expressionPlotConfig = ({titleSuffix, xAxisCategories, config: {cutoff}, d
                     x => ({
                       ...x,
                       fractionOfExpression: x.value ? x.value / total : 0,
-                      isDominant: x.value == topValue && topTranscriptIsDominant
+                      isDominant: x.value === topValue && topTranscriptIsDominant
                     })
                   )
                 )
@@ -359,7 +356,6 @@ const expressionPlotConfig = ({titleSuffix, xAxisCategories, config: {cutoff}, d
             groupIntoPairs(expressionFractionsPerReplicate,o => o.x)
             .map(
               a => {
-                const x = a[0]
                 const allReplicatesForThisAssayGroup =
                 a[1].map(e => e.replicate).filter((e, ix, self) => self.indexOf(e) === ix).sort()
 
@@ -369,7 +365,7 @@ const expressionPlotConfig = ({titleSuffix, xAxisCategories, config: {cutoff}, d
                     y: aa[0],
                     series: assignDataSeries(aa[1]),
                     info: allReplicatesForThisAssayGroup.map(replicate => (
-                      aa[1].find(e => e.replicate == replicate) || {
+                      aa[1].find(e => e.replicate === replicate) || {
                         replicate: replicate,
                         isDominant:false,
                         value: 0,
@@ -409,7 +405,7 @@ const expressionPlotConfig = ({titleSuffix, xAxisCategories, config: {cutoff}, d
                 )
               }
 
-              const Transcripts = ({keepOnlyTheseColumnIds, columnHeaders, rows, display, config, titleSuffix}) => {
+              const Transcripts = ({keepOnlyTheseColumnIds, columnHeaders, rows, config, titleSuffix}) => {
                 const ixs =
                   columnHeaders
                     .map((e,ix) => [e, ix])

@@ -2,8 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import ReactGA from 'react-ga'
 
-import URI from 'urijs'
-
 import ContainerLoader from './layout/ContainerLoader.js'
 
 /**
@@ -28,62 +26,62 @@ import ContainerLoader from './layout/ContainerLoader.js'
  * @param {string}                              options.query.source
  */
 const DEFAULT_OPTIONS = {
-    showAnatomogram: true,
-    isWidget: true,
-    disableGoogleAnalytics: false,
-    showControlMenu: true,
-    atlasUrl: `https://www.ebi.ac.uk/gxa/`,
-    inProxy: ``,
-    outProxy: ``,
-    experiment: ``
+  showAnatomogram: true,
+  isWidget: true,
+  disableGoogleAnalytics: false,
+  showControlMenu: true,
+  atlasUrl: `https://www.ebi.ac.uk/gxa/`,
+  inProxy: ``,
+  outProxy: ``,
+  experiment: ``
 }
 const ExpressionAtlasHeatmap = options => (
-    // The wrapping div is important to determine the width of the heatmap and know if the labels are going to be
-    // rotated, so that we can set sensible margin sizes. See HeatmapCanvas.js
-    <div className={`gxaHeatmapContainer`}>
-        <ContainerLoader
-            {...DEFAULT_OPTIONS}
-            {...options}
-            source={
-                typeof options.query == 'string'
-                ? {
-                    endpoint: options.query,
-                    params: {}
-                }
-                : {
-                    endpoint: resolveEndpoint(options.experiment),
-                    //the webapp wants "geneQuery" and "conditionQuery" as parameters but in the API offering query.gene and query.condition felt nicer
-                    params: Object.entries(options.query).map(p => ["gene", "condition"].includes(p[0]) ? [p[0]+"Query", p[1]]: p).reduce((acc,o)=>{ acc[o[0]]=o[1]; return acc}, {})
-                }} />
-    </div>
+  // The wrapping div is important to determine the width of the heatmap and know if the labels are going to be
+  // rotated, so that we can set sensible margin sizes. See HeatmapCanvas.js
+  <div className={`gxaHeatmapContainer`}>
+    <ContainerLoader
+      {...DEFAULT_OPTIONS}
+      {...options}
+      source={
+        typeof options.query === `string`
+          ? {
+            endpoint: options.query,
+            params: {}
+          }
+          : {
+            endpoint: resolveEndpoint(options.experiment),
+            //the webapp wants "geneQuery" and "conditionQuery" as parameters but in the API offering query.gene and query.condition felt nicer
+            params: Object.entries(options.query).map(p => [`gene`, `condition`].includes(p[0]) ? [p[0]+`Query`, p[1]]: p).reduce((acc,o)=>{ acc[o[0]]=o[1]; return acc}, {})
+          }} />
+  </div>
 )
 
 const render = options => {
-    const { disableGoogleAnalytics = false, render = () => {}, target } = options
+  const { disableGoogleAnalytics = false, render = () => {}, target } = options
 
-    ReactDOM.render(
-        <ExpressionAtlasHeatmap {...options} />,
-        typeof target === `string` ? document.getElementById(target) : target,
-        render)
+  ReactDOM.render(
+    <ExpressionAtlasHeatmap {...options} />,
+    typeof target === `string` ? document.getElementById(target) : target,
+    render)
 
-    if (!disableGoogleAnalytics) {
-      ReactGA.initialize(`UA-37676851-1`, {
-          gaOptions: {
-              name: 'atlas-highcharts-widget'
-          }
-      })
-      ReactGA.pageview(window.location.pathname)
-    }
+  if (!disableGoogleAnalytics) {
+    ReactGA.initialize(`UA-37676851-1`, {
+      gaOptions: {
+        name: `atlas-highcharts-widget`
+      }
+    })
+    ReactGA.pageview(window.location.pathname)
+  }
 }
 
 function resolveEndpoint(experiment) {
-    return (
-        !experiment ?
-            `json/baseline_experiments` :
-            experiment === `reference` ?
-                `json/baseline_refexperiment` :
-                `json/experiments/${experiment}`
-    )
+  return (
+    !experiment ?
+      `json/baseline_experiments` :
+      experiment === `reference` ?
+        `json/baseline_refexperiment` :
+        `json/experiments/${experiment}`
+  )
 }
 
 export {ExpressionAtlasHeatmap as default, render}

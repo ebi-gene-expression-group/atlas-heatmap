@@ -68,10 +68,10 @@ export default connect(props => ({
     sourceUrlFetch: {
         headers: {
             //the Atlas webapp is based on Spring; given this header it'll understand the body content to be equivalent to query parameters
-            'Content-Type': "application/x-www-form-urlencoded"
+            'Content-Type': `application/x-www-form-urlencoded`
         },
         url: props.inProxy + URI(props.source.endpoint, props.atlasUrl),
-        method: "POST", //the webapp also supports GET - we do POST in case the parameters get very large
-        body: Object.entries(props.source.params).map(p =>`${p[0]}=${typeof p[1] === 'string' ? p[1] : JSON.stringify(p[1])}`).join("&")
+        method: `POST`, //the webapp also supports GET - we do POST in case the parameters get very large
+        body: Object.entries(props.source.params).map(p =>`${p[0]}=${typeof p[1] === `string` ? p[1] : JSON.stringify(p[1])}`).join(`&`)
     },
 }))(ContainerLoader)

@@ -51,7 +51,6 @@ const _DownloadWithModal = ({showModal, onChangeShowModal, disclaimer: {title, c
   </div>
 )
 
-
 const DownloadWithModal = uncontrollable(_DownloadWithModal, { showModal: `onChangeShowModal` })
 
 DownloadWithModal.defaultProps = {

@@ -109,7 +109,7 @@ class HeatmapCanvas extends React.Component {
 
   _getHeight(marginBottom) {
     const rowCount = this.props.heatmapData.yAxisCategories.length
-    return rowCount * 40 + this._getMarginTop() + marginBottom;
+    return rowCount * 40 + this._getMarginTop() + marginBottom
   }
 
   render() {
@@ -208,7 +208,7 @@ class HeatmapCanvas extends React.Component {
           }
         },
 
-        opposite: 'true',
+        opposite: `true`,
         categories: this.props.heatmapData.xAxisCategories,
         min: 0,
         max: this._countColumns() - 1,

@@ -1,6 +1,6 @@
 // Taken from http://jsfiddle.net/gh/get/library/pure/highcharts/highcharts/tree/master/samples/highcharts/yaxis/type-log-negative/
 export default (H) => {
-  H.Axis.prototype.allowNegativeLog = true;
+  H.Axis.prototype.allowNegativeLog = true
 
   // Override conversions
   H.Axis.prototype.log2lin = (num) => {
