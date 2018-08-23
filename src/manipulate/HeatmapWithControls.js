@@ -104,6 +104,7 @@ const renderDownloadButton = ({
                 ? outProxy+URI(experiment.urls.download, atlasUrl).toString()
                 : ""
             }
+            experiment = {experiment}
         />
     </div>
 )

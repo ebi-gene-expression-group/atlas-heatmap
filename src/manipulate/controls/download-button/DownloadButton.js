@@ -79,7 +79,8 @@ const SplitDownloadButton = ({downloadOptions}) => (
 )
 
 
-const DownloadButton = ({currentlyShownContent, fullDatasetUrl, disclaimer}) => {
+const DownloadButton = ({currentlyShownContent, fullDatasetUrl, disclaimer, experiment}) => {
+  
   const downloadOptions = [].concat(
     fullDatasetUrl ?
       [{
@@ -88,8 +89,8 @@ const DownloadButton = ({currentlyShownContent, fullDatasetUrl, disclaimer}) => 
       }] :
       [],
     [{
-      onClick: () => ClientSideDownload(currentlyShownContent),
-      description : `Table content`
+      onClick: () => ClientSideDownload(currentlyShownContent,experiment),
+      description : `Tabel content`
     }]
   )
 
