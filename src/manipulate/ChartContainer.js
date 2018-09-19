@@ -33,7 +33,7 @@ class ChartContainer extends React.Component {
                   </a>
               }
               <div style={{display: this.state.chartType === `heatmap` ? `block` : `none`, width: `100%`}} >
-                <Heatmap {...this.props.chartData} />
+                <Heatmap {...this.props.chartData} geneQueryIDList={this.props.geneQueryIDList}/>
               </div>
               { this.props.chartData.geneSpecificResults &&
                 <div style={{display: this.state.chartType === `boxplot and transcripts` ? `block` : `none`, width: `100%`}} >
