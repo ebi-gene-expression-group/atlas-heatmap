@@ -12,8 +12,7 @@ const dataClassesFromSeries = dataSeries => {
                 return (
                     series.data.length === 0 && series.info.name === `Below cutoff` ?
                         {
-                            //data: [{value: 0.0}],
-                            data: series.data,
+                            data: [{value: 0.0}],
                             colour: series.info.colour
                         } :
                         {
