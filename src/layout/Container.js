@@ -13,6 +13,8 @@ import loadChartData from '../load/main.js'
 const Container = (props) => {
     const {data, outProxy, atlasUrl, isWidget} = props
     const {geneQuery, conditionQuery, species} = data.config
+    //make a geneID list for download button and not include category due to missing information but it will still work
+    const geneQueryIDList = data.profiles.rows.map(gene => ({"value":gene.name}));
 
     const moreInformationUrl = data.experiment ?    // single experiment?
         URI(data.experiment.urls.main_page, atlasUrl) :
@@ -25,7 +27,7 @@ const Container = (props) => {
                                      experimentUrl={URI(data.experiment.urls.main_page, atlasUrl).toString()}
                                      description={data.experiment.description} /> }
 
-            <ChartContainer chartData={loadChartData(props)} />
+            <ChartContainer chartData={loadChartData(props)} geneQueryIDList={geneQueryIDList} />
 
             { isWidget &&
               <Footer outProxy={outProxy}
