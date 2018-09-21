@@ -4,7 +4,6 @@ import {MenuItem, Glyphicon, SplitButton, Button, Modal} from 'react-bootstrap/l
 
 import uncontrollable from 'uncontrollable'
 import Disclaimers from 'expression-atlas-disclaimers'
-import ClientSideDownload from './Download.js'
 import URI from 'urijs'
 
 import {heatmapDataPropTypes} from '../../../manipulate/chartDataPropTypes.js'
