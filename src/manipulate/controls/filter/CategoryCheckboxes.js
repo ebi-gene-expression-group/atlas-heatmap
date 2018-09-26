@@ -212,7 +212,7 @@ class CategoryCheckboxes extends React.Component {
         value={value}
         actualValue={value}
         indeterminate={indeterminateValue}
-        handleCheckboxChange={this.toggleCheckbox}
+        handleCheckboxChange={this.toggleCheckbox.bind(this)}
       />
     )
   }
