@@ -8,7 +8,7 @@ class Checkbox extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      isChecked: this.props.value
+      isChecked: props.value
     }
   }
 
@@ -212,7 +212,7 @@ class CategoryCheckboxes extends React.Component {
         value={value}
         actualValue={value}
         indeterminate={indeterminateValue}
-        handleCheckboxChange={this.toggleCheckbox}
+        handleCheckboxChange={this.toggleCheckbox.bind(this)}
       />
     )
   }
