@@ -24,8 +24,8 @@ module.exports = {
       cacheGroups: {
         commons: {
           test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          chunks: 'all'
+          name: `vendors`,
+          chunks: `all`
         }
       }
     }
@@ -42,11 +42,11 @@ module.exports = {
         test: /\.(jpe?g|png|gif)$/i,
         use: [
           {
-            loader: 'file-loader',
-            options: { query: { name: '[hash].[ext]', hash: 'sha512', digest: 'hex' } }
+            loader: `file-loader`,
+            options: { query: { name: `[hash].[ext]`, hash: `sha512`, digest: `hex` } }
           },
           {
-            loader: 'image-webpack-loader',
+            loader: `image-webpack-loader`,
             options: {
               query: {
                 bypassOnDebug: true,
@@ -62,8 +62,8 @@ module.exports = {
         test: /\.(svg)$/i,
         use: [
           {
-            loader: 'file-loader',
-            options: { query: { name: '[hash].[ext]', hash: 'sha512', digest: 'hex' } }
+            loader: `file-loader`,
+            options: { query: { name: `[hash].[ext]`, hash: `sha512`, digest: `hex` } }
           }
         ]
       },
