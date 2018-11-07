@@ -1,6 +1,6 @@
 {
   "name": "expression-atlas-heatmap-highcharts",
-  "version": "4.4.4",
+  "version": "5.0.0-beta",
   "description": "Expression Atlas Highcharts heatmap and boxplot of baseline and differential expression experiments from the Expression Atlas project (https://www.ebi.ac.uk/gxa)",
   "main": "lib/Main.js",
   "license": "Apache-2.0",
