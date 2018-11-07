@@ -307,7 +307,9 @@ class _HeatmapWithControls extends React.Component {
     const heatmapData= heatmapDataToPresent(args)
     const anatomogramArgs = this.props.anatomogramConfig.show
       ? {
-        atlasUrl: this.props.anatomogramConfig.atlasUrl,
+        atlasUrl: process.env.NODE_ENV === `development` ?
+          `` :  // In development mode we load assets from Webpack’s output.publicPath
+          this.props.anatomogramConfig.atlasUrl,
         species: this.props.anatomogramConfig.anatomogramData.species,
         showIds: heatmapData.xAxisCategories.map(e => e.id),
         highlightIds: heatmapData.xAxisCategories.map(e => e.id).filter(id => this.state.highlightIds.includes(id)),
