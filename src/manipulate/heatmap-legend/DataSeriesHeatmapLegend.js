@@ -1,13 +1,37 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
 
-import './DataSeriesHeatmapLegend.css'
+const LegendItem = styled.div`
+  display: inline-block;
+  margin-left: 8px;
+  padding: 4px;
+  vertical-align: middle;
+  cursor: default;
+  ${props => !props.on && `
+    color: #ccc;
+  `}
+`
 
-const DataSeriesHeatmapLegendBox = props =>
-  <div className={`legend-item${props.on ? `` : ` legend-item-off`}`}>
-    <div style={{background: props.colour}} className="legend-rectangle"/>
-    <span style={{verticalAlign: `middle`}}>{props.name}</span>
-  </div>
+const LegendRectangle = styled.div `
+  width: 12px;
+  height: 12px;
+  border: 1px rgba(0, 0, 0, 0.2) solid;
+  display: inline-block;
+  margin-right: 4px;
+  vertical-align: middle;
+  background: ${(props) => props.background};
+`
+
+const VerticallyAlignedSpan = styled.span`
+  vertical-align: middle;
+`
+
+const DataSeriesHeatmapLegendBox = (props) =>
+  <LegendItem on={props.on}>
+    <LegendRectangle background={props.colour} on={props.on} />
+    <VerticallyAlignedSpan>{props.name}</VerticallyAlignedSpan>
+  </LegendItem>
 
 DataSeriesHeatmapLegendBox.propTypes = {
   name: PropTypes.string.isRequired,
@@ -16,16 +40,31 @@ DataSeriesHeatmapLegendBox.propTypes = {
 }
 
 
-const DataSeriesHeatmapLegend = props =>
-  <div className="gxaHeatmapLegend" style={{textAlign:`right`}}>
+const HeatmapLegendContainer = styled.div`
+  color: #606060;
+  border: 0 solid olive;
+  text-align: right;
+`
+
+const InfoIcon = styled.span`
+  ::before {
+    font-family: 'EBI-Generic', 'sans-serif';
+    font-size: 180%;
+    color: #7e7e7e;
+    content: attr(data-icon);
+    margin: 0 0 0 0;
+  }
+`
+
+const DataSeriesHeatmapLegend = (props) =>
+  <HeatmapLegendContainer>
     {props.legendItems.map(legendItemProps => <DataSeriesHeatmapLegendBox {...legendItemProps} />)}
 
-    <div className="legend-item">
-      <span
-        className="icon icon-generic gxaInfoIcon"
+    <LegendItem>
+      <InfoIcon
         data-icon="i" data-toggle="tooltip" data-placement="bottom"
         title={props.title}/>
-    </div>
+    </LegendItem>
 
     <DataSeriesHeatmapLegendBox
       key={props.missingValueLabel}
@@ -33,7 +72,7 @@ const DataSeriesHeatmapLegend = props =>
       colour={props.missingValueColour}
       on={true}
     />
-  </div>
+  </HeatmapLegendContainer>
 
 DataSeriesHeatmapLegend.propTypes = {
   legendItems: PropTypes.arrayOf(PropTypes.shape(DataSeriesHeatmapLegendBox.propTypes)).isRequired,

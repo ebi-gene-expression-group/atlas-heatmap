@@ -1,18 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import xor from 'lodash/xor'
-import './Filter.css'
 import uncontrollable from 'uncontrollable'
 
-const _FilterOption = ({
-  name,
-  allValues,
-  currentValues,
-  isOpen,
-  onChangeIsOpen,
-  onChangeCurrentValues
-}) => {
+const Foo = styled.div`
+  display: inline-block;
+  padding-left: 5px;
+  ::first-letter {
+    text-transform: capitalize;
+  }
+`
+
+const _FilterOption = ({ name, allValues, currentValues, isOpen, onChangeIsOpen, onChangeCurrentValues }) => {
   const allChecked = allValues.every(v => currentValues.includes(v))
   const allUnchecked = allValues.every(v => !currentValues.includes(v))
 
@@ -28,11 +29,9 @@ const _FilterOption = ({
         checked={allChecked}
         ref={checkbox => {checkbox ? checkbox.indeterminate = !allChecked && !allUnchecked : null}} />
 
-      <div onClick={openable ? onChangeIsOpen.bind(this, !isOpen) : () => {}}
-        href={`#`}
-        className={`gxaCapitalize gxaInline gxaPaddingLeftSmall`}>{name}
-        {openable && <Glyphicon style={{fontSize: `x-small`, paddingLeft: `5px`}} glyph={isOpen ? `menu-up` : `menu-down`}/>}
-      </div>
+      <Foo onClick={openable ? onChangeIsOpen.bind(this, !isOpen) : () => {}} href={`#`}>
+        {name} {openable && <Glyphicon style={{fontSize: `x-small`, paddingLeft: `5px`}} glyph={isOpen ? `menu-up` : `menu-down`}/>}
+      </Foo>
 
       {openable && isOpen &&
       <div>

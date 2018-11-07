@@ -1,14 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {MenuItem, Glyphicon, SplitButton, Button, Modal} from 'react-bootstrap/lib'
+import { MenuItem, Glyphicon, SplitButton, Button, Modal } from 'react-bootstrap/lib'
 
 import uncontrollable from 'uncontrollable'
 import Disclaimers from 'expression-atlas-disclaimers'
 import ClientSideDownload from './Download.js'
 
-import {heatmapDataPropTypes} from '../../../manipulate/chartDataPropTypes.js'
+import { heatmapDataPropTypes } from '../../../manipulate/chartDataPropTypes.js'
 
-import '../controlButton.css'
+const buttonUnsetStyles = {
+  textTransform: `unset`,
+  letterSpacing: `unset`,
+  height: `unset`
+}
 
 const _DownloadWithModal = ({showModal, onChangeShowModal, disclaimer: {title, content}, downloadOptions}) => (
   <div>
@@ -16,7 +20,7 @@ const _DownloadWithModal = ({showModal, onChangeShowModal, disclaimer: {title, c
       bsSize={`small`}
       onClick={onChangeShowModal.bind(this, true)}
       title={`Download`}
-      className={`gxaButtonUnset`}>
+      style={buttonUnsetStyles}>
       <Glyphicon glyph={`download`} /> Download
     </Button>
 
@@ -62,7 +66,7 @@ DownloadWithModal.defaultProps = {
 const SplitDownloadButton = ({downloadOptions}) => (
   <SplitButton
     id={`download-button`}
-    className={`gxaButtonUnset`}
+    style={buttonUnsetStyles}
     bsSize={`small`}
     onClick={downloadOptions[0].onClick}
     title={`Download`}>
@@ -73,7 +77,7 @@ const SplitDownloadButton = ({downloadOptions}) => (
           eventKey={ix}
           id={o.description}
           onClick={o.onClick}
-          className={`gxaButtonUnset`}>
+          style={buttonUnsetStyles}>
           <Glyphicon glyph={`download-alt`}/> {o.description}
         </MenuItem>
       ))

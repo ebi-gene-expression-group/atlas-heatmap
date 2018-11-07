@@ -1,6 +1,6 @@
-import {groupBy} from 'lodash'
+import { groupBy } from 'lodash'
 
-const groupIntoPairs = (arr,f) => Object.entries(groupBy(arr,f))
+const groupIntoPairs = (arr, f) => Object.entries(groupBy(arr, f))
 
 const capitalizeFirstLetter = str => str.charAt(0).toUpperCase() + str.substr(1)
 
@@ -11,4 +11,4 @@ const numberWithCommas = x => {
   return parts.join(`.`)
 }
 
-export {capitalizeFirstLetter, numberWithCommas,groupIntoPairs}
+export { capitalizeFirstLetter, numberWithCommas, groupIntoPairs }

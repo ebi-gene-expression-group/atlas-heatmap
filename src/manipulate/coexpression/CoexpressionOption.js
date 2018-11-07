@@ -1,60 +1,74 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
 
 import Button from 'react-bootstrap/lib/Button'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import Slider from 'rc-slider'
-import 'rc-slider/assets/index.css'
+import RcSliderStyle from './RcSliderStyle'
 
-import './CoexpressionOption.css'
+const VerticallyAlignedSpan = styled.span`
+  vertical-align: middle;
+`
+const AddCoexpressedGenesButton = ({showCoexpressionsCallback}) =>
+  <Button bsSize={`xsmall`} onClick={() => showCoexpressionsCallback(10)}>
+    <Glyphicon glyph={`th`}/>
+    <VerticallyAlignedSpan> Add similarly expressed genes</VerticallyAlignedSpan>
+  </Button>
 
-class CoexpressionOption extends React.Component {
-  _showOfferToDisplay() {
-    return (
-      <Button bsSize="xsmall" onClick={() => this.props.showCoexpressionsCallback(10)}>
-        <Glyphicon glyph="th"/>
-        <span style={{verticalAlign: `middle`}}> Add similarly expressed genes</span>
-      </Button>
-    )
-  }
-
-  _showSlider() {
-    const marks = {
-      0: `off`,
-      10: `10`
-    }
-    marks[this.props.numCoexpressionsAvailable] = this.props.numCoexpressionsAvailable
-
-    return(
-      <div>
-        <p>{`Display genes with similar expression to ${this.props.geneName}:`}</p>
-        <div className="gxaSlider">
-          <Slider min={0}
-                  max={this.props.numCoexpressionsAvailable}
-                  onAfterChange={this.props.showCoexpressionsCallback}
-                  marks={marks} included={false} defaultValue={this.props.numCoexpressionsVisible}/>
-        </div>
-      </div>
-    )
-  }
-
-  render() {
-    return <div className="gxaDisplayCoexpressionOffer">
-      {this.props.numCoexpressionsAvailable
-        ? this.props.numCoexpressionsVisible
-          ? this._showSlider()
-          : this._showOfferToDisplay()
-        : <span>{`No genes with similar expression to ${this.props.geneName} available for display`}</span>
-      }
-    </div>
-  }
+AddCoexpressedGenesButton.propTypes = {
+  showCoexpressionsCallback: PropTypes.func.isRequired
 }
 
-CoexpressionOption.propTypes = {
+
+const SliderContainer = styled.div`
+  width: 250px;
+  margin: 15px;
+  padding-bottom: 20px;
+`
+
+const CoexpressedGenesSlider = ({geneName, numCoexpressionsAvailable, numCoexpressionsVisible, showCoexpressionsCallback}) =>
+  <div>
+    <p style={{fontSize: `0.75rem`}}>Display genes with similar expression to {geneName}:</p>
+    <SliderContainer>
+      <Slider
+        min={0}
+        max={numCoexpressionsAvailable}
+        onAfterChange={showCoexpressionsCallback}
+        marks={{0: `off`, 10: `10`, [numCoexpressionsAvailable]: numCoexpressionsAvailable}}
+        included={false}
+        defaultValue={numCoexpressionsVisible} />
+    </SliderContainer>
+  </div>
+
+CoexpressedGenesSlider.propTypes = {
   geneName: PropTypes.string.isRequired,
   numCoexpressionsVisible: PropTypes.number.isRequired,
   numCoexpressionsAvailable: PropTypes.number.isRequired,
-  showCoexpressionsCallback: PropTypes.func.isRequired
+  ...AddCoexpressedGenesButton.propTypes
+}
+
+
+const CoexpressionOption = ({geneName, numCoexpressionsVisible, numCoexpressionsAvailable, showCoexpressionsCallback}) =>
+  <div style={{marginTop: `30px`}}>
+    {
+      numCoexpressionsAvailable ?
+        numCoexpressionsVisible ?
+          <div>
+            <RcSliderStyle/>
+            <CoexpressedGenesSlider
+              geneName={geneName}
+              numCoexpressionsVisible={numCoexpressionsVisible}
+              numCoexpressionsAvailable={numCoexpressionsAvailable}
+              showCoexpressionsCallback={showCoexpressionsCallback} />
+          </div> :
+          <AddCoexpressedGenesButton showCoexpressionsCallback={showCoexpressionsCallback} /> :
+        <span>No genes with similar expression to {geneName} could be found</span>
+    }
+  </div>
+
+CoexpressionOption.propTypes = {
+  ...CoexpressedGenesSlider.propTypes
 }
 
 export default CoexpressionOption

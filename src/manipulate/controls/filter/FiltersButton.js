@@ -1,18 +1,23 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Modal, Button, Glyphicon, Nav, NavItem} from 'react-bootstrap/lib'
+import { Modal, Button, Glyphicon, Nav, NavItem } from 'react-bootstrap/lib'
 
-import {groupedColumnPropTypes,columnCategoryPropTypes} from '../../chartDataPropTypes.js'
+import { groupedColumnPropTypes,columnCategoryPropTypes } from '../../chartDataPropTypes.js'
 
 import FilterOption from './FilterOption.js'
-import {sortBy} from 'lodash'
+import { sortBy } from 'lodash'
 
-import '../controlButton.css'
 import CategoryCheckboxes from './CategoryCheckboxes.js'
 
-import {groupIntoPairs} from '../../../utils.js'
+import { groupIntoPairs } from '../../../utils.js'
 
 import uncontrollable from 'uncontrollable'
+
+const buttonUnsetStyles = {
+  textTransform: `unset`,
+  letterSpacing: `unset`,
+  height: `unset`
+}
 
 const navTabs = (className) => (
   ({allTabs, disabledTabs=[], currentTab, onChangeCurrentTab}) => {
@@ -129,7 +134,7 @@ const _FiltersModal = ({
 
     <Modal.Footer>
       <Button onClick={onCloseModal}
-        className={`gxaButtonUnset`}>
+        style={buttonUnsetStyles}>
         Close
       </Button>
     </Modal.Footer>
@@ -145,7 +150,7 @@ const FiltersButton = ({disabled,onClickButton}) => (
     onClick={onClickButton}
     disabled={disabled}
     title={disabled ? `Reset zoom to enable filters` : ``}
-    className={`gxaButtonUnset`}>
+    style={buttonUnsetStyles}>
     <Glyphicon glyph={`equalizer`}/><span style={{verticalAlign: `middle`}}> Filters</span>
   </Button>
 )

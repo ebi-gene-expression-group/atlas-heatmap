@@ -4,7 +4,11 @@ import Dropdown from 'react-bootstrap/lib/Dropdown'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 
-import './controlButton.css'
+const buttonUnsetStyles = {
+  textTransform: `unset`,
+  letterSpacing: `unset`,
+  height: `unset`
+}
 
 const callWithEventTargetText = (f) => (
   (eventKey, event) => {
@@ -35,7 +39,7 @@ const OrderingsDropdown = ({allOptions,currentOption,onChangeCurrentOption,title
 
       <Dropdown.Toggle
         bsSize="small"
-        className={`gxaButtonUnset`}>
+        style={buttonUnsetStyles}>
         <Glyphicon glyph={orderingIcon(currentOption)} />
         {currentOption}
       </Dropdown.Toggle>
