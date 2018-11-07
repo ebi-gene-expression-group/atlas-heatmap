@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { MenuItem, Glyphicon, SplitButton, Button, Modal } from 'react-bootstrap/lib'
 
 import uncontrollable from 'uncontrollable'
-import Disclaimers from 'expression-atlas-disclaimers'
+import disclaimers from 'expression-atlas-disclaimers'
 import ClientSideDownload from './Download.js'
 
 import { heatmapDataPropTypes } from '../../../manipulate/chartDataPropTypes.js'
@@ -14,7 +14,7 @@ const buttonUnsetStyles = {
   height: `unset`
 }
 
-const _DownloadWithModal = ({showModal, onChangeShowModal, disclaimer: {title, content}, downloadOptions}) => (
+const _DownloadWithModal = ({showModal, onChangeShowModal, Disclaimer, downloadOptions}) => (
   <div>
     <Button
       bsSize={`small`}
@@ -27,12 +27,12 @@ const _DownloadWithModal = ({showModal, onChangeShowModal, disclaimer: {title, c
     <Modal show={showModal} onHide={onChangeShowModal.bind(this, false)}>
       <Modal.Header closeButton>
         <Modal.Title>
-          {title}
+          Data Reuse Licence Agreement
         </Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
-        {content}
+        <Disclaimer />
       </Modal.Body>
 
       <Modal.Footer>
@@ -101,11 +101,10 @@ const DownloadButton = ({currentlyShownContent, fullDatasetUrl, disclaimer}) => 
   )
 
   return (
-    disclaimer && Disclaimers[disclaimer] ?
+    disclaimers[disclaimer] ?
       <DownloadWithModal
-        disclaimer={Disclaimers[disclaimer]}
-        downloadOptions={downloadOptions}
-      /> :
+        Disclaimer={disclaimers[disclaimer]}
+        downloadOptions={downloadOptions} /> :
       <SplitDownloadButton downloadOptions={downloadOptions}/>
   )
 }
