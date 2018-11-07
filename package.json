@@ -3,15 +3,19 @@
   "version": "4.4.4",
   "description": "Expression Atlas Highcharts heatmap and boxplot of baseline and differential expression experiments from the Expression Atlas project (https://www.ebi.ac.uk/gxa)",
   "main": "lib/Main.js",
-  "author": "Wojciech Bażant<wbazant@ebi.ac.uk>, Elisabet Barrera <barrera@ebi.ac.uk> and Alfonso Muñoz-Pomer Fuentes <amunoz@ebi.ac.uk>",
   "license": "Apache-2.0",
   "scripts": {
-    "dev": "webpack-dev-server -d",
     "prepack": "rm -rf lib && babel src -d lib --ignore '**/*.less' --copy-files",
     "postversion": "npm publish",
     "postpublish": "git push && git push --tags"
   },
-  "repository": "https://github.com/gxa/atlas-heatmap",
+  "author": "Expression Atlas developers <atlas-developers@ebi.ac.uk>",
+  "collaborators": [
+    "Monica Jianu <monica@ebi.ac.uk>",
+    "Lingyun Zhao <lingyun@ebi.ac.uk>",
+    "Alfonso Muñoz-Pomer Fuentes <amunoz@ebi.ac.uk>"
+  ],
+  "repository": "https://github.com/ebi-gene-expression-group/atlas-heatmap.git",
   "dependencies": {
     "anatomogram": "^2.0.0",
     "color": "^3.1.0",
