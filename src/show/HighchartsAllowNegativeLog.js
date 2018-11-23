@@ -1,6 +1,6 @@
 // Taken from http://jsfiddle.net/gh/get/library/pure/highcharts/highcharts/tree/master/samples/highcharts/yaxis/type-log-negative/
 export default (H) => {
-  H.Axis.prototype.allowNegativeLog = true;
+  H.Axis.prototype.allowNegativeLog = true
 
   // Override conversions
   H.Axis.prototype.log2lin = (num) => {
@@ -8,7 +8,7 @@ export default (H) => {
     let adjustedNum = Math.abs(num)
 
     if (adjustedNum < 10) {
-        adjustedNum += (10 - adjustedNum) / 10
+      adjustedNum += (10 - adjustedNum) / 10
     }
 
     const result = Math.log(adjustedNum) / Math.LN10
@@ -21,7 +21,7 @@ export default (H) => {
     let result = Math.pow(10, absNum)
 
     if (result < 10) {
-        result = (10 * (result - 1)) / (10 - 1)
+      result = (10 * (result - 1)) / (10 - 1)
     }
 
     return isNegative ? -result : result

@@ -1,33 +1,38 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {MenuItem, Glyphicon, SplitButton, Button, Modal} from 'react-bootstrap/lib'
+import { MenuItem, Glyphicon, SplitButton, Button, Modal } from 'react-bootstrap/lib'
 
 import uncontrollable from 'uncontrollable'
-import Disclaimers from 'expression-atlas-disclaimers'
+import disclaimers from 'expression-atlas-disclaimers'
 import URI from 'urijs'
 
-import {heatmapDataPropTypes} from '../../../manipulate/chartDataPropTypes.js'
+import { heatmapDataPropTypes } from '../../../manipulate/chartDataPropTypes.js'
 
-import '../controlButton.css'
+const buttonUnsetStyles = {
+  textTransform: `unset`,
+  letterSpacing: `unset`,
+  height: `unset`
+}
 
-const _DownloadWithModal = ({showModal, onChangeShowModal, disclaimer: {title, content}, downloadOptions}) => (
+const _DownloadWithModal = ({showModal, onChangeShowModal, Disclaimer, downloadOptions}) => (
   <div>
-    <Button bsSize={`small`}
-            onClick={onChangeShowModal.bind(this, true)}
-            title={`Download`}
-            className={`gxaButtonUnset`}>
+    <Button
+      bsSize={`small`}
+      onClick={onChangeShowModal.bind(this, true)}
+      title={`Download`}
+      style={buttonUnsetStyles}>
       <Glyphicon glyph={`download`} /> Download
     </Button>
 
     <Modal show={showModal} onHide={onChangeShowModal.bind(this, false)}>
       <Modal.Header closeButton>
         <Modal.Title>
-          {title}
+          Data Reuse Licence Agreement
         </Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
-        {content}
+        <Disclaimer />
       </Modal.Body>
 
       <Modal.Footer>
@@ -36,12 +41,13 @@ const _DownloadWithModal = ({showModal, onChangeShowModal, disclaimer: {title, c
         </Button>
         {
           downloadOptions.map(o => (
-            <Button key={o.description}
-                    bsStyle={`primary`}
-                    onClick={() => {
-                      o.onClick()
-                      onChangeShowModal(false)
-                    }}>
+            <Button
+              key={o.description}
+              bsStyle={`primary`}
+              onClick={() => {
+                o.onClick()
+                onChangeShowModal(false)
+              }}>
               {`Download: ${o.description}`}
             </Button>
           ))
@@ -51,7 +57,6 @@ const _DownloadWithModal = ({showModal, onChangeShowModal, disclaimer: {title, c
   </div>
 )
 
-
 const DownloadWithModal = uncontrollable(_DownloadWithModal, { showModal: `onChangeShowModal` })
 
 DownloadWithModal.defaultProps = {
@@ -59,18 +64,20 @@ DownloadWithModal.defaultProps = {
 }
 
 const SplitDownloadButton = ({downloadOptions}) => (
-  <SplitButton id={`download-button`}
-               className={`gxaButtonUnset`}
-               bsSize={`small`}
-               onClick={downloadOptions[0].onClick}
-               title={`Download`}>
+  <SplitButton
+    id={`download-button`}
+    style={buttonUnsetStyles}
+    bsSize={`small`}
+    onClick={downloadOptions[0].onClick}
+    title={`Download`}>
     {
       downloadOptions.map((o,ix) => (
-        <MenuItem key={ix}
-                  eventKey={ix}
-                  id={o.description}
-                  onClick={o.onClick}
-                  className={`gxaButtonUnset`}>
+        <MenuItem
+          key={ix}
+          eventKey={ix}
+          id={o.description}
+          onClick={o.onClick}
+          style={buttonUnsetStyles}>
           <Glyphicon glyph={`download-alt`}/> {o.description}
         </MenuItem>
       ))
@@ -98,9 +105,10 @@ const DownloadButton = ({currentlyShownContent, geneQueryIDList, fullDatasetUrl,
   )
 
   return (
-    disclaimer && Disclaimers[disclaimer] ?
-      <DownloadWithModal disclaimer={Disclaimers[disclaimer]}
-                         downloadOptions={downloadOptions}/> :
+    disclaimers[disclaimer] ?
+      <DownloadWithModal
+        Disclaimer={disclaimers[disclaimer]}
+        downloadOptions={downloadOptions} /> :
       <SplitDownloadButton downloadOptions={downloadOptions}/>
   )
 }

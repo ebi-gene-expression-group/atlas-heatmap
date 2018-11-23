@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import ReactHighcharts from 'react-highcharts'
 import HighchartsMore from 'highcharts/highcharts-more'
 import {boxplotData as boxplotDataProps} from '../manipulate/chartDataPropTypes.js'
@@ -18,7 +17,7 @@ const BoxplotCanvas = ({titleSuffix, xAxisCategories, boxplotSeries, loosePoints
       data: boxplotSeries,
       color,
       tooltip: {
-        headerFormat: '<em>Factor: {point.key}</em><br/>'
+        headerFormat: `<em>Factor: {point.key}</em><br/>`
       }
     }
   )
@@ -29,8 +28,8 @@ const BoxplotCanvas = ({titleSuffix, xAxisCategories, boxplotSeries, loosePoints
       type: `scatter`,
       data: loosePointsSeries,
       tooltip: {
-        headerFormat: '<em>Factor: {point.key}</em><br/>',
-        pointFormat: '<span style="color:{point.color}">\u25CF</span><b> {series.name} </b> <br/>Expression: {point.y}<br/>'
+        headerFormat: `<em>Factor: {point.key}</em><br/>`,
+        pointFormat: `<span style="color:{point.color}">\u25CF</span><b> {series.name} </b> <br/>Expression: {point.y}<br/>`
       }
     }
   )
@@ -93,14 +92,14 @@ const BoxplotCanvas = ({titleSuffix, xAxisCategories, boxplotSeries, loosePoints
 
       plotLines: cutoff > 0.1 ? [{
         value: cutoff,
-        dashStyle: 'Dash',
-        color: '#333333',
+        dashStyle: `Dash`,
+        color: `#333333`,
         width: 1,
         label: {
           text: `Cutoff: ${cutoff}`,
-          align: 'left',
+          align: `left`,
           style: {
-            color: 'gray'
+            color: `gray`
           }
         }
       }] : [],

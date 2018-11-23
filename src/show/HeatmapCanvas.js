@@ -109,7 +109,7 @@ class HeatmapCanvas extends React.Component {
 
   _getHeight(marginBottom) {
     const rowCount = this.props.heatmapData.yAxisCategories.length
-    return rowCount * 40 + this._getMarginTop() + marginBottom;
+    return rowCount * 40 + this._getMarginTop() + marginBottom
   }
 
   render() {
@@ -208,7 +208,7 @@ class HeatmapCanvas extends React.Component {
           }
         },
 
-        opposite: 'true',
+        opposite: `true`,
         categories: this.props.heatmapData.xAxisCategories,
         min: 0,
         max: this._countColumns() - 1,
@@ -310,10 +310,10 @@ HeatmapCanvas.defaultProps = {
 
 const Main = props => (
   props.heatmapData.yAxisCategories.length < 1?
-   <div style={{padding: `50px 0`}}>
+    <div style={{padding: `50px 0`}}>
      No data match your filtering criteria or your original query. Please, change your query or your filters and try again.
-   </div> :
-   <HeatmapCanvas {...props} />
+    </div> :
+    <HeatmapCanvas {...props} />
 )
 
 export default Main

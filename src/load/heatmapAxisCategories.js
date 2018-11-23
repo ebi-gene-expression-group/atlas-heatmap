@@ -1,9 +1,8 @@
 import Url from 'url'
-import Path from 'path'
 
 import {isMultiExperiment, isDifferential} from './experimentTypeUtils.js'
 
-const getHeatmapXAxisCategories = ({columnHeaders, experiment, inProxy, atlasUrl, pathToResources}) => {
+const getHeatmapXAxisCategories = ({columnHeaders, experiment}) => {
   if (isMultiExperiment(experiment)) {
     return columnHeaders.map(columnHeader => ({
       label: columnHeader.factorValue,
@@ -14,7 +13,7 @@ const getHeatmapXAxisCategories = ({columnHeaders, experiment, inProxy, atlasUrl
       }
     }))
   } else if (isDifferential(experiment)) {
-     return columnHeaders.map(columnHeader => ({
+    return columnHeaders.map(columnHeader => ({
       label: columnHeader.displayName,
       id: columnHeader.id,
       info: {
@@ -39,17 +38,17 @@ const getHeatmapXAxisCategories = ({columnHeaders, experiment, inProxy, atlasUrl
   }
 }
 
-const getHeatmapYAxisCategories = ({rows, geneQuery, experiment, inProxy, atlasUrl}) =>
-    rows.map(
-            profile => ({
-                label: profile.name,
-                id: profile.id,
-                info: {
-                    trackId: profile.id,
-                    designElement: profile.designElement || ``,
-                    url: Url.resolve(inProxy + atlasUrl, profile.uri)
-                }
-            })
-    )
+const getHeatmapYAxisCategories = ({rows, inProxy, atlasUrl}) =>
+  rows.map(
+    profile => ({
+      label: profile.name,
+      id: profile.id,
+      info: {
+        trackId: profile.id,
+        designElement: profile.designElement || ``,
+        url: Url.resolve(inProxy + atlasUrl, profile.uri)
+      }
+    })
+  )
 
 export {getHeatmapXAxisCategories, getHeatmapYAxisCategories}
