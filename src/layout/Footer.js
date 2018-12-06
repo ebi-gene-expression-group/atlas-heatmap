@@ -5,7 +5,7 @@ const Footer = props =>
   <div style={{marginBottom: `2rem`, clear: `both`, width: `100%`}}>
     This page is a summary of the data held in <a href={props.outProxy + props.atlasUrl}>Expression Atlas</a> for this
     gene; click <a href={props.outProxy + props.moreInformationUrl}>here</a> for the full record.
-    <br>
+    <br/>
     Please send any queries or feedback via <a href="https://www.ebi.ac.uk/support/gxa">the EBI Support & feedback
     form.</a>.
   </div>
