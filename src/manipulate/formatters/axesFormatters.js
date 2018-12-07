@@ -16,8 +16,12 @@ const YAxisLabel = (props) => {
 
   return (
     props.extra ?
-      <span>{geneNameWithLink}<em style={{color:`black`}}>{`\t${props.extra}`}</em></span> :
-      <span>{geneNameWithLink}</span>
+      <span title={props.labelText.length > 40 ? props.labelText : ``}>
+        {geneNameWithLink}<em style={{color:`black`}}>{`\t${props.extra}`}</em>
+      </span> :
+      <span title={props.labelText.length > 40 ? props.labelText : ``}>
+        {geneNameWithLink}
+      </span>
   )
 }
 
