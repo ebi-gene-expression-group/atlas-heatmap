@@ -224,6 +224,7 @@ class HeatmapCanvas extends React.Component {
         useHTML: true,
         reversed: true,
         labels: {
+          useHTML: true,
           style: this.props.yAxisStyle,
           events: {
             mouseover: function() {
