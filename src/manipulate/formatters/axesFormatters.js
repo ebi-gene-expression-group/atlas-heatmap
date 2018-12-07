@@ -3,12 +3,15 @@ import PropTypes from 'prop-types'
 import ReactDOMServer from 'react-dom/server'
 
 import escapedHtmlDecoder from 'he'
+
+import trimEllipsify from './trimEllipsify'
+
 const reactToHtml = component => escapedHtmlDecoder.decode(ReactDOMServer.renderToStaticMarkup(component))
 
 const YAxisLabel = (props) => {
   const geneNameWithLink =
     <a href={props.config.outProxy + props.url}>
-      {props.labelText}
+      {trimEllipsify(props.labelText, 40)}
     </a>
 
   return (
@@ -48,10 +51,10 @@ export default config => ({
 
   yAxisFormatter: value => reactToHtml(
     <YAxisLabel config={config}
-                labelText={value.label}
-                resourceId={value.id}
-                url={value.info.url}
-                extra={value.info.designElement || ``}
+      labelText={value.label}
+      resourceId={value.id}
+      url={value.info.url}
+      extra={value.info.designElement || ``}
     />
   ),
   yAxisStyle: {
