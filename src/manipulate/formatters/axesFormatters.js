@@ -10,7 +10,7 @@ const reactToHtml = component => escapedHtmlDecoder.decode(ReactDOMServer.render
 
 const YAxisLabel = (props) => {
   const geneNameWithLink =
-    <a href={props.config.outProxy + props.url}>
+    <a href={props.config.outProxy + props.url} style={{border: `none`, color: `#148ff3`}}>
       {trimEllipsify(props.labelText, 40)}
     </a>
 
