@@ -3,18 +3,25 @@ import PropTypes from 'prop-types'
 import ReactDOMServer from 'react-dom/server'
 
 import escapedHtmlDecoder from 'he'
+
+import trimEllipsify from './trimEllipsify'
+
 const reactToHtml = component => escapedHtmlDecoder.decode(ReactDOMServer.renderToStaticMarkup(component))
 
 const YAxisLabel = (props) => {
   const geneNameWithLink =
-    <a href={props.config.outProxy + props.url}>
-      {props.labelText}
+    <a href={props.config.outProxy + props.url} style={{border: `none`, color: `#148ff3`}}>
+      {trimEllipsify(props.labelText, 40)}
     </a>
 
   return (
     props.extra ?
-      <span>{geneNameWithLink}<em style={{color:`black`}}>{`\t${props.extra}`}</em></span> :
-      <span>{geneNameWithLink}</span>
+      <span title={props.labelText.length > 40 ? props.labelText : ``}>
+        {geneNameWithLink}<em style={{color:`black`}}>{`\t${props.extra}`}</em>
+      </span> :
+      <span title={props.labelText.length > 40 ? props.labelText : ``}>
+        {geneNameWithLink}
+      </span>
   )
 }
 
@@ -48,10 +55,10 @@ export default config => ({
 
   yAxisFormatter: value => reactToHtml(
     <YAxisLabel config={config}
-                labelText={value.label}
-                resourceId={value.id}
-                url={value.info.url}
-                extra={value.info.designElement || ``}
+      labelText={value.label}
+      resourceId={value.id}
+      url={value.info.url}
+      extra={value.info.designElement || ``}
     />
   ),
   yAxisStyle: {
