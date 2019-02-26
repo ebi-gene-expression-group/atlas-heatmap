@@ -71,7 +71,7 @@ const ExperimentIconDiv = styled.span`
 const DataSeriesHeatmapLegend = (props) =>
   <HeatmapLegendContainer>
     <ExperimentIconDiv background={`green`} color={`white`}>P</ExperimentIconDiv>Proteomics
-    <ExperimentIconDiv background={`red`} color={`white`}>T</ExperimentIconDiv>Transcriptomics
+    <ExperimentIconDiv background={`#148ff3`} color={`white`}>T</ExperimentIconDiv>Transcriptomics
     <br/>
     <LegendItem>
       <InfoIcon
