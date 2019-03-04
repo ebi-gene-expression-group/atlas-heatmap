@@ -66,17 +66,18 @@ const ExperimentIconDiv = styled.span`
   margin-right: 6px;
   margin-left: 10px;
   display: inline-block;
+  opacity: 0.4;
 `
 
 const DataSeriesHeatmapLegend = (props) =>
   <HeatmapLegendContainer>
     <ExperimentIconDiv background={`green`} color={`white`}>P</ExperimentIconDiv>Proteomics
-    <ExperimentIconDiv background={`#148ff3`} color={`white`}>T</ExperimentIconDiv>Transcriptomics
+    <ExperimentIconDiv background={`orangered`} color={`white`}>T</ExperimentIconDiv>Transcriptomics
     <br/>
     <LegendItem>
       <InfoIcon
-          data-icon="i" data-toggle="tooltip" data-placement="bottom"
-          title={props.title}/>
+        data-icon="i" data-toggle="tooltip" data-placement="bottom"
+        title={props.title}/>
     </LegendItem>
     {props.legendItems.map(legendItemProps => <DataSeriesHeatmapLegendBox {...legendItemProps} />)}
     <DataSeriesHeatmapLegendBox

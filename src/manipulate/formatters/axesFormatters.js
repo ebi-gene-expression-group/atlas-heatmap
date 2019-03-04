@@ -19,13 +19,14 @@ const ExperimentIconDiv = styled.span`
   padding: 1px 5px 1px 5px;
   margin-right: 6px;
   display: inline-block;
+  opacity: 0.4;
 `
 
 const YAxisLabel = (props) => {
   const experimentIcon = props.experimentType===`PROTEOMICS_BASELINE` ?
     <ExperimentIconDiv background={`green`} color={`white`} data-toggle={`tooltip`} data-placement={`bottom`}
       title={`Proteomics experiment`}>P</ExperimentIconDiv> :
-    props.experimentType && <ExperimentIconDiv background={`#148ff3`} color={`white`} data-toggle={`tooltip`} data-placement={`bottom`}
+    props.experimentType && <ExperimentIconDiv background={`orangered`} color={`white`} data-toggle={`tooltip`} data-placement={`bottom`}
       title={`Transcriptomics experiment`}>T</ExperimentIconDiv>
   const geneNameWithLink =
     <a href={props.config.outProxy + props.url} style={{border: `none`, color: `#148ff3`}}>
