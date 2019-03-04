@@ -43,15 +43,21 @@ const ExpressionAtlasHeatmap = options => (
       {...DEFAULT_OPTIONS}
       {...options}
       source={
-        typeof options.query === `string`
-          ? {
+        typeof options.query === `string` ?
+          {
             endpoint: options.query,
             params: {}
-          }
-          : {
+          } :
+          {
             endpoint: resolveEndpoint(options.experiment),
-            //the webapp wants "geneQuery" and "conditionQuery" as parameters but in the API offering query.gene and query.condition felt nicer
-            params: Object.entries(options.query).map(p => [`gene`, `condition`].includes(p[0]) ? [p[0]+`Query`, p[1]]: p).reduce((acc,o)=>{ acc[o[0]]=o[1]; return acc}, {})
+            //the webapp wants "geneQuery" and "conditionQuery" as parameters but in the API offering query.gene and
+            // query.condition felt nicer
+            params:
+              options.query ?
+                Object.entries(options.query)
+                  .map(p => [`gene`, `condition`].includes(p[0]) ? [p[0]+`Query`, p[1]] : p)
+                  .reduce((acc,o)=>{ acc[o[0]]=o[1]; return acc}, {}) :
+                {}
           }} />
   </div>
 )
