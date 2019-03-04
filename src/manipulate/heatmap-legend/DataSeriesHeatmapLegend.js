@@ -49,29 +49,44 @@ const HeatmapLegendContainer = styled.div`
 const InfoIcon = styled.span`
   ::before {
     font-family: 'EBI-Generic', 'sans-serif';
-    font-size: 180%;
+    font-size: 150%;
     color: #7e7e7e;
     content: attr(data-icon);
     margin: 0 0 0 0;
   }
 `
 
+const ExperimentIconDiv = styled.span`
+  background-color: ${props => props.background};
+  color: ${props => props.color};
+  border-radius: 50%;
+  height: 20px;
+  width: 20px;
+  padding: 1px 5px 1px 5px;
+  margin-right: 6px;
+  margin-left: 10px;
+  display: inline-block;
+  opacity: 0.4;
+`
+
 const DataSeriesHeatmapLegend = (props) =>
   <HeatmapLegendContainer>
-    {props.legendItems.map(legendItemProps => <DataSeriesHeatmapLegendBox {...legendItemProps} />)}
-
+    <ExperimentIconDiv background={`green`} color={`white`}>P</ExperimentIconDiv>Proteomics
+    <ExperimentIconDiv background={`orangered`} color={`white`}>T</ExperimentIconDiv>Transcriptomics
+    <br/>
     <LegendItem>
       <InfoIcon
         data-icon="i" data-toggle="tooltip" data-placement="bottom"
         title={props.title}/>
     </LegendItem>
-
+    {props.legendItems.map(legendItemProps => <DataSeriesHeatmapLegendBox {...legendItemProps} />)}
     <DataSeriesHeatmapLegendBox
       key={props.missingValueLabel}
       name={props.missingValueLabel}
       colour={props.missingValueColour}
       on={true}
     />
+
   </HeatmapLegendContainer>
 
 DataSeriesHeatmapLegend.propTypes = {

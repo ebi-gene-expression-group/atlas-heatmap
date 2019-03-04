@@ -46,7 +46,8 @@ const getHeatmapYAxisCategories = ({rows, inProxy, atlasUrl}) =>
       info: {
         trackId: profile.id,
         designElement: profile.designElement || ``,
-        url: Url.resolve(inProxy + atlasUrl, profile.uri)
+        url: Url.resolve(inProxy + atlasUrl, profile.uri),
+        experimentType: profile.experimentType
       }
     })
   )
