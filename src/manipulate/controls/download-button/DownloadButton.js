@@ -4,6 +4,7 @@ import { MenuItem, Glyphicon, SplitButton, Button, Modal } from 'react-bootstrap
 
 import uncontrollable from 'uncontrollable'
 import disclaimers from 'expression-atlas-disclaimers'
+import ClientSideDownload from './Download.js'
 import URI from 'urijs'
 
 import { heatmapDataPropTypes } from '../../../manipulate/chartDataPropTypes.js'
@@ -86,7 +87,7 @@ const SplitDownloadButton = ({downloadOptions}) => (
 )
 
 
-const DownloadButton = ({currentlyShownContent, geneQueryIDList, fullDatasetUrl, disclaimer, experiment}) => {
+const DownloadButton = ({currentlyShownContent, geneQueryIDList, fullDatasetUrl, disclaimer}) => {
   const tableDownloadUrl = new URI(fullDatasetUrl)
   //set cutoff as 0.0 to get all available data in the download file
   tableDownloadUrl.setSearch({cutoff:"0.0",geneQuery:JSON.stringify(geneQueryIDList)}).removeSearch("heatmapMatrixSize")
@@ -99,7 +100,9 @@ const DownloadButton = ({currentlyShownContent, geneQueryIDList, fullDatasetUrl,
       }] :
       [],
     [{
-      onClick: () => window.open(tableDownloadUrl.toString(), `Download`),
+      onClick: () => fullDatasetUrl ?
+        window.open(tableDownloadUrl.toString(), `Download`) :
+        ClientSideDownload(currentlyShownContent),
       description : `Table content`
     }]
   )
