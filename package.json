@@ -17,7 +17,7 @@
   ],
   "repository": "https://github.com/ebi-gene-expression-group/atlas-heatmap.git",
   "dependencies": {
-    "anatomogram": "^2.1.1",
+    "anatomogram": "^2.1.2",
     "color": "^3.1.1",
     "downloadjs": "^1.4.7",
     "expression-atlas-disclaimers": "1.1.0",
