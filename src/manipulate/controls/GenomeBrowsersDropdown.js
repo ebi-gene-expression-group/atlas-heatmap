@@ -31,9 +31,9 @@ class GenomeBrowsersDropdown extends React.Component {
 
   render() {
     const genomeBrowsers = this.props.genomeBrowsers.map(genomeBrowserName => ({
-          id: genomeBrowserName.replace(/\s+/g, ``).toLowerCase(),
-          label: `${genomeBrowserName} genome browser`
-        }))
+      id: genomeBrowserName.replace(/\s+/g, ``).toLowerCase(),
+      label: `${genomeBrowserName} genome browser`
+    }))
 
     return (
       <div>
