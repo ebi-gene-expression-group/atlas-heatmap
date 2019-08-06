@@ -142,8 +142,7 @@ const renderCoexpressionOption = ({heatmapConfig,heatmapData,allNumCoexpressions
 )
 
 const renderGenomeBrowserHint = ({currentGenomeBrowser}) => (
-  <p style={{clear: `both`, float: `right`, fontSize: `small`, margin: `0`,
-    display: currentGenomeBrowser === `none` ? `none` : ` block`}}>
+  <p style={{clear: `both`, float: `right`, fontSize: `small`, margin: `0`, display:` block`}}>
     Click on a cell to open the selected genome browser with attached tracks if available
   </p>
 )
@@ -362,7 +361,7 @@ const HeatmapWithControlsContainer = props => {
       allOrderings={orderings}
       allGroupedColumns={groupedColumns}
       allNumCoexpressions={heatmapConfig.coexpressionsAvailable ? yAxisCategories.length - 1 :0}
-      defaultCurrentGenomeBrowser={`none`}
+      defaultCurrentGenomeBrowser={heatmapConfig.genomeBrowsers[0].replace(/\s+/g, ``).toLowerCase()}
       defaultCurrentOrdering={orderings[0]}
       defaultCurrentGroupedColumns={groupedColumns}
       defaultCurrentNumCoexpressions={0}

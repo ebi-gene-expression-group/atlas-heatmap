@@ -13,7 +13,8 @@
   "collaborators": [
     "Monica Jianu <monica@ebi.ac.uk>",
     "Lingyun Zhao <lingyun@ebi.ac.uk>",
-    "Alfonso Muñoz-Pomer Fuentes <amunoz@ebi.ac.uk>"
+    "Alfonso Muñoz-Pomer Fuentes <amunoz@ebi.ac.uk>",
+    "Haider Iqbal <haideri@ebi.ac.uk>"
   ],
   "repository": "https://github.com/ebi-gene-expression-group/atlas-heatmap.git",
   "dependencies": {
@@ -54,7 +55,7 @@
     "file-loader": "^3.0.1",
     "image-webpack-loader": "^4.6.0",
     "imports-loader": "^0.8.0",
-    "webpack": "^4.30.0",
+    "webpack": "^4.39.0",
     "webpack-cli": "^3.3.2",
     "webpack-dev-server": "^3.3.1",
     "whatwg-fetch": "^3.0.0"
