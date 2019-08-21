@@ -254,6 +254,7 @@ class HeatmapCanvas extends React.Component {
         shadow: false,
         enabled: true,
         backgroundColor: `none`,
+        outside: true,
         formatter: function() {
           return cellTooltipFormatter(this.series, this.point)
         }
