@@ -31,8 +31,8 @@ class HeatmapCanvas extends React.Component {
   shouldComponentUpdate(nextProps) {
     // Callback that does setState fails: https://github.com/kirjs/react-highcharts/issues/245
     // Don’t call render again after zoom happens
-    return hash.MD5([nextProps.heatmapData, nextProps.events.onClick, nextProps.withAnatomogram]) !==
-    hash.MD5([this.props.heatmapData, this.props.events.onClick, this.props.withAnatomogram])
+    return hash.MD5([nextProps.heatmapData, nextProps.events.onClick, nextProps.withAnatomogram, nextProps.currentGenomeBrowser]) !==
+    hash.MD5([this.props.heatmapData, this.props.events.onClick, this.props.withAnatomogram, this.props.currentGenomeBrowser])
   }
 
   _countColumns() {
@@ -117,7 +117,7 @@ class HeatmapCanvas extends React.Component {
     const marginRight = this._getAdjustedMarginRight()
     const height = this._getHeight(marginBottom)
 
-    const {cellTooltipFormatter, xAxisFormatter, yAxisFormatter, events, onZoom, noDataCellsColour} = this.props
+    const {cellTooltipFormatter, xAxisFormatter, yAxisFormatter, events, onZoom, noDataCellsColour, currentGenomeBrowser} = this.props
 
     const highchartsConfig = {
       chart: {
@@ -158,7 +158,7 @@ class HeatmapCanvas extends React.Component {
           cursor: events.onClick ? `pointer` : undefined,
           point: {
             events: {
-              click: events.onClick ? function() { events.onClick(this.x, this.y) } : function() {},
+              click: events.onClick ? function() { events.onClick(this.x, this.y, currentGenomeBrowser) } : function() {},
               mouseOver: function() { events.onHoverPoint(this.x) },
               mouseOut: function() { events.onHoverOff() }
             }
@@ -303,7 +303,8 @@ HeatmapCanvas.propTypes = {
     onClick: PropTypes.func
   }),
   onZoom: PropTypes.func.isRequired,
-  withAnatomogram: PropTypes.bool.isRequired
+  withAnatomogram: PropTypes.bool.isRequired,
+  currentGenomeBrowser: PropTypes.string.isRequired
 }
 
 HeatmapCanvas.defaultProps = {
