@@ -24,12 +24,12 @@ const _ontologyIdsForRowIndex = (heatmapData, y) => (
     .filter(onlyUnique)
 )
 
-const onClickUseGenomeBrowser = ({heatmapData, currentGenomeBrowser,heatmapConfig: {experiment, atlasUrl, outProxy}}) => (
-  currentGenomeBrowser && experiment && currentGenomeBrowser !== `none`
-    ? (x, y) => {
+const onClickUseGenomeBrowser = ({heatmapData, heatmapConfig: {experiment, atlasUrl, outProxy}}) => (
+  experiment ?
+    (x, y, genomeBrowser) => {
       window.open(outProxy + URI(experiment.urls.genome_browsers, atlasUrl).addSearch({
         experimentAccession: experiment.accession,
-        name: currentGenomeBrowser,
+        name: genomeBrowser,
         geneId: heatmapData.yAxisCategories[y].info.trackId,
         trackId: heatmapData.xAxisCategories[x].info.trackId
       }).toString(), `_blank`)
@@ -37,7 +37,7 @@ const onClickUseGenomeBrowser = ({heatmapData, currentGenomeBrowser,heatmapConfi
     : undefined
 )
 
-const makeEventCallbacks = ({heatmapData, onSelectOntologyIds, currentGenomeBrowser,heatmapConfig}) => {
+const makeEventCallbacks = ({heatmapData, onSelectOntologyIds, heatmapConfig}) => {
   return {
     onHoverRowLabel: (yAxisLabel) => {
       const rowIndex = heatmapData.yAxisCategories.findIndex((cat) => cat.label === sanitizeHtml(yAxisLabel, noTags))
@@ -57,7 +57,7 @@ const makeEventCallbacks = ({heatmapData, onSelectOntologyIds, currentGenomeBrow
       onSelectOntologyIds([])
     },
 
-    onClick: onClickUseGenomeBrowser({heatmapData, currentGenomeBrowser, heatmapConfig})
+    onClick: onClickUseGenomeBrowser({heatmapData, heatmapConfig})
   }
 }
 

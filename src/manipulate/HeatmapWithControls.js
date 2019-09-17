@@ -178,7 +178,6 @@ CanvasLegend.propTypes = {
 const heatmapExtraArgs = ({
   heatmapData,
   onOntologyIdIsUnderFocus,
-  currentGenomeBrowser,
   heatmapConfig,
   onChangeCurrentZoom,
   ontologyIdsToHighlight} ) => ({
@@ -189,7 +188,6 @@ const heatmapExtraArgs = ({
     makeEventCallbacks({
       heatmapData: heatmapData,
       onSelectOntologyIds: onOntologyIdIsUnderFocus,
-      currentGenomeBrowser,
       heatmapConfig}),
   cellTooltipFormatter: cellTooltipFormatter(heatmapConfig),
   ...axesFormatters(heatmapConfig)
@@ -230,7 +228,8 @@ const renderHeatmapCanvasWithSelectedDataSlice = (_args, heatmapDataToPresent, w
       <HeatmapCanvas
         {...heatmapExtraArgs(args)}
         heatmapData={heatmapDataToPresent}
-        withAnatomogram={withAnatomogram} />
+        withAnatomogram={withAnatomogram}
+        currentGenomeBrowser={_args.currentGenomeBrowser}/>
     </CanvasLegend>
   )
 }
