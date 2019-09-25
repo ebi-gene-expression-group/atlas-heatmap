@@ -9,17 +9,19 @@ import trimEllipsify from './trimEllipsify'
 
 const reactToHtml = component => escapedHtmlDecoder.decode(ReactDOMServer.renderToStaticMarkup(component))
 
-const ExperimentIconDiv = styled.span`
+const ExperimentIconDiv = styled.div`
   background-color: ${props => props.background};
   color: ${props => props.color};
   border-radius: 50%;
-  font-size: larger;
+  font-size: 16px;
   height: 20px;
   width: 20px;
-  padding: 1px 5px 1px 5px;
+  text-align: center;
+  padding-top: 1px;
+  vertical-align: middle;
   margin-right: 6px;
-  display: inline-block;
   opacity: 0.4;
+  display: inline-block;
 `
 
 const YAxisLabel = (props) => {

@@ -56,17 +56,20 @@ const InfoIcon = styled.span`
   }
 `
 
-const ExperimentIconDiv = styled.span`
+const ExperimentIconDiv = styled.div`
   background-color: ${props => props.background};
   color: ${props => props.color};
   border-radius: 50%;
+  font-size: 16px;
   height: 20px;
   width: 20px;
-  padding: 1px 5px 1px 5px;
+  text-align: center;
+  padding-left: 1px;
+  vertical-align: middle;
   margin-right: 6px;
   margin-left: 10px;
-  display: inline-block;
   opacity: 0.4;
+  display: inline-block;
 `
 
 const DataSeriesHeatmapLegend = (props) =>
