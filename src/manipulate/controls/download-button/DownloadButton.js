@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { MenuItem, Glyphicon, SplitButton, Button, Modal } from 'react-bootstrap/lib'
 
-import uncontrollable from 'uncontrollable'
+import { uncontrollable } from 'uncontrollable'
 import disclaimers from 'expression-atlas-disclaimers'
 import ClientSideDownload from './Download.js'
 import URI from 'urijs'

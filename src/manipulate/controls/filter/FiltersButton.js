@@ -11,7 +11,7 @@ import CategoryCheckboxes from './CategoryCheckboxes.js'
 
 import { groupIntoPairs } from '../../../utils.js'
 
-import uncontrollable from 'uncontrollable'
+import { uncontrollable } from 'uncontrollable'
 
 const buttonUnsetStyles = {
   textTransform: `unset`,

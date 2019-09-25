@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import uncontrollable from 'uncontrollable'
+import { uncontrollable } from 'uncontrollable'
 
 import GenomeBrowsersDropdown from './controls/GenomeBrowsersDropdown.js'
 import OrderingsDropdown from './controls/OrderingsDropdown.js'

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import xor from 'lodash/xor'
-import uncontrollable from 'uncontrollable'
+import { uncontrollable } from 'uncontrollable'
 
 const Foo = styled.div`
   display: inline-block;
