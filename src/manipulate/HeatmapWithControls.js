@@ -142,9 +142,10 @@ const renderCoexpressionOption = ({heatmapConfig,heatmapData,allNumCoexpressions
 )
 
 const renderGenomeBrowserHint = ({currentGenomeBrowser}) => (
-  <p style={{clear: `both`, float: `right`, fontSize: `small`, margin: `0`, display:` block`}}>
-    Click on a cell to open the selected genome browser with attached tracks if available
-  </p>
+  currentGenomeBrowser &&
+    <p style={{clear: `both`, float: `right`, fontSize: `small`, margin: `0`, display:` block`}}>
+      Click on a cell to open the selected genome browser with attached tracks if available
+    </p>
 )
 
 const CanvasLegend = ({heatmapData,heatmapConfig,colourAxis,children}) => {
@@ -355,8 +356,8 @@ const HeatmapWithControlsContainer = props => {
   const {heatmapData:{yAxisCategories}, orderings, heatmapConfig, columnGroups:{data:groupedColumns}} = props
   const defaultCurrentGenomeBrowser = Array.isArray(heatmapConfig.genomeBrowsers) && heatmapConfig.genomeBrowsers[0] ?
     heatmapConfig.genomeBrowsers[0].replace(/\s+/g, ``).toLowerCase() :
-    `none`
-    
+    null
+
   return (
     <HeatmapWithControls
       {...props}
