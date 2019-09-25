@@ -353,9 +353,10 @@ const HeatmapWithControls = uncontrollable(_HeatmapWithControls, {
 
 const HeatmapWithControlsContainer = props => {
   const {heatmapData:{yAxisCategories}, orderings, heatmapConfig, columnGroups:{data:groupedColumns}} = props
-  const defaultCurrentGenomeBrowser = Array.isArray(heatmapConfig.genomeBrowsers) ?
+  const defaultCurrentGenomeBrowser = Array.isArray(heatmapConfig.genomeBrowsers) && heatmapConfig.genomeBrowsers[0] ?
     heatmapConfig.genomeBrowsers[0].replace(/\s+/g, ``).toLowerCase() :
-    ``
+    `none`
+    
   return (
     <HeatmapWithControls
       {...props}
