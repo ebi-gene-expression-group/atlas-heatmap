@@ -19,7 +19,7 @@ Please visit the [demo showcase page](https://www.ebi.ac.uk/gxa/resources/test/w
 ### What you need
 You must add the following to your environment:
 
-```
+```html
 <link rel="stylesheet" type="text/css"
 href="https://www.ebi.ac.uk/gxa/resources/css/customized-bootstrap-3.3.5.css"/>
 ```
@@ -29,7 +29,7 @@ can remove the styles link tags and the widget will integrate smoothly
 in your environment.
 
 Are you targetting ES5, IE11 or Safari? Include these polyfills for babel-polyfill and whatwg-fetch:
-```
+```html
 <script language="JavaScript" type="text/javascript"
 src="https://www.ebi.ac.uk/gxa/resources/js/lib/babel-polyfill.min.js"></script>
 <script language="JavaScript" type="text/javascript"
@@ -37,7 +37,7 @@ src="https://www.ebi.ac.uk/gxa/resources/js/lib/fetch-polyfill.min.js"></script>
 ```
 
 Then include our widget and the vendor bundle:
-```
+```html
 <script language="JavaScript" type="text/javascript"
 src="https://www.ebi.ac.uk/gxa/resources/js-bundles/vendorCommons.bundle.js"></script>
 <script language="JavaScript" type="text/javascript"
@@ -47,7 +47,7 @@ src="https://www.ebi.ac.uk/gxa/resources/js-bundles/expressionAtlasHeatmapHighch
 ### Invoking the widget
 
 You need to call the render method on the exposed global variable:
-```
+```javascript
 expressionAtlasHeatmapHighcharts.render({
     query: {
       gene: "ASPM"
@@ -60,19 +60,19 @@ expressionAtlasHeatmapHighcharts.render({
 Tell us about any problems by raising an issue in this repository.
 
 ## Building from source
-```
-npm install expression-atlas-heatmap-highcharts --save
+```bash
+npm install @ebi-gene-expression-group/expression-atlas-heatmap-highcharts --save
 ```
 You can use it as a React component:
-```
-import ExpressionAtlasHeatmap from 'expression-atlas-heatmap-highcharts'
+```javascript
+import ExpressionAtlasHeatmap from '@ebi-gene-expression-group/expression-atlas-heatmap-highcharts'
 ...
 ReactDom.render(<ExpressionAtlasHeatmap .../>, 'id-of-dom-element')
 ```
 
 Or mount it on a DOM node if you’re not using the React framework:
-```
-import {render as expressionAtlasHeatmapRender} from 'expression-atlas-heatmap-highcharts'
+```javascript
+import { render as expressionAtlasHeatmapRender } from '@ebi-gene-expression-group/expression-atlas-heatmap-highcharts'
 ...
 expressionAtlasHeatmapRender({...})
 ```
