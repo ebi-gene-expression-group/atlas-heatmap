@@ -1,4 +1,4 @@
-import {anatomogramSpecies} from 'anatomogram'
+import { anatomogramSpecies } from '@ebi-gene-expression-group/anatomogram'
 
 import getChartConfiguration from './chartConfiguration.js'
 

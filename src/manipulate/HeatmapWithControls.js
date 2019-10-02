@@ -23,7 +23,7 @@ import makeEventCallbacks from './Events.js'
 import {manipulate} from './Manipulators.js'
 
 import debounceRender from 'react-debounce-render'
-import _Anatomogram from 'anatomogram'
+import _Anatomogram from '@ebi-gene-expression-group/anatomogram'
 import _HeatmapCanvas from '../show/HeatmapCanvas.js'
 
 const Anatomogram = debounceRender(_Anatomogram, 50)
