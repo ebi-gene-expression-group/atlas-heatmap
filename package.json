@@ -1,6 +1,6 @@
 {
   "name": "@ebi-gene-expression-group/expression-atlas-heatmap-highcharts",
-  "version": "5.3.1",
+  "version": "5.3.2",
   "description": "Expression Atlas Highcharts heatmap and boxplot of baseline and differential expression experiments from the Expression Atlas project (https://www.ebi.ac.uk/gxa)",
   "main": "lib/Main.js",
   "license": "Apache-2.0",
