@@ -1,5 +1,5 @@
 {
-  "name": "expression-atlas-heatmap-highcharts",
+  "name": "@ebi-gene-expression-group/expression-atlas-heatmap-highcharts",
   "version": "5.3.1",
   "description": "Expression Atlas Highcharts heatmap and boxplot of baseline and differential expression experiments from the Expression Atlas project (https://www.ebi.ac.uk/gxa)",
   "main": "lib/Main.js",
@@ -16,7 +16,10 @@
     "Alfonso Muñoz-Pomer Fuentes <amunoz@ebi.ac.uk>",
     "Haider Iqbal <haideri@ebi.ac.uk>"
   ],
-  "repository": "https://github.com/ebi-gene-expression-group/atlas-heatmap.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ebi-gene-expression-group/atlas-heatmap.git"
+  },
   "dependencies": {
     "anatomogram": "^2.1.2",
     "color": "^3.1.2",
@@ -59,5 +62,13 @@
     "webpack-cli": "^3.3.9",
     "webpack-dev-server": "^3.8.1",
     "whatwg-fetch": "^3.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/ebi-gene-expression-group/atlas-heatmap/issues"
+  },
+  "homepage": "https://github.com/ebi-gene-expression-group/atlas-heatmap#readme",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
   }
 }
