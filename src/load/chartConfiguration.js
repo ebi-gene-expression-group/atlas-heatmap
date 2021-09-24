@@ -6,7 +6,8 @@ const introductoryMessage = (experiment, profiles) => {
   const shownRows = profiles.rows.length
   const totalRows = +(profiles.searchResultTotal || shownRows)
 
-  const what = (experiment ? `gene` : `experiment`) + (totalRows > 1 ? `s` : ``)
+  const what = (experiment ? experiment.type === `proteomics_differential` || `proteomics_baseline` ?
+                  `protein` : `gene` : `experiment`) + (totalRows > 1 ? `s` : ``)
 
   return shownRows > 0 ?
     `Showing ${numberWithCommas(shownRows)} ` +
