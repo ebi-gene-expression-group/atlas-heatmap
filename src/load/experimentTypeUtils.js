@@ -22,7 +22,7 @@ const isDifferential = experiment =>
   !isMultiExperiment(experiment) && experiment.type.toUpperCase().endsWith(`DIFFERENTIAL`)
 
 const isBaseline = experiment =>
-  !isMultiExperiment(experiment) && experiment.type.toUpperCase().endsWith(`BASELINE`)
+  !isMultiExperiment(experiment) && experiment.type.toUpperCase().contains(`BASELINE`)
 
 const isRnaSeqBaseline = experiment =>
   !isMultiExperiment(experiment) && experiment.type.toUpperCase() === `RNASEQ_MRNA_BASELINE`
