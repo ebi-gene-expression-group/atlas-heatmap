@@ -88,25 +88,24 @@ const SplitDownloadButton = ({downloadOptions}) => (
 
 
 const DownloadButton = ({currentlyShownContent, geneQueryIDList, fullDatasetUrl, disclaimer}) => {
-  const tableDownloadUrl = new URI(fullDatasetUrl)
+  const allDataDownloadUrl = new URI(fullDatasetUrl)
   //set cutoff as 0.0 to get all available data in the download file
-  tableDownloadUrl.setSearch({cutoff:"0.0",geneQuery:JSON.stringify(geneQueryIDList)}).removeSearch("heatmapMatrixSize")
+  allDataDownloadUrl.setSearch({cutoff:`0.0`,geneQuery:JSON.stringify(geneQueryIDList)}).removeSearch(`heatmapMatrixSize`)
 
   const downloadOptions = [].concat(
     fullDatasetUrl ?
       [{
-        onClick: () => window.open(fullDatasetUrl, `Download`),
+        onClick: () => window.open(allDataDownloadUrl.toString(), `Download`),
         description: `All data`
       }] :
       [],
     [{
       onClick: () => fullDatasetUrl ?
-        window.open(tableDownloadUrl.toString(), `Download`) :
+        window.open(fullDatasetUrl, `Download`) :
         ClientSideDownload(currentlyShownContent),
       description : `Table content`
     }]
   )
-
   return (
     disclaimers[disclaimer] ?
       <DownloadWithModal
