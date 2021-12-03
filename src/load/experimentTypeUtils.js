@@ -22,19 +22,9 @@ const isDifferential = experiment =>
   !isMultiExperiment(experiment) && experiment.type.toUpperCase().endsWith(`DIFFERENTIAL`)
 
 const isBaseline = experiment =>
-  !isMultiExperiment(experiment) && experiment.type.toUpperCase().endsWith(`BASELINE`)
+  !isMultiExperiment(experiment) && experiment.type.toUpperCase().includes(`BASELINE`)
 
 const isRnaSeqBaseline = experiment =>
   !isMultiExperiment(experiment) && experiment.type.toUpperCase() === `RNASEQ_MRNA_BASELINE`
 
-const getUnits = experiment => {
-  if (isDifferential(experiment)) {
-    return `Log2-fold change`  // What we use for point.value, we don't use it for display. See Formatters.jsx.
-  } else if (isRnaSeqBaseline(experiment)) {
-    return experiment.description.toUpperCase().includes(`FANTOM`) ? `TPM` : `FPKM`
-  } else {
-    return ``
-  }
-}
-
-export {experimentPropTypes, isMultiExperiment, isDifferential, isBaseline, isRnaSeqBaseline, getUnits}
+export {experimentPropTypes, isMultiExperiment, isDifferential, isBaseline, isRnaSeqBaseline}
