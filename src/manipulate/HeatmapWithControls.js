@@ -84,8 +84,7 @@ const renderDownloadButton = ({
   },
   currentOrdering,
   allNumCoexpressions,
-  currentNumCoexpressions,
-  geneQueryIDList}
+  currentNumCoexpressions}
 ,heatmapData) => (
   <div style={{display: `inline-block`, padding: `5px`}}>
     <DownloadButton
@@ -105,7 +104,7 @@ const renderDownloadButton = ({
           ? outProxy+URI(experiment.urls.download, atlasUrl).toString()
           : ``
       }
-      geneQueryIDList= {geneQueryIDList} />
+    />
   </div>
 )
 
