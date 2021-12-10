@@ -1,11 +1,11 @@
 import _range from 'lodash/range'
 import download from 'downloadjs'
 
-const heatmapDataIntoLinesOfData = (heatmapData) => {
+const heatmapDataIntoLinesOfData = (heatmapData, placeholder) => {
 
   const heatmapDataAsMatrix =
     _range(heatmapData.yAxisCategories.length)
-      .map(y => _range(heatmapData.xAxisCategories.length).map(x => `NA`))
+      .map(() => _range(heatmapData.xAxisCategories.length).map(() => placeholder))
 
   heatmapData.dataSeries.forEach(series => {
     series.data.forEach(point => {heatmapDataAsMatrix[point.y][point.x] = point.value})
@@ -20,14 +20,14 @@ const heatmapDataIntoLinesOfData = (heatmapData) => {
 
 }
 
-const CommenceDownload = ({name, descriptionLines, heatmapData}) => {
+const CommenceDownload = ({name, descriptionLines, heatmapData, isSingleExperiment}) => {
   download(
     new Blob(
       [
         `# Downloaded from: ${window.location.href}`,
         `# Timestamp: ${new Date().toISOString()}`,
         ...descriptionLines.map(line => `# ${line}`),
-        ...heatmapDataIntoLinesOfData(heatmapData)
+        ...heatmapDataIntoLinesOfData(heatmapData, isSingleExperiment ? `` : `NA`)
       ].map(line => `${line}\n`)
     ),
     `${name.replace(/ +/, `_`)}.tsv`,
