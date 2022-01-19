@@ -5,9 +5,7 @@
   "main": "lib/Main.js",
   "license": "Apache-2.0",
   "scripts": {
-    "prepack": "rm -rf lib && babel src -d lib --ignore '**/*.less' --copy-files",
-    "postversion": "npm publish",
-    "postpublish": "git push && git push --tags"
+    "prepare": "rm -rf lib && babel src -d lib --ignore '**/*.less' --copy-files"
   },
   "author": "Expression Atlas developers <atlas-developers@ebi.ac.uk>",
   "collaborators": [
