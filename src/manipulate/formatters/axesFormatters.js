@@ -25,7 +25,7 @@ const ExperimentIconDiv = styled.div`
 `
 
 const YAxisLabel = (props) => {
-  const experimentIcon = props.experimentType===`PROTEOMICS_BASELINE` ?
+  const experimentIcon = props.experimentType===`PROTEOMICS_BASELINE` || props.experimentType===`PROTEOMICS_BASELINE_DIA` ?
     <ExperimentIconDiv background={`green`} color={`white`} data-toggle={`tooltip`} data-placement={`bottom`}
       title={`Proteomics experiment`}>P</ExperimentIconDiv> :
     props.experimentType && <ExperimentIconDiv background={`orangered`} color={`white`} data-toggle={`tooltip`} data-placement={`bottom`}
