@@ -65,7 +65,7 @@ const rankColumnsByThreshold = (threshold, expressions) =>
     .map(row => row.map(point => +(point.hasOwnProperty(`value`) && point.value !== 0)))
     .reduce(function (r1, r2) {
       return r1.map((el, ix) => el + r2[ix], _.fill(Array(expressions.length ? expressions[0].length : 0), 0))
-    })
+    }, [])
     .map(countOfExperimentsWhereTissueExpressedAboveCutoff =>
       countOfExperimentsWhereTissueExpressedAboveCutoff > expressions.length * threshold ? 0 : 1)
 
