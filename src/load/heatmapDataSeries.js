@@ -78,20 +78,29 @@ const experimentProfilesRowsAsDataPointsSplitByThresholds = (thresholds, seriesN
   ).value()
 
 // Create the array of pairs in a single experiment to be passed to _bucketsIntoSeries
-const _splitDataSetByProportion = (data, names, colours) => {
-  const sortedValues = data.map(point => point.value).sort((l, r) => l - r)
-  const howManyPointsInTotal = data.length
-  const howManyDataSetsToSplitIn = names.length
-  return (
-    _bucketsIntoSeries(names, colours)(
-      _.chain(data)
-        .map(point =>
-          [ Math.floor(
-            _.sortedIndex(sortedValues, point.value) / howManyPointsInTotal * howManyDataSetsToSplitIn),
-          point ]
-        )
-    ).value()
-  )
+function bucketByLogRange(data, names, colours) {
+  if (!data.length) return []
+
+  const logValues = data.map(p => Math.log(p.value + 1))
+  const minLog = Math.min(...logValues)
+  const maxLog = Math.max(...logValues)
+  const numBuckets = Math.min(names.length, colours.length)
+
+  const step = (maxLog - minLog) / numBuckets
+
+  const buckets = names.slice(0, numBuckets).map((name, i) => ({
+    info: { name, colour: colours[i], thresholds: [] },
+    data: []
+  }))
+
+  data.forEach((point, index) => {
+    const logVal = Math.log(point.value + 1)
+    let idx = Math.floor((logVal - minLog) / step)
+    if (idx >= numBuckets) idx = numBuckets - 1 // edge case for max value
+    buckets[idx].data.push(point)
+  })
+
+  return buckets
 }
 
 const splitGeneRowsIntoProportionalSeriesOfDataPoints = (profilesRows, experiment, filters, names, colours) => {
@@ -101,7 +110,7 @@ const splitGeneRowsIntoProportionalSeriesOfDataPoints = (profilesRows, experimen
 
   return _.flatten(
     _.range(filters.length).map(
-      i => _splitDataSetByProportion(dataPoints.filter(filters[i]), names[i], colours[i])))
+      i => bucketByLogRange(dataPoints.filter(filters[i]), names[i], colours[i])))
 }
 
 // chain is a lodash wrapper of an array of pairs: [[0, dataPoint1], [0, dataPoint2], ... [3, dataPointN]]
