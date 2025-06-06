@@ -150,8 +150,8 @@ const getDataSeries = (profilesRows, experiment) => {
   } else if (isBaseline(experiment)) {
     return splitGeneRowsIntoProportionalSeriesOfDataPoints(profilesRows, experiment,
       [_belowCutoff, _.negate(_belowCutoff)],
-      [[`Below cutoff`], [`Low`, `Medium`, `High`]],
-      [[`gainsboro`], [`#8cc6ff`, `#0000ff`, `#0000b3`]])
+      [[`Below cutoff`], [`Low`, `Low-Medium`, `Medium`, `Medium-High`, `High`]],
+      [[`gainsboro`], [`#e3f2fd`, `#90caf9`,`#42a5f5`, `#1976d2`,`#0d47a1`]])
   } else if (isMultiExperiment(experiment)) {
     return experimentProfilesRowsAsDataPointsSplitByThresholds(
       {
