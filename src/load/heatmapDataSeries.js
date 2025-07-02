@@ -68,7 +68,7 @@ const dataPointsToThresholdCategoriesMapper = thresholds =>
 // info field (an object composed of the series/threshold name and colour) and a data array with the data points that
 // correspond to that threshold
 const experimentProfilesRowsAsDataPointsSplitByThresholds = (thresholds, seriesNames, seriesColours, profilesRows) =>
-  _bucketsIntoSeries(seriesNames, seriesColours)(
+  (seriesNames, seriesColours)(
     // Get lodash wrapper of the experiment type / data points array
     _createDataPointsAndGroupThemByExperimentType(_.chain(profilesRows))
     // Map arrays of exp. type and data points to arrays of [threshold group index, data point]
@@ -78,6 +78,31 @@ const experimentProfilesRowsAsDataPointsSplitByThresholds = (thresholds, seriesN
   ).value()
 
 // Create the array of pairs in a single experiment to be passed to _bucketsIntoSeries
+function bucketByLogRange(data, names, colours) {
+  if (!data.length) return []
+
+  const logValues = data.map(p => Math.log(p.value + 1))
+  const minLog = Math.min(...logValues)
+  const maxLog = Math.max(...logValues)
+  const numBuckets = Math.min(names.length, colours.length)
+  // maxLog + 1 in case all data has the same value
+  const step = (maxLog + 1 - minLog) / numBuckets
+
+  const buckets = names.slice(0, numBuckets).map((name, i) => ({
+    info: { name, colour: colours[i], thresholds: [] },
+    data: []
+  }))
+
+  data.forEach((point, index) => {
+    const logVal = Math.log(point.value + 1)
+    let idx = Math.floor((logVal - minLog) / step)
+    if (idx >= numBuckets) idx = numBuckets - 1 // edge case for max value
+    buckets[idx].data.push(point)
+  })
+
+  return buckets
+}
+
 const _splitDataSetByProportion = (data, names, colours) => {
   const sortedValues = data.map(point => point.value).sort((l, r) => l - r)
   const howManyPointsInTotal = data.length
@@ -92,16 +117,19 @@ const _splitDataSetByProportion = (data, names, colours) => {
         )
     ).value()
   )
-}
 
-const splitGeneRowsIntoProportionalSeriesOfDataPoints = (profilesRows, experiment, filters, names, colours) => {
+}
+const splitGeneRowsIntoProportionalSeriesOfDataPoints = (profilesRows, experiment, filters, names, colours, differential) => {
   const dataPoints =
     _.flatten(profilesRows.map(
       (row, rowIndex) => buildDataPointsFromRowExpressions({rowInfo: {unit: row.expressionUnit}, row, rowIndex})))
 
-  return _.flatten(
+  return differential ? _.flatten(
     _.range(filters.length).map(
       i => _splitDataSetByProportion(dataPoints.filter(filters[i]), names[i], colours[i])))
+    : _.flatten(
+      _.range(filters.length).map(
+        i => bucketByLogRange(dataPoints.filter(filters[i]), names[i], colours[i])))
 }
 
 // chain is a lodash wrapper of an array of pairs: [[0, dataPoint1], [0, dataPoint2], ... [3, dataPointN]]
@@ -115,7 +143,7 @@ const _bucketsIntoSeries = _.curry((seriesNames, seriesColours, pairsOfCategoryA
       .mapValues(pairs => pairs.map(categoryAndDataPoint => categoryAndDataPoint[1]))
       .transform(
         (result, bucketValues, bucketNumber) => { result[bucketNumber].data = bucketValues },
-        // The empty with the series info but no data points
+        // The _bucketsIntoSeriesempty with the series info but no data points
         _.range(seriesNames.length).map(
           i => ({
             info: {
@@ -137,12 +165,12 @@ const getDataSeries = (profilesRows, experiment) => {
     return splitGeneRowsIntoProportionalSeriesOfDataPoints(profilesRows, experiment,
       _fns,
       [[`High down`, `Down`], [`Below cutoff`], [`Up`, `High up`]],
-      [[`#0000ff`, `#8cc6ff`], [`gainsboro`], [`#e9967a`, `#b22222`]])
+      [[`#0000ff`, `#8cc6ff`], [`gainsboro`], [`#e9967a`, `#b22222`]], true)
   } else if (isBaseline(experiment)) {
     return splitGeneRowsIntoProportionalSeriesOfDataPoints(profilesRows, experiment,
       [_belowCutoff, _.negate(_belowCutoff)],
-      [[`Below cutoff`], [`Low`, `Medium`, `High`]],
-      [[`gainsboro`], [`#8cc6ff`, `#0000ff`, `#0000b3`]])
+      [[`Below cutoff`], [`Low`, `Low-Medium`, `Medium`, `Medium-High`, `High`]],
+      [[`gainsboro`], [`#e3f2fd`, `#90caf9`,`#42a5f5`, `#1976d2`,`#0d47a1`]], false)
   } else if (isMultiExperiment(experiment)) {
     return experimentProfilesRowsAsDataPointsSplitByThresholds(
       {

@@ -13,9 +13,9 @@ class ExperimentPicker extends React.Component {
       geneQuery: null,
       isWidget: null,
       showAnatomogram: null,
-      submitAtlasUrl: `http://ves-hx-77:8080/gxa/`,
-      submitExperimentAccession: `E-MTAB-4484`,
-      submitGeneQuery: `[{"value":"TRIAE_CS42_1AL_TGACv1_000002_AA0000030","category":"ensgene"}]`,
+      submitAtlasUrl: `https://wwwdev.ebi.ac.uk/gxa/`,
+      submitExperimentAccession: `E-GTEX-8`,
+      submitGeneQuery: `[{"value":"CLPS","category":"symbol"}]`,
       submitIsWidget: true,
       submitShowAnatomogram: false
     }
@@ -70,7 +70,8 @@ class ExperimentPicker extends React.Component {
               <ExpressionAtlasHeatmap showAnatomogram={this.state.showAnatomogram}
                 isWidget={this.state.isWidget}
                 query={{
-                  gene: this.state.geneQuery
+                  gene: this.state.geneQuery,
+                  specific: false
                 }}
                 disableGoogleAnalytics={true}
                 atlasUrl={this.state.atlasUrl}
