@@ -68,7 +68,7 @@ const dataPointsToThresholdCategoriesMapper = thresholds =>
 // info field (an object composed of the series/threshold name and colour) and a data array with the data points that
 // correspond to that threshold
 const experimentProfilesRowsAsDataPointsSplitByThresholds = (thresholds, seriesNames, seriesColours, profilesRows) =>
-  (seriesNames, seriesColours)(
+    _bucketsIntoSeries(seriesNames, seriesColours)(
     // Get lodash wrapper of the experiment type / data points array
     _createDataPointsAndGroupThemByExperimentType(_.chain(profilesRows))
     // Map arrays of exp. type and data points to arrays of [threshold group index, data point]
