@@ -3,6 +3,7 @@ import React from 'react'
 import Heatmap from './HeatmapWithControls.js'
 import GeneSpecificResults from './GeneSpecificResults.js'
 import {chartDataPropTypes} from './chartDataPropTypes.js'
+import PropTypes from "prop-types"
 
 class ChartContainer extends React.Component {
   constructor(props) {
@@ -33,7 +34,7 @@ class ChartContainer extends React.Component {
         </a>
         }
         <div style={{display: this.state.chartType === `heatmap` ? `block` : `none`, width: `100%`}} >
-          <Heatmap {...this.props.chartData} />
+          <Heatmap {...this.props.chartData} isBaseline={this.props.isBaseline} geneQuery={this.props.geneQuery}/>
         </div>
         { this.props.chartData.geneSpecificResults &&
         <div style={{display: this.state.chartType === `boxplot and transcripts` ? `block` : `none`, width: `100%`}} >
@@ -46,7 +47,8 @@ class ChartContainer extends React.Component {
 }
 
 ChartContainer.propTypes = {
-  chartData: chartDataPropTypes.isRequired
+  chartData: chartDataPropTypes.isRequired,
+  isBaseline: PropTypes.bool.isRequired
 }
 
 export default ChartContainer

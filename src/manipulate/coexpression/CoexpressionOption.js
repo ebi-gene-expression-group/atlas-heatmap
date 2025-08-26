@@ -27,9 +27,12 @@ const SliderContainer = styled.div`
   padding-bottom: 20px;
 `
 
-const CoexpressedGenesSlider = ({geneName, numCoexpressionsAvailable, numCoexpressionsVisible, showCoexpressionsCallback}) =>
+const CoexpressedGenesSlider = ({isBaseline, geneName, numCoexpressionsAvailable, numCoexpressionsVisible, showCoexpressionsCallback}) =>
   <div>
-    <p style={{fontSize: `0.75rem`}}>Display genes with similar expression to {geneName}:</p>
+    {isBaseline && !geneName ?
+      <p style={{fontSize: `0.75rem`}}>Select the maximum number of marker genes for each assay group:</p> :
+      <p style={{fontSize: `0.75rem`}}>Display genes with similar expression to {geneName}:</p>}
+
     <SliderContainer>
       <Slider
         min={0}
@@ -49,7 +52,7 @@ CoexpressedGenesSlider.propTypes = {
 }
 
 
-const CoexpressionOption = ({geneName, numCoexpressionsVisible, numCoexpressionsAvailable, showCoexpressionsCallback}) =>
+const CoexpressionOption = ({isBaseline, geneName, numCoexpressionsVisible, numCoexpressionsAvailable, showCoexpressionsCallback}) =>
   <div style={{marginTop: `30px`}}>
     {
       numCoexpressionsAvailable ?
@@ -57,6 +60,7 @@ const CoexpressionOption = ({geneName, numCoexpressionsVisible, numCoexpressions
           <div>
             <RcSliderStyle/>
             <CoexpressedGenesSlider
+              isBaseline={isBaseline}
               geneName={geneName}
               numCoexpressionsVisible={numCoexpressionsVisible}
               numCoexpressionsAvailable={numCoexpressionsAvailable}

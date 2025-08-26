@@ -130,14 +130,20 @@ const renderFiltersButton = ({
   </div>
 )
 
-const renderCoexpressionOption = ({heatmapConfig,heatmapData,allNumCoexpressions,currentNumCoexpressions,onChangeCurrentNumCoexpressions}) => (
+const renderCoexpressionOption = ({isBaseline,geneQuery, heatmapConfig, heatmapData, allNumCoexpressions, currentNumCoexpressions,onChangeCurrentNumCoexpressions}) => (
   heatmapConfig.coexpressionsAvailable && !heatmapConfig.isWidget ?
     <CoexpressionOption geneName={heatmapData.yAxisCategories[0].label}
+      isBaseline={isBaseline}
       numCoexpressionsVisible={currentNumCoexpressions}
       numCoexpressionsAvailable={allNumCoexpressions}
       showCoexpressionsCallback={onChangeCurrentNumCoexpressions}
-    /> :
-    null
+    /> : isBaseline && geneQuery===`%5B%5D` ?
+      <CoexpressionOption geneName={``}
+        isBaseline={isBaseline}
+        numCoexpressionsVisible={1}
+        numCoexpressionsAvailable={heatmapData.yAxisCategories.length}
+        showCoexpressionsCallback={onChangeCurrentNumCoexpressions}
+      /> : null
 )
 
 const renderGenomeBrowserHint = ({currentGenomeBrowser}) => (
@@ -194,6 +200,7 @@ const heatmapExtraArgs = ({
 })
 
 const heatmapDataToPresent = ({
+  isBaseline,
   heatmapConfig,
   heatmapData,
   currentNumCoexpressions,
@@ -208,7 +215,12 @@ const heatmapDataToPresent = ({
           .map(yAxisCategory => yAxisCategory.label)
           .includes(rowHeader.label)
       )
-      : () => true,
+      : isBaseline ? rowHeader => (
+        heatmapData.yAxisCategories
+          .slice(0, currentNumCoexpressions + 1)
+          .map(yAxisCategory => yAxisCategory.label)
+          .includes(rowHeader.label)
+      ) : () => true,
     keepColumn:
       columnHeader => currentGroupedColumns.some(c => c.value === columnHeader.label),
     ordering: currentOrdering,
@@ -375,7 +387,9 @@ const HeatmapWithControlsContainer = props => {
 HeatmapWithControlsContainer.propTypes = {
   heatmapConfig: heatmapConfigPropTypes.isRequired,
   heatmapData: heatmapDataPropTypes.isRequired,
-  orderings: PropTypes.arrayOf(orderingPropTypes)
+  orderings: PropTypes.arrayOf(orderingPropTypes),
+  isBaseliine: PropTypes.bool.isRequired,
+  geneQuery: PropTypes.string.isRequired
 }
 
 export default HeatmapWithControlsContainer

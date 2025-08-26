@@ -9,6 +9,7 @@ import ChartContainer from '../manipulate/ChartContainer.js'
 
 import DataPropTypes from './jsonPayloadPropTypes.js'
 import loadChartData from '../load/main.js'
+import {isBaseline, isDifferential} from "../load/experimentTypeUtils"
 
 const Container = (props) => {
   const {data, outProxy, atlasUrl, isWidget} = props
@@ -27,6 +28,8 @@ const Container = (props) => {
         description={data.experiment.description} /> }
 
       <ChartContainer
+        geneQuery={geneQuery}
+        isBaseline={isBaseline(props.data.experiment)}
         chartData={loadChartData(props)} />
 
       { isWidget &&
